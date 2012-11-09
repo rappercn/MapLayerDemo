@@ -1,0 +1,12 @@
+#import "Util.h"
+#import "AppDelegate.h"
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import <UIKit/UIKit.h>
+#endif
+
+
+#define MAP_GOOGLE 1
+#define MAP_OSM 2
+#define MAP_CUSTOM 3
+

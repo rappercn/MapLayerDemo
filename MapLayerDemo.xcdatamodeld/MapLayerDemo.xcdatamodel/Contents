@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11E2705" minimumToolsVersion="Xcode 4.1" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="ShipDetailFocused" representedClassName="ShipDetailFocused" syncable="YES">
+        <attribute name="averageSpeed" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="callSign" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="direction" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="distanceMoved" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="draft" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="gpsTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gpsTimeEx" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imo" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lat" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="latEx" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lon" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="lonEx" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mmsi" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mobileId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shipFlag" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shipLength" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="shipName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shipType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shipWidth" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="speed" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+    </entity>
+    <entity name="ShipMajor" representedClassName="ShipMajor" syncable="YES">
+        <attribute name="callSign" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imo" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mmsi" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mobileId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shipName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ShipDetailFocused" positionX="160" positionY="192" width="128" height="345"/>
+        <element name="ShipMajor" positionX="160" positionY="192" width="128" height="120"/>
+    </elements>
+</model>
