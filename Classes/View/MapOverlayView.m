@@ -167,6 +167,7 @@
                               [NSNumber numberWithInt:tilex], @"tilex",
                               [NSNumber numberWithInt:tiley], @"tiley",
                               nil];
+    
     NSString *mapPath = [Util getCachePath:@"map"];
     mapPath = [Util getCachePath:[@"map" stringByAppendingFormat:@"/%d", zoomLevel]];
     NSString *imgPath = [mapPath stringByAppendingFormat:@"/%d-%d-%d.jpg", zoomLevel, tilex, tiley];
