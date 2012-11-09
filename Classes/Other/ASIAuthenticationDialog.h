@@ -31,5 +31,5 @@ typedef enum _ASIAuthenticationType {
 @property (retain) ASIHTTPRequest *request;
 @property (assign) ASIAuthenticationType type;
 @property (assign) BOOL didEnableRotationNotifications;
-@property (retain, nonatomic) UIViewController *presentingController;
+@property (retain) UIViewController *presentingController;
 @end

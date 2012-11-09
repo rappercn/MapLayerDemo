@@ -10,8 +10,11 @@
 
 #import "OSMTileOverlay.h"
 #import "MKMapView+Additions.h"
-#import "CustomOverlayView.h"
-#import "JeppesenTileOverlay.h"
+//#import "CustomOverlayView.h"
+#import "MapOverlayView.h"
+#import "MapTileOverlay.h"
+#import "ShipTileOverlay.h"
+//#import "JeppesenTileOverlay.h"
 #import "ShipData.h"
 #import "ShipDetailViewController.h"
 #import "MapRulerView.h"
@@ -69,12 +72,12 @@ static const int kCRulerTag = 10;
     [tempArray release];
 
     tempArray = [[NSMutableArray alloc] init];
-    int count = 0;
+//    int count = 0;
     for (NSDictionary *shipDict in shipArray) {
-        count ++;
-        if (count > MAX_SHIP_COUNT) {
-            break;
-        }
+//        count ++;
+//        if (count > MAX_SHIP_COUNT) {
+//            break;
+//        }
         CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([[shipDict objectForKey:@"lat"] floatValue], [[shipDict objectForKey:@"lon"] floatValue]);
         ShipAnnotation *shipanno = [[ShipAnnotation alloc] initWithShipDictionary:shipDict];
         shipanno.coordinate = coord;
@@ -86,7 +89,7 @@ static const int kCRulerTag = 10;
     }
     [tempArray release];
     tempArray = nil;
-    [[AppDelegate getAppDelegate] showShipCountOnTabbarWith:count];
+    [[AppDelegate getAppDelegate] showShipCountOnTabbarWith:[shipArray count]];
 }
 -(void)removeTyphoon {
     for (MKPointAnnotation *anno in gmapView.annotations) {
@@ -356,18 +359,18 @@ static const int kCRulerTag = 10;
     return nil;
 }
 -(void)reloadShipMapOverlaysWithShowShip:(BOOL)showship {
-    NSLog(@"--------------");
-    [gmapView removeOverlays:gmapView.overlays];
-    JeppesenTileOverlay *overlay = [[JeppesenTileOverlay alloc] init];
-    overlay.showShipMap = showship;
-    if (currentMap == MAP_CUSTOM) {
-        overlay.showMap = YES;
-    } else {
-        overlay.showMap = NO;
-    }
-    [gmapView addOverlay:overlay];
-    [overlay release];
-    NSLog(@"+++++++++++++++++");
+//    NSLog(@"--------------");
+//    [gmapView removeOverlays:gmapView.overlays];
+//    JeppesenTileOverlay *overlay = [[JeppesenTileOverlay alloc] init];
+//    overlay.showShipMap = showship;
+//    if (currentMap == MAP_CUSTOM) {
+//        overlay.showMap = YES;
+//    } else {
+//        overlay.showMap = NO;
+//    }
+//    [gmapView addOverlay:overlay];
+//    [overlay release];
+//    NSLog(@"+++++++++++++++++");
 }
 -(void)reloadMapViewOverlays
 {
@@ -388,11 +391,16 @@ static const int kCRulerTag = 10;
         rulerFrame.origin.x = -200;
     }
     CGRect frame = logo.frame;
-    JeppesenTileOverlay *overlay = [[JeppesenTileOverlay alloc] init];
-    overlay.showShipMap = YES;
+    
+    
+    
+//    JeppesenTileOverlay *overlay = [[JeppesenTileOverlay alloc] init];
+//    overlay.showShipMap = YES;
     if (currentMap == MAP_CUSTOM) {
-
-        overlay.showMap = YES;
+        MapTileOverlay *mapOverlay = [[MapTileOverlay alloc] init];
+        [gmapView addOverlay:mapOverlay];
+        [mapOverlay release];
+//        overlay.showMap = YES;
         MapRulerView *ruler = [self reloadMapViewRuler];
         [gmapView addSubview:ruler];
         [ruler release];
@@ -406,13 +414,16 @@ static const int kCRulerTag = 10;
 //        [logo setImage:img];
 //        frame = CGRectMake(10, self.view.bounds.size.height - 40, 90, 30);
     } else {
-        overlay.showMap = NO;
+//        overlay.showMap = NO;
         UIImage *img = [UIImage imageNamed:@"google"];
         [logo setImage:img];
         frame = CGRectMake(240, self.view.bounds.size.height - 30, 69, 23);
     }
-    [gmapView addOverlay:overlay];
-    [overlay release];
+    ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
+    [gmapView addOverlay:shipOverlay];
+    [shipOverlay release];
+//    [gmapView addOverlay:overlay];
+//    [overlay release];
     logo.frame = frame;
 }
 //-(void)shipLoaded:(NSArray*)shipArray {
@@ -422,7 +433,7 @@ static const int kCRulerTag = 10;
     NSLog(@"start new request");
     ASIHTTPRequest *req = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:taskUrl]];
     req.delegate = self;
-    [req setTimeOutSeconds:15];
+    [req setTimeOutSeconds:30];
     [req startAsynchronous];
 }
 -(void)doNextTaskWithPrevUrl:(NSString*)prevUrl {
@@ -479,14 +490,13 @@ static const int kCRulerTag = 10;
     removeArray = nil;
     
     for (id<TileOverlay> overlay in gmapView.overlays) {
-        if ([overlay isKindOfClass:[JeppesenTileOverlay class]]) {
-            if (![overlay showShipMap]) {
-                [gmapView removeOverlay:overlay];
-                [(id<TileOverlay>)overlay setShowShipMap:YES];
-                [gmapView addOverlay:overlay];
-            }
+        if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
+            return;
         }
     }
+    ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
+    [gmapView addOverlay:shipOverlay];
+    [shipOverlay release];
 }
 -(void)reloadAll {
 
@@ -621,7 +631,7 @@ static const int kCRulerTag = 10;
 		
 		return circleView;		
 	}
-    CustomOverlayView *overlayView = [[CustomOverlayView alloc] initWithOverlay:overlay];
+    MapOverlayView *overlayView = [[MapOverlayView alloc] initWithOverlay:overlay];
     
     return [overlayView autorelease];
 }
@@ -727,32 +737,34 @@ static const int kCRulerTag = 10;
     if ([json length] > 2) {
 //        [self reloadShipMapOverlaysWithShowShip:NO];
         
-//        for (id<TileOverlay> overlay in gmapView.overlays) {
-//            if ([overlay isKindOfClass:[JeppesenTileOverlay class]]) {
+        for (id<TileOverlay> overlay in gmapView.overlays) {
+            if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
 //                if ([overlay showShipMap]) {
-//                    [gmapView removeOverlay:overlay];
+                    [gmapView removeOverlay:overlay];
 //                    [(id<TileOverlay>)overlay setShowShipMap:NO];
 //                    [gmapView addOverlay:overlay];
 //                }
-//                break;
-//            }
-//        }
+                break;
+            }
+        }
         NSDictionary *dic = [json objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
         normalShipArray = [dic objectForKey:@"return"];
         [self addShipIconWithData:normalShipArray withAnnotationType:kCShipTypeNormal];
     } else {
 //        [self reloadShipMapOverlaysWithShowShip:YES];
-        
-//        for (id<TileOverlay> overlay in gmapView.overlays) {
-//            if ([overlay isKindOfClass:[JeppesenTileOverlay class]]) {
-//                if (![overlay showShipMap]) {
-//                    [gmapView removeOverlay:overlay];
-//                    [(id<TileOverlay>)overlay setShowShipMap:YES];
-//                    [gmapView addOverlay:overlay];
-//                }
-//                break;
-//            }
-//        }
+        BOOL exist = NO;
+        for (id<TileOverlay> overlay in gmapView.overlays) {
+            if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
+                exist = YES;
+                break;
+            }
+        }
+        if (!exist) {
+            ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
+            [gmapView addOverlay:shipOverlay];
+            [shipOverlay release];
+        }
+        [[AppDelegate getAppDelegate] showShipCountOnTabbarWith:0];
     }
     [self doNextTaskWithPrevUrl:request.url.absoluteString];
 //    taskUrl = nil;

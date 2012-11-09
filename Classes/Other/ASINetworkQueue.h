@@ -18,14 +18,9 @@
 	// Will be called when a request starts with the request as the argument
 	SEL requestDidStartSelector;
 	
-	// Will be called when a request receives response headers
-	// Should take the form request:didRecieveResponseHeaders:, where the first argument is the request, and the second the headers dictionary
+	// Will be called when a request receives response headers with the request as the argument
 	SEL requestDidReceiveResponseHeadersSelector;
 	
-	// Will be called when a request is about to redirect
-	// Should take the form request:willRedirectToURL:, where the first argument is the request, and the second the new url
-	SEL requestWillRedirectSelector;
-
 	// Will be called when a request completes with the request as the argument
 	SEL requestDidFinishSelector;
 	
@@ -85,12 +80,11 @@
 // This method will start the queue
 - (void)go;
 
-@property (assign, nonatomic, setter=setUploadProgressDelegate:) id uploadProgressDelegate;
-@property (assign, nonatomic, setter=setDownloadProgressDelegate:) id downloadProgressDelegate;
+@property (assign,setter=setUploadProgressDelegate:) id uploadProgressDelegate;
+@property (assign,setter=setDownloadProgressDelegate:) id downloadProgressDelegate;
 
 @property (assign) SEL requestDidStartSelector;
 @property (assign) SEL requestDidReceiveResponseHeadersSelector;
-@property (assign) SEL requestWillRedirectSelector;
 @property (assign) SEL requestDidFinishSelector;
 @property (assign) SEL requestDidFailSelector;
 @property (assign) SEL queueDidFinishSelector;

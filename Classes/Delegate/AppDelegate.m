@@ -264,8 +264,8 @@
     UITabBarItem * tabBarItem = (UITabBarItem *)[self.tabBarController.tabBar.items objectAtIndex:0];
     if (shipCount > 99) {
         tabBarItem.badgeValue = @"99+";
-        //    } else if (shipCount == 0) {
-        //        tabBarItem.badgeValue = @"";
+    } else if (shipCount == 0) {
+        tabBarItem.badgeValue = nil;
     } else {
         tabBarItem.badgeValue = [NSString stringWithFormat:@"%d", shipCount];
     }

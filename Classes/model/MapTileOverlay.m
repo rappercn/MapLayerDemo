@@ -43,6 +43,12 @@
     }
     return ret;
 }
+- (NSString *)imageSavePathWithX:(NSUInteger)x andY:(NSUInteger)y andZoomLevel:(NSUInteger)zoomLevel {
+    NSString *mapPath = [Util getCachePath:@"map"];
+    mapPath = [Util getCachePath:[@"map" stringByAppendingFormat:@"/%d", zoomLevel]];
+    NSString *imgPath = [mapPath stringByAppendingFormat:@"/%d-%d-%d.jpg", zoomLevel, x, y];
+    return imgPath;
+}
 - (BOOL)canDrawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale {
     return YES;
 }

@@ -56,6 +56,12 @@
     }
     return shipMapPath;
 }
+- (NSString *)imageSavePathWithX:(NSUInteger)x andY:(NSUInteger)y andZoomLevel:(NSUInteger)zoomLevel {
+    NSString *mapPath = [Util getCachePath:@"shipmap"];
+    mapPath = [Util getCachePath:[@"shipmap" stringByAppendingFormat:@"/%d", zoomLevel]];
+    NSString *imgPath = [mapPath stringByAppendingFormat:@"/%d-%d-%d.png", zoomLevel, x, y];
+    return imgPath;
+}
 - (BOOL)canDrawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale {
     return YES;
 }
