@@ -105,6 +105,7 @@
 
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
+#import <netinet/in.h>
 
 #define USE_DDG_EXTENSIONS 1 // Use DDG's Extensions to test network criteria.
 // Since NSAssert and NSCAssert are used in this code, 
@@ -139,11 +140,11 @@ extern NSString *const kReachabilityChangedNotification;
 @private
 	NSString                *key_;
 	SCNetworkReachabilityRef reachabilityRef;
-
+    
 }
 
 @property (copy) NSString *key; // Atomic because network operations are asynchronous.
-
+@property (nonatomic, assign) NSMutableDictionary *reachabilityQueries;
 // Designated Initializer.
 - (Reachability *) initWithReachabilityRef: (SCNetworkReachabilityRef) ref;
 
@@ -187,7 +188,25 @@ extern NSString *const kReachabilityChangedNotification;
 // Routines for specific connection testing by your app.
 - (BOOL) isReachableViaWWAN;
 - (BOOL) isReachableViaWiFi;
-
+- (NetworkStatus)internetConnectionStatus;
 - (SCNetworkReachabilityFlags) reachabilityFlags;
+
+
+@end
+
+@interface ReachabilityQuery : NSObject
+{
+@private
+	SCNetworkReachabilityRef _reachabilityRef;
+	CFMutableArrayRef _runLoops;
+	NSString *_hostNameOrAddress;
+}
+// Keep around each network reachability query object so that we can
+// register for updates from those objects.
+@property (nonatomic) SCNetworkReachabilityRef reachabilityRef;
+@property (nonatomic, retain) NSString *hostNameOrAddress;
+@property (nonatomic) CFMutableArrayRef runLoops;
+
+- (void)scheduleOnRunLoop:(NSRunLoop *)inRunLoop;
 
 @end
