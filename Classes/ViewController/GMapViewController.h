@@ -24,6 +24,8 @@
     NSMutableArray *onMapShipDataArray;
     NSArray *normalShipArray;
     NSString *taskUrl;
+    int number;
+    BOOL requesting;
 }
 @property (nonatomic, retain) IBOutlet MKMapView *gmapView;
 @property (nonatomic, retain) LevelMapData* levelData;

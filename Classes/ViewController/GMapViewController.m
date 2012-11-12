@@ -31,6 +31,7 @@
 
 @implementation GMapViewController
 @synthesize levelData, gmapView;
+
 static const int kCRulerTag = 10;
 #define TILE_RECT 256
 #define PATH_TITLE @"path"
@@ -429,19 +430,32 @@ static const int kCRulerTag = 10;
 //-(void)shipLoaded:(NSArray*)shipArray {
 //    
 //}
--(void)startNewRequest {
-    NSLog(@"start new request");
-    ASIHTTPRequest *req = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:taskUrl]];
-    req.delegate = self;
-    [req setTimeOutSeconds:30];
-    [req startAsynchronous];
-}
+//-(void)startNewRequest {
+//    number++;
+//    NSLog(@"start new request:%d",number);
+//    requesting = YES;
+//    ASIHTTPRequest *req = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:taskUrl]];
+//    req.delegate = self;
+//    req.username=[NSString stringWithFormat:@"%d", number];
+//    [req setTimeOutSeconds:30];
+//    [req startAsynchronous];
+//}
 -(void)doNextTaskWithPrevUrl:(NSString*)prevUrl {
     
     if (prevUrl == nil || prevUrl != taskUrl) {
-        NSAutoreleasePool* p = [[NSAutoreleasePool alloc] init];
-        [self performSelectorOnMainThread:@selector(startNewRequest) withObject:nil waitUntilDone:NO];
-        [p release];
+//        NSAutoreleasePool* p = [[NSAutoreleasePool alloc] init];
+//        [self performSelectorOnMainThread:@selector(startNewRequest) withObject:nil waitUntilDone:NO];
+//        [p release];
+
+        number++;
+        NSLog(@"start new request:%d",number);
+        requesting = YES;
+        ASIHTTPRequest *req = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:taskUrl]];
+        req.delegate = self;
+        req.username=[NSString stringWithFormat:@"%d", number];
+        [req setTimeOutSeconds:30];
+        [req startAsynchronous];
+        
     } else {
         taskUrl = nil;
         [self hideReloadProgress];
@@ -467,9 +481,9 @@ static const int kCRulerTag = 10;
 
     NSString *urlString = [INTERFACE_URL stringByAppendingFormat:@"checkVehicleDistribution&param_dleft=%f&param_dtop=%f&param_dright=%f&param_dbottom=%f&param_numlimit=99",pt0.longitude, pt0.latitude, pt1.longitude, pt1.latitude];
     
-    BOOL startRequest = (taskUrl == nil);
+//    BOOL startRequest = (taskUrl == nil);
     taskUrl = [urlString retain];
-    if (startRequest) {
+    if (!requesting) {
         [self doNextTaskWithPrevUrl:nil];
     }
 
@@ -732,7 +746,14 @@ static const int kCRulerTag = 10;
 #pragma mark - ASIHTTPRequest Delegate
 - (void)requestFinished:(ASIHTTPRequest *)request
 {
-    NSLog(@"request finish..........1");
+    
+    if (request.url.absoluteString != taskUrl) {
+        NSLog(@"request finished, still have task.%@",request.username);
+        requesting = NO;
+        [self doNextTaskWithPrevUrl:request.url.absoluteString];
+        return;
+    }
+    NSLog(@"request finished, should reload overlay.%@",request.username);
     NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
     if ([json length] > 2) {
 //        [self reloadShipMapOverlaysWithShowShip:NO];
@@ -766,13 +787,14 @@ static const int kCRulerTag = 10;
         }
         [[AppDelegate getAppDelegate] showShipCountOnTabbarWith:0];
     }
-    [self doNextTaskWithPrevUrl:request.url.absoluteString];
-//    taskUrl = nil;
-//    [self hideReloadProgress];
+    requesting = NO;
+//    taskUrl = nil; 
+    [self hideReloadProgress];
 }
 
 - (void)requestFailed:(ASIHTTPRequest *)request
 {
+    requesting = NO;
 	NSError *error = [request error];
     NSLog(@"%@, url:%@", error,request.url.absoluteString);
     taskUrl = nil;

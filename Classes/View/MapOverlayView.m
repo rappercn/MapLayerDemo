@@ -10,6 +10,7 @@
 
 #import "TileOverlay.h"
 #import "ASIHTTPRequest.h"
+#import "ASINetworkQueue.h"
 
 #pragma mark Private methods
 @interface MapOverlayView()
@@ -99,10 +100,17 @@
     [request setDownloadDestinationPath:savePath];
     [request setAllowResumeForFileDownloads:YES];
     [request setDelegate:self];
-    [request setTimeOutSeconds:30];
-    [request setNumberOfTimesToRetryOnTimeout:3];
+    [request setTimeOutSeconds:20];
+    [request setNumberOfTimesToRetryOnTimeout:1];
     request.userInfo = metadata;
-    [request startAsynchronous];
+//    [request startAsynchronous];
+    
+    ASINetworkQueue   * queue = [[[ASINetworkQueue alloc] init] autorelease];
+    [queue setMaxConcurrentOperationCount:2];
+    [queue setShowAccurateProgress:YES];
+    [queue addOperation:request];
+//    [queueDictionary setObject:queue forKey:fileName];
+    [queue go];
 }
 
 #pragma mark MKOverlayView methods

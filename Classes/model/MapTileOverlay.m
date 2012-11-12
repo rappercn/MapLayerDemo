@@ -12,7 +12,7 @@
 @implementation MapTileOverlay
 @synthesize boundingMapRect; // from <MKOverlay>
 @synthesize coordinate;      // from <MKOverlay>
-@synthesize defaultAlpha;
+@synthesize defaultAlpha, mapOverlay;
 //@synthesize tag;
 //@synthesize showMap, showShipMap;
 -(id) init {
