@@ -94,6 +94,8 @@
         NSString *name = [[myFocusArray objectAtIndex:indexPath.row] objectForKey:@"fulldisplayname"];
         cell.textLabel.text = name;
     }
+    UIFont *font = [UIFont fontWithName:@"Arial" size:18];
+    cell.textLabel.font = font;
     return cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
