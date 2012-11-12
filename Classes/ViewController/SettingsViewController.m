@@ -20,14 +20,51 @@
     }
     return self;
 }
+
+- (void)switchActionMap:(id)sender{
+    UISwitch *switchap = (UISwitch *)sender;
+    if(switchap.on){
+        [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"isNeedMap"];
+    }else{
+        [[NSUserDefaults standardUserDefaults] setValue:@"NO" forKey:@"isNeedMap"];
+    }
+}
+
+- (void)switchActionTyphoon:(id)sender{
+    UISwitch *switchTy = (UISwitch *)sender;
+    if(switchTy.on){
+        [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"isNeedTyphoon"];
+    }else{
+        [[NSUserDefaults standardUserDefaults] setValue:@"NO" forKey:@"isNeedTyphoon"];
+    }
+}
+
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-//    NSString *mapType = [[NSUserDefaults standardUserDefaults] valueForKey:@"mapType"];
-    settingSections = [NSArray arrayWithObjects:
-                            @"地图种类",
-                            @"1",
-                       nil];
+    mapSwitch =[[[UISwitch alloc] initWithFrame:CGRectMake(232, 62, 322, 222)] autorelease];
+    [mapSwitch addTarget:self action: @selector(switchActionMap:) forControlEvents:UIControlEventValueChanged];
+    NSString *mapDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"isNeedMap"];
+    if(mapDefault != nil && [mapDefault isEqualToString:@"YES"]){
+        isNeedMap = YES;
+    }else{
+        isNeedMap = NO;
+    }
+    [mapSwitch setOn:isNeedMap];
+    [self.view addSubview:mapSwitch];
+    
+    typhoonSwitch =[[[UISwitch alloc] initWithFrame:CGRectMake(232, 162, 322, 222)] autorelease];
+    [typhoonSwitch addTarget:self action: @selector(switchActionTyphoon:) forControlEvents:UIControlEventValueChanged];
+    NSString *typhoonDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"isNeedTyphoon"];
+    if(typhoonDefault != nil && [typhoonDefault isEqualToString:@"YES"]){
+        isNeedTyphoon = YES;
+    }else{
+        isNeedTyphoon = NO;
+    }
+    [typhoonSwitch setOn:isNeedTyphoon];
+    [self.view addSubview:typhoonSwitch];
+    
+
 }
 -(void) viewWillAppear:(BOOL)animated
 {
@@ -38,12 +75,17 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 1;
+	return 2;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-	return @"地图种类";
+	if(section==0){
+        return @"地图";
+    }else if (section == 1) {
+        return @"台风";
+    }
+    return @"";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -71,7 +113,7 @@
     {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId] autorelease];
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.accessoryType =UITableViewCellAccessoryNone;// UITableViewCellAccessoryDisclosureIndicator;
     }
 //		else
 //		{
@@ -81,15 +123,20 @@
 //			if (viewToRemove)
 //				[viewToRemove removeFromSuperview];
 //		}
-    NSString *mapId = [[NSUserDefaults standardUserDefaults] valueForKey:@"mapType"];
-    cell.textLabel.text = [Util getMapNameByMapId:mapId];
+  //  NSString *mapId = [[NSUserDefaults standardUserDefaults] valueForKey:@"mapType"];
+    if(indexPath.row==0){
+        cell.textLabel.text = @"地图";
+    }else if (indexPath.row == 1) {
+        cell.textLabel.text = @"台风";
+    }
+;
 
 	    
 	return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SimpleTableViewController* next = [[SimpleTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+ //   SimpleTableViewController* next = [[SimpleTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
 //    next.openSectionIndex = [indexPath row];
 //    next.fatherSection = [indexPath section];
 //    //	next.isOfflineMode = isOfflineMode;
@@ -99,6 +146,6 @@
 //            break;
 //        }
 //    }
-    [self.navigationController pushViewController:next animated:YES];
+ //   [self.navigationController pushViewController:next animated:YES];
 }
 @end

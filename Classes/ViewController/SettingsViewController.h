@@ -8,7 +8,12 @@
 
 #import <Foundation/Foundation.h>
 @class SimpleTableViewController;
-@interface SettingsViewController : UITableViewController
+@interface SettingsViewController : UITableViewController{
+    BOOL isNeedMap;
+    BOOL isNeedTyphoon;
+    IBOutlet UISwitch *mapSwitch;
+    IBOutlet UISwitch *typhoonSwitch;
+}
 
 @property (nonatomic, retain) NSArray *settingSections;
 @property (nonatomic, retain) SimpleTableViewController *simpleTableView;
