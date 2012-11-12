@@ -33,7 +33,7 @@
     //myfav = [[AppDelegate getMyFavArray] retain];
     myfav = [[AppDelegate getShipMajor] retain];
     //fen ye
-    currentPage = 1;   
+    currentPage = 0;   
     searchType = [[NSArray arrayWithObjects:@"shipName", @"callSign", @"imo", @"mmsi", nil] retain];
     [self.tableView reloadData];
     searchDisplayController.searchBar.placeholder = @"搜索";
@@ -217,18 +217,10 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     return NO;
 }
 
--(void) searchBarSearchButtonClicked:(UISearchBar *)searchBar{
-    searchTypeIdx = [self.searchDisplayController.searchBar selectedScopeButtonIndex];
-    isNeedPage = YES;
-    inputShipName = [searchBar.text retain];
-    //NSLog(searchBar.text);
-    NSLog(@"zx coming");
-    NSInteger start = 1;
-    NSInteger end = rowsPerPage; 
-  //  NSString *serviceUrl = [NSString stringWithFormat:@"http://test.ctrack.com.cn/ShipDBCAppServer/PhoneShipWebService?fm=getSearchRecByKeyInShipBaseInfo&&param_keystr=%@&&param_start_ship=%d&&param_end_ship=%d&&param_type=%d",searchBar.text,start,end,searchTypeIdx];
-  //  NSString *json = [Util getServiceDataByJson:serviceUrl];
-  //  NSDictionary *dataArray = [json mutableObjectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    NSDictionary *dataArray = [Util getSearchRecByKeyInShipBaseInfo:searchBar.text start_ship:[NSString stringWithFormat:@"%d",start] end_ship:[NSString stringWithFormat:@"%d",end] shipType:[NSString stringWithFormat:@"%d",searchTypeIdx]];
+-(void) backMajorThread:(NSDictionary *)dataArray{
+    
+    AppDelegate *delegate = [AppDelegate getAppDelegate];
+    [delegate dismissHUD];
     NSArray *arrayDictionary = [dataArray objectForKey:@"return"];
     //NSArray *array = [arrayDictionary allKeys];
     NSMutableArray *resultTem = [[[NSMutableArray alloc] init ] autorelease];
@@ -237,7 +229,7 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
         ShipData *ship = [[[ShipData alloc] init] autorelease];
         [ship setShipName:[serviceResult objectForKey:@"shipname"]];
         if(searchTypeIdx == 0){
-
+            
         }else if(searchTypeIdx == 1){
             [ship setCallSign:[serviceResult objectForKey:@"callsign"]];            
         }else if(searchTypeIdx == 2){
@@ -250,8 +242,8 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
         [ship release];
         
     }
-   // NSLog(@"totle %d",data.count);
-   // NSLog(@"%@",[[data objectForKey:@"d"] objectForKey:@"name"]);
+    // NSLog(@"totle %d",data.count);
+    // NSLog(@"%@",[[data objectForKey:@"d"] objectForKey:@"name"]);
     
     self.searchResults = [resultTem retain];
     [self.searchDisplayController.searchResultsTableView reloadData];
@@ -264,9 +256,35 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     // [err release];
     
     //insert coreData
- 
+    
+    
 
+}
 
+-(void)searchThread{
+   
+    //NSLog(searchBar.text);
+    NSLog(@"zx coming");
+    NSInteger start = 1;
+    NSInteger end = rowsPerPage; 
+    NSDictionary *dataArray = [Util getSearchRecByKeyInShipBaseInfo:inputShipName start_ship:[NSString stringWithFormat:@"%d",start] end_ship:[NSString stringWithFormat:@"%d",end] shipType:[NSString stringWithFormat:@"%d",searchTypeIdx]];
+    
+    
+    [self performSelectorOnMainThread:@selector(backMajorThread:) withObject:dataArray waitUntilDone:NO];
+}
+
+-(void) searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+    
+    AppDelegate *delegate = [AppDelegate getAppDelegate];
+    [delegate displayHUD:self words:@"搜索中"]; 
+    
+
+    searchTypeIdx = [self.searchDisplayController.searchBar selectedScopeButtonIndex];
+    isNeedPage = YES;
+    inputShipName = [searchBar.text retain];
+    [NSThread detachNewThreadSelector:@selector(searchThread)  toTarget:self withObject:nil];
+    
+   
 }
 
 -(void)loadMore     
@@ -305,7 +323,7 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     //NSString *serviceUrl = [NSString stringWithFormat:@"http://test.ctrack.com.cn/ShipDBCAppServer/PhoneShipWebService?fm=getSearchRecByKeyInShipBaseInfo&&param_keystr=%@&&param_start_ship=%d&&param_end_ship=%d&&param_type=%d",inputShipName,currentPage * rowsPerPage,(currentPage+1) * rowsPerPage,searchTypeIdx];
     //NSString *json = [Util getServiceDataByJson:serviceUrl];
     //NSDictionary *dataArray = [json mutableObjectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    NSDictionary *dataArray = [Util getSearchRecByKeyInShipBaseInfo:inputShipName start_ship:[NSString stringWithFormat:@"%d",currentPage * rowsPerPage] end_ship:[NSString stringWithFormat:@"%d",(currentPage+1) * rowsPerPage] shipType:[NSString stringWithFormat:@"%d",searchTypeIdx]];
+    NSDictionary *dataArray = [Util getSearchRecByKeyInShipBaseInfo:inputShipName start_ship:[NSString stringWithFormat:@"%d",currentPage * rowsPerPage+1] end_ship:[NSString stringWithFormat:@"%d",(currentPage+1) * rowsPerPage] shipType:[NSString stringWithFormat:@"%d",searchTypeIdx]];
     NSArray *arrayDictionary = [dataArray objectForKey:@"return"];
     NSMutableArray *array = [[NSMutableArray alloc] init ];
     for(int i=0;i<arrayDictionary.count;i++){
