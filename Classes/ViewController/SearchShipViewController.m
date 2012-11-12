@@ -107,6 +107,8 @@
         [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg_on.png"]]];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.backgroundColor = [UIColor clearColor];
+        UIFont *font = [UIFont fontWithName:@"Arial" size:18];
+        cell.textLabel.font = font;
     }
     
 
@@ -272,7 +274,7 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     currentPage ++;  
     NSMutableArray *more = [self GetRecord:currentPage]; //通过调用GetRecord方法, 将数据取出.  
     //insert major
-    [self performSelectorOnMainThread:@selector(appendTableWith:) withObject:more waitUntilDone:NO];     
+    [self performSelectorOnMainThread:@selector(appendTableWith:) withObject:more waitUntilDone:YES];     
     [self saveShipMajor:more];
     
 }     

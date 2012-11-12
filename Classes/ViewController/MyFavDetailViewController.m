@@ -148,6 +148,8 @@
     }else{
          cell.textLabel.text = [[myFav objectAtIndex:indexPath.row] objectForKey:@"shipName"];
     }
+    UIFont *font = [UIFont fontWithName:@"Arial" size:18];
+    cell.textLabel.font = font;
     return cell;
 }
 
