@@ -203,28 +203,28 @@
 
 
 -(void)saveShipDetailFocused:(NSString*) shipName  {
-    NSManagedObjectContext *context = [AppDelegate getManagedObjectContext];   
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ShipDetailFocused" inManagedObjectContext:context];
-    NSError *error;
-    NSPredicate *resultPredicate;
-    resultPredicate = [NSPredicate predicateWithFormat:@"shipName = %@", shipName];
-    [request setEntity:entity];
-    [request setPredicate:resultPredicate];
-    //NSArray *localDatas = [self.shipfocused filteredArrayUsingPredicate:resultPredicate];
-    NSArray *localDatas = [context executeFetchRequest:request error:&error];
-    [request release];
-    if(localDatas.count !=0 && shipName != nil && ![shipName isEqual:@""]){
+//    NSManagedObjectContext *context = [AppDelegate getManagedObjectContext];   
+//    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ShipDetailFocused" inManagedObjectContext:context];
+//    NSError *error;
+//    NSPredicate *resultPredicate;
+//    resultPredicate = [NSPredicate predicateWithFormat:@"shipName = %@", shipName];
+//    [request setEntity:entity];
+//    [request setPredicate:resultPredicate];
+//    //NSArray *localDatas = [self.shipfocused filteredArrayUsingPredicate:resultPredicate];
+//    NSArray *localDatas = [context executeFetchRequest:request error:&error];
+//    [request release];
+   // if(localDatas.count !=0 && shipName != nil && ![shipName isEqual:@""]){
         // local has ,so do nothing
-        ShipDetailFocused *shipDateTmp = [localDatas objectAtIndex:0];
-        ShipData *dataTmp = [[[ShipData alloc] init] autorelease];
-        dataTmp = [dataTmp transferFromShipDetailFocusedToShipData:shipDateTmp];
-        self.baseData = [dataTmp retain];
-    }else{
+        //ShipDetailFocused *shipDateTmp = [localDatas objectAtIndex:0];
+        //ShipData *dataTmp = [[[ShipData alloc] init] autorelease];
+       // dataTmp = [dataTmp transferFromShipDetailFocusedToShipData:shipDateTmp];
+     //   self.baseData = [dataTmp retain];
+   // }else{
         //select from web
        // baseData.mobileId = @"201208141120561308571";
         
-        NSManagedObject *object = [NSEntityDescription insertNewObjectForEntityForName:@"ShipDetailFocused" inManagedObjectContext:context];
+   //     NSManagedObject *object = [NSEntityDescription insertNewObjectForEntityForName:@"ShipDetailFocused" inManagedObjectContext:context];
       //  NSString *detailUrl = [NSString stringWithFormat:@"http://test.ctrack.com.cn/ShipDBCAppServer/PhoneShipWebService?fm=getFleetShipFullInfoByShipList&&param_listshipid=%@",baseData.mobileId];
       //  NSString *jsonString = [Util getServiceDataByJson:detailUrl];
         
@@ -237,39 +237,39 @@
             dataTmp = [dataTmp transferFromDictionaryToShipData:detailDictionary];
           //  shipDateTmp = [dataTmp transferFromShipDataToShipDetailFocused:dataTmp];
             
-            [object setValue:dataTmp.shipFlag forKey:@"shipFlag"];
-            [object setValue:dataTmp.shipType forKey:@"shipType"];
-            [object setValue:baseData.shipName forKey:@"shipName"];
-            [object setValue:dataTmp.callSign forKey:@"callSign"];
-            [object setValue:dataTmp.imo forKey:@"imo"];
-            [object setValue:dataTmp.latEx forKey:@"latEx"];
-            [object setValue:dataTmp.latitude forKey:@"latitude"];
-            [object setValue:dataTmp.lonEx forKey:@"lonEx"];
-            [object setValue:dataTmp.longitude forKey:@"longitude"];
-            [object setValue:dataTmp.mmsi forKey:@"mmsi"];
-            [object setValue:baseData.mobileId forKey:@"mobileId"];
-            [object setValue:[NSNumber numberWithFloat:dataTmp.averageSpeed]  forKey:@"averageSpeed"];
-            [object setValue:[NSNumber numberWithFloat:dataTmp.direction ]   forKey:@"direction"];
-             [object setValue:[NSNumber numberWithFloat:dataTmp.distanceMoved ] forKey:@"distanceMoved"];
-             [object setValue:[NSNumber numberWithFloat:dataTmp.shipWidth  ] forKey:@"shipWidth"];
-             [object setValue:[NSNumber numberWithFloat:dataTmp.shipLength ] forKey:@"shipLength"];
-             [object setValue:[NSNumber numberWithFloat:dataTmp.lat  ] forKey:@"lat"];
-             [object setValue:[NSNumber numberWithFloat:dataTmp.lon ]  forKey:@"lon"];
-             [object setValue:[NSNumber numberWithFloat:dataTmp.speed ] forKey:@"speed"];
-             [object setValue:[NSNumber numberWithFloat:dataTmp.draft]  forKey:@"draft"];
-           // NSDate *date = [NSDate date];
-           // NSDateFormatter *formatter = [[[NSDateFormatter alloc] init ] autorelease];
-           // [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-            [object setValue:dataTmp.gpsTime forKey:@"gpsTime"];
-            [object setValue:dataTmp.gpsTimeEx forKey:@"gpsTimeEx"];     
-            [self saveContext:context];
+//            [object setValue:dataTmp.shipFlag forKey:@"shipFlag"];
+//            [object setValue:dataTmp.shipType forKey:@"shipType"];
+//            [object setValue:baseData.shipName forKey:@"shipName"];
+//            [object setValue:dataTmp.callSign forKey:@"callSign"];
+//            [object setValue:dataTmp.imo forKey:@"imo"];
+//            [object setValue:dataTmp.latEx forKey:@"latEx"];
+//            [object setValue:dataTmp.latitude forKey:@"latitude"];
+//            [object setValue:dataTmp.lonEx forKey:@"lonEx"];
+//            [object setValue:dataTmp.longitude forKey:@"longitude"];
+//            [object setValue:dataTmp.mmsi forKey:@"mmsi"];
+//            [object setValue:baseData.mobileId forKey:@"mobileId"];
+//            [object setValue:[NSNumber numberWithFloat:dataTmp.averageSpeed]  forKey:@"averageSpeed"];
+//            [object setValue:[NSNumber numberWithFloat:dataTmp.direction ]   forKey:@"direction"];
+//             [object setValue:[NSNumber numberWithFloat:dataTmp.distanceMoved ] forKey:@"distanceMoved"];
+//             [object setValue:[NSNumber numberWithFloat:dataTmp.shipWidth  ] forKey:@"shipWidth"];
+//             [object setValue:[NSNumber numberWithFloat:dataTmp.shipLength ] forKey:@"shipLength"];
+//             [object setValue:[NSNumber numberWithFloat:dataTmp.lat  ] forKey:@"lat"];
+//             [object setValue:[NSNumber numberWithFloat:dataTmp.lon ]  forKey:@"lon"];
+//             [object setValue:[NSNumber numberWithFloat:dataTmp.speed ] forKey:@"speed"];
+//             [object setValue:[NSNumber numberWithFloat:dataTmp.draft]  forKey:@"draft"];
+//           // NSDate *date = [NSDate date];
+//           // NSDateFormatter *formatter = [[[NSDateFormatter alloc] init ] autorelease];
+//           // [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+//            [object setValue:dataTmp.gpsTime forKey:@"gpsTime"];
+//            [object setValue:dataTmp.gpsTimeEx forKey:@"gpsTimeEx"];     
+           // [self saveContext:context];
             
            // NSMutableArray *insertArray = [[[NSMutableArray alloc] init ] autorelease];
            // [insertArray addObject:shipDetail];
            // [insertArray addObjectsFromArray:shipfocused];
            // self.shipfocused=insertArray;
             self.baseData = [dataTmp retain];
-        }
+      //  }
     }
 
 
