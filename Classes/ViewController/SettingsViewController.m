@@ -42,7 +42,7 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-    mapSwitch =[[[UISwitch alloc] initWithFrame:CGRectMake(232, 62, 322, 222)] autorelease];
+    mapSwitch =[[[UISwitch alloc] initWithFrame:CGRectMake(232, 60, 322, 222)] autorelease];
     [mapSwitch addTarget:self action: @selector(switchActionMap:) forControlEvents:UIControlEventValueChanged];
     NSString *mapDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"isNeedMap"];
     if(mapDefault != nil && [mapDefault isEqualToString:@"YES"]){
@@ -53,7 +53,7 @@
     [mapSwitch setOn:isNeedMap];
     [self.view addSubview:mapSwitch];
     
-    typhoonSwitch =[[[UISwitch alloc] initWithFrame:CGRectMake(232, 162, 322, 222)] autorelease];
+    typhoonSwitch =[[[UISwitch alloc] initWithFrame:CGRectMake(232,108, 322, 222)] autorelease];
     [typhoonSwitch addTarget:self action: @selector(switchActionTyphoon:) forControlEvents:UIControlEventValueChanged];
     NSString *typhoonDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"isNeedTyphoon"];
     if(typhoonDefault != nil && [typhoonDefault isEqualToString:@"YES"]){
@@ -75,22 +75,22 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 2;
+	return 1;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-	if(section==0){
-        return @"地图";
-    }else if (section == 1) {
-        return @"台风";
-    }
-    return @"";
+//	if(section==0){
+        return @"设置";
+//    }else if (section == 1) {
+//        return @"台风";
+//    }
+//    return @"";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return 1;
+	return 2;
 }
 
 // to determine specific row height for each cell, override this.
@@ -98,7 +98,8 @@
 //
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return ([indexPath row] == 0) ? 50.0 : 38.0;
+	//return ([indexPath row] == 0) ? 50.0 : 38.0;
+    return 50.0;
 }
 
 // to determine which UITableViewCell to be used on a given row.
