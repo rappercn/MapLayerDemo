@@ -121,6 +121,7 @@
     MyFavDetailViewController *next = [[MyFavDetailViewController alloc] initWithNibName:@"MyFavDetailViewController" bundle:nil];
     next.favArray = [teamArray objectAtIndex:indexPath.section];
     next.openSectionIndex = indexPath.row;
+    next.title = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
     next.groupId = [[[teamArray objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"groupId"];
     [self.navigationController pushViewController:next animated:YES];
     

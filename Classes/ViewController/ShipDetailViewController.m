@@ -36,6 +36,7 @@
         UIBarButtonItem *jumpButton = [[UIBarButtonItem alloc] initWithTitle:@"定位" style:UIBarButtonItemStylePlain target:self action:@selector(showShip)];
         self.navigationItem.rightBarButtonItem = jumpButton;
         [jumpButton release];
+        self.title = @"详细信息";
     }
     return self;
 }

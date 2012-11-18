@@ -22,16 +22,23 @@
 -(id) initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
     if (self != nil) {
-        UITextView *tv = [[UITextView alloc] init];
-        [tv setText:((ShipTipAnnotation*)self.annotation)._dispName];
-        CGRect rect = CGRectMake(tv.frame.origin.x + 10, tv.frame.origin.y, tv.frame.size.width, tv.frame.size.height);
-        tv.frame = rect;
-        tv.layer.borderWidth = 1.0f;
-        tv.layer.borderColor = [[UIColor grayColor] CGColor];
-        [self addSubview:tv];
-        RELEASE_SAFELY(tv);
-        rect.size.height = rect.size.height + 10;
-        self.frame = rect;
+        
+        self.backgroundColor = [UIColor clearColor];
+        UILabel *label = [[UILabel alloc] init];
+        [label setFont:[UIFont systemFontOfSize:11.0]];
+        [label setBackgroundColor:[UIColor colorWithWhite:1.0 alpha:0.3]];
+        [label setText:[NSString stringWithFormat:@" %@ ", ((ShipTipAnnotation*)self.annotation)._dispName]];
+        [label sizeToFit];
+//        CGSize size = label.text sizeWithFont:
+        CGRect rect = CGRectMake(10.0, 0.0, label.frame.size.width, label.frame.size.height);
+        label.frame = rect;
+        label.layer.borderWidth = 1.0f;
+        label.layer.borderColor = [[UIColor grayColor] CGColor];
+        [self addSubview:label];
+        RELEASE_SAFELY(label);
+//        rect.size.height = rect.size.height + 10;
+        self.frame = CGRectMake(0, 0, rect.size.width + rect.origin.x, rect.size.height + rect.origin.y + 10);
+        self.centerOffset = CGPointMake(self.frame.size.width / 2, -self.frame.size.height / 2);
     }
     return self;
 }

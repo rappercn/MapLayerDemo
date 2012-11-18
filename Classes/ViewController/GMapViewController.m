@@ -67,24 +67,31 @@ static const int kCRulerTag = 10;
 }
 -(void)addShipIconWithArray:(NSArray*)shipArray withAnnotationType:(NSInteger)annoType
 {
-//    NSLog(@"shiparray count : %d",[shipArray count]);
-//    CLLocationCoordinate2D pt0 = [mapView convertPoint:CGPointMake(0, 0) toCoordinateFromView:nil];
-//    CLLocationCoordinate2D pt1 = [mapView convertPoint:CGPointMake(mapView.bounds.size.width, mapView.bounds.size.height) toCoordinateFromView:nil];
-//    MKMapRect maprect = MKMapRectMake(mapView.frame.origin.x, mapView.frame.origin.y, mapView.frame.size.width, mapView.frame.size.height);
-//    MKCoordinateRegion region = MKCoordinateRegionForMapRect(maprect);
     NSMutableArray *removeArray = [[NSMutableArray alloc] init];
     NSMutableArray *existShipidArray = [[NSMutableArray alloc] init];
-    for (ShipAnnotation *anno in gmapView.annotations) {
-        if (anno.annotationType == kCShipTypeMyTeam || anno.annotationType == kCShipTypeFollowed) {
-            [existShipidArray addObject:anno.shipdict[@"shipid"]];
-            continue;
+    for (id<MKAnnotation> anno in gmapView.annotations) {
+        if ([anno isKindOfClass:[ShipAnnotation class]]) {
+            ShipAnnotation *shipanno = (ShipAnnotation*)anno;
+            if (shipanno.annotationType == kCShipTypeMyTeam || shipanno.annotationType == kCShipTypeFollowed) {
+                [existShipidArray addObject:shipanno.shipdict[@"shipid"]];
+                continue;
+            }
+            NSArray *shownArray = [shipArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(shipid == %@)", shipanno.shipdict[@"shipid"]]];
+            if ([shownArray count] > 0) {
+                [existShipidArray addObject:shipanno.shipdict[@"shipid"]];
+                continue;
+            }
+            [removeArray addObject:anno];
+            for (id<MKAnnotation> an in gmapView.annotations) {
+                if ([an isKindOfClass:[ShipTipAnnotation class]]) {
+                    ShipTipAnnotation *tipAnno = (ShipTipAnnotation*)an;
+                    if (tipAnno._shipid == shipanno.shipdict[@"shipid"]) {
+                        [removeArray addObject:an];
+                        break;
+                    }
+                }
+            }
         }
-        NSArray *shownArray = [shipArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(shipid == %@)", anno.shipdict[@"shipid"]]];
-        if ([shownArray count] > 0) {
-            [existShipidArray addObject:anno.shipdict[@"shipid"]];
-            continue;
-        }
-        [removeArray addObject:anno];
     }
     if ([removeArray count] > 0) {
         [gmapView removeAnnotations:removeArray];
@@ -97,6 +104,9 @@ static const int kCRulerTag = 10;
             continue;
         }
         [self addShipAnnotationWithData:shipDict andType:annoType];
+        if (!(annoType == kCShipTypeNormal && ![[NSUserDefaults standardUserDefaults] boolForKey:@"showShipName"])) {
+            [self addShipTipAnnotationWithData:shipDict andType:annoType];
+        }
     }
     [ApplicationDelegate showShipCountOnTabbarWith:[shipArray count]];
 }
@@ -289,28 +299,13 @@ static const int kCRulerTag = 10;
 //            return;
         }
     }
-
-//    [typForeDic release];
-//    typForeDic = [[NSMutableDictionary alloc] init];
-//    [typPathDic release];
-//    typPathDic = [[NSMutableDictionary alloc] init];
-//    for (NSString *tid in tary) {
-//        NSArray* tmpAry = [Util getTyphoonLastForecast:tid];
-//        if (tmpAry) {
-//            [typForeDic setValue:tmpAry forKey:tid];
-//        }
-//        tmpAry = [Util getTyphoonPath:tid];
-//        if (tmpAry) {
-//            [typPathDic setValue:tmpAry forKey:tid];
-//        }
-//    }
-//    [typForeDic writeToFile:foreFile atomically:YES];
-//    [typPathDic writeToFile:pathFile atomically:YES];
 }
 -(void)removeAllShipFromMap {
     NSMutableArray *removeArray = [[NSMutableArray alloc] init];
-    for (ShipAnnotation *anno in gmapView.annotations) {
-        [removeArray addObject:anno];
+    for (id<MKAnnotation> anno in gmapView.annotations) {
+        if ([anno isKindOfClass:[ShipAnnotation class]] || [anno isKindOfClass:[ShipTipAnnotation class]]) {
+            [removeArray addObject:anno];
+        }
     }
     [gmapView removeAnnotations:removeArray];
     RELEASE_SAFELY(removeArray);
@@ -799,30 +794,14 @@ static const int kCRulerTag = 10;
 {
     if ([annotation isKindOfClass:[ShipAnnotation class]]) {
         static NSString *shipAnnoViewId = @"shipAnnoViewId";
-
-//        CLLocationCoordinate2D coo = annotation.coordinate;
-//        AppDelegate *delegate = [AppDelegate getAppDelegate];
-//        int arrIndex = 0;
-//        NSArray *array = delegate.myfav;
-//        for (int i = 0; i < array.count; i++) {
-//            ShipData *data = [array objectAtIndex:i];
-//            if (coo.latitude == data.lat && coo.longitude == data.lon) {
-//                arrIndex = i;
-//                break;
-//            }
-//        }
-//        ShipData *data = [delegate.myfav objectAtIndex:arrIndex];
         ShipAnnotationView *shipView = (ShipAnnotationView *)[gmapView dequeueReusableAnnotationViewWithIdentifier:shipAnnoViewId];
         if (shipView == nil) {
             shipView = [[[ShipAnnotationView alloc] initWithAnnotation:annotation 
                                                        reuseIdentifier:shipAnnoViewId] autorelease];
-
         }
-//        shipView.arrayIndex = arrIndex;
         shipView.enabled = YES;
         shipView.canShowCallout = YES;
         shipView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-        
         return shipView;
     } else if ([annotation isKindOfClass:[TyphoonPointAnnotation class]]) {
         static NSString *typAnnoViewId = @"typAnnoViewId";
@@ -864,7 +843,6 @@ static const int kCRulerTag = 10;
 //        ShipAnnotationView *shipView = (ShipAnnotationView*)view;
 //        int index = shipView.arrayIndex;
         ShipDetailViewController *next = [[ShipDetailViewController alloc] initWithNibName:@"ShipDetailViewController"];
-        next.title = @"详细信息";
         next.shipdict = ((ShipAnnotation*)view.annotation).shipdict;
         NSLog(@"%@",next.shipdict);
 //        AppDelegate *delegate = [AppDelegate getAppDelegate];
@@ -886,72 +864,9 @@ static const int kCRulerTag = 10;
 //    [self performSelectorOnMainThread:@selector(doPlayVideo) withObject:nil waitUntilDone:NO];
 //    [p release];
     if (zoomLevel > 4) {
-//        [self showReloadProgress];
         [self showShipInRect];
     } else {
         [self hideShipInRect];
     }
-    
-//    NSLog(@"regiondidchangeanimated");
 }
-
-//#pragma mark - ASIHTTPRequest Delegate
-//- (void)requestFinished:(ASIHTTPRequest *)request
-//{
-//    
-//    if (request.url.absoluteString != taskUrl) {
-//        NSLog(@"request finished, still have task.%@",request.username);
-//        requesting = NO;
-//        [self doNextTaskWithPrevUrl:request.url.absoluteString];
-//        return;
-//    }
-//    NSLog(@"request finished, should reload overlay.%@",request.username);
-//    NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
-//    if ([json length] > 2) {
-////        [self reloadShipMapOverlaysWithShowShip:NO];
-//        
-//        for (id<TileOverlay> overlay in gmapView.overlays) {
-//            if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
-////                if ([overlay showShipMap]) {
-//                    [gmapView removeOverlay:overlay];
-////                    [(id<TileOverlay>)overlay setShowShipMap:NO];
-////                    [gmapView addOverlay:overlay];
-////                }
-//                break;
-//            }
-//        }
-//        NSDictionary *dic = [json objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-//        normalShipArray = [dic objectForKey:@"return"];
-//        [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeNormal];
-//    } else {
-////        [self reloadShipMapOverlaysWithShowShip:YES];
-//        BOOL exist = NO;
-//        for (id<TileOverlay> overlay in gmapView.overlays) {
-//            if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
-//                exist = YES;
-//                break;
-//            }
-//        }
-//        if (!exist) {
-//            ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
-//            [gmapView addOverlay:shipOverlay];
-//            [shipOverlay release];
-//        }
-//        [[AppDelegate getAppDelegate] showShipCountOnTabbarWith:0];
-//    }
-//    requesting = NO;
-////    taskUrl = nil; 
-//    [self hideReloadProgress];
-//}
-
-//- (void)requestFailed:(ASIHTTPRequest *)request
-//{
-//    requesting = NO;
-//	NSError *error = [request error];
-//    NSLog(@"%@, url:%@", error,request.url.absoluteString);
-//    taskUrl = nil;
-//    [self hideReloadProgress];
-////    NSLog(@"requestFailed");
-////    [self doNextTaskWithPrevUrl:request.url.absoluteString];
-//}
 @end
