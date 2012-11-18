@@ -32,7 +32,7 @@
     
     TyphTipAnnotation *anno = (TyphTipAnnotation*) self.annotation;
     if (anno.typhoonName != nil) {
-        NSLog(@"%@-----",anno.typhoonName);
+//        NSLog(@"%@-----",anno.typhoonName);
         UIBezierPath *tipRect = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(27.0, 0.0, 75 + anno.typhoonName.length * 9, 15.0) cornerRadius:2];
         tipRect.lineWidth = 1;
         [[UIColor grayColor] setStroke];

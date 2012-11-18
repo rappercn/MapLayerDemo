@@ -223,12 +223,12 @@
     NSString *mapPath = [overlay urlForPointWithX:tilex andY:tiley andZoomLevel:zoomLevel];
     UIImage *map = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath:mapPath]) {
-        NSLog(@"map exist,draw map normal");
+//        NSLog(@"map exist,draw map normal");
         map = [UIImage imageWithContentsOfFile:mapPath];
 //        NSLog(@"draw map:%@", mapPath);
 //        NSLog(@"draw map for %d,%d,%d", zoomLevel, tilex, tiley);
     } else if ([overlay isKindOfClass:[MapTileOverlay class]]) {
-        NSLog(@"map not exist,need to draw numm map");
+//        NSLog(@"map not exist,need to draw numm map");
         map = [UIImage imageNamed:@"null.jpg"];
 //        NSLog(@"draw nil map for %d,%d,%d,%@", zoomLevel, tilex, tiley);
     }

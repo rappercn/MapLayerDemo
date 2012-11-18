@@ -9,8 +9,8 @@
 #import "ShipDetailViewController.h"
 //#import "ShipData.h"
 //#import <MapKit/MapKit.h>
-#import "AppDelegate.h"
-#import "ShipDetailFocused.h"
+//#import "AppDelegate.h"
+//#import "ShipDetailFocused.h"
 //#import "Util.h"
 //#import "JSONKit.h"
 @implementation ShipDetailViewController
@@ -19,14 +19,16 @@
 @synthesize baseData;
 -(void)showShip
 {
-    double lat = [[shipdict objectForKey:@"lat"] floatValue];
-    double lon = [[shipdict objectForKey:@"lon"] floatValue];
-    CLLocationCoordinate2D coord = 
-        CLLocationCoordinate2DMake(lat, lon);
-    AppDelegate *delegate = [AppDelegate getAppDelegate];
-    delegate.coord = coord;
-    delegate.showShip = YES;
-    delegate.tabBarController.selectedIndex = 0;
+//    double lat = [[shipdict objectForKey:@"lat"] floatValue];
+//    double lon = [[shipdict objectForKey:@"lon"] floatValue];
+//    CLLocationCoordinate2D coord = 
+//        CLLocationCoordinate2DMake(lat, lon);
+//    AppDelegate *delegate = [AppDelegate getAppDelegate];
+//    delegate.coord = coord;
+//    delegate.showShip = YES;
+    ApplicationDelegate.seletedShip = shipdict;
+    ApplicationDelegate.tabBarController.selectedIndex = 0;
+//    delegate.tabBarController.selectedIndex = 0;
 }
 -(id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -77,6 +79,7 @@
     [alert release];
 }
 
+#pragma mark - View Delegate
 - (void)viewDidLoad
 {
     NSArray *myfocus = [AppDelegate getMyFocusShips];
@@ -182,7 +185,10 @@
         [label release];
     }
 }
-
+-(void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [self.navigationController popViewControllerAnimated:NO];
+}
 //-(void)viewWillAppear:(BOOL)animated{
 //       // [self saveShipDetailFocused:baseData.shipName];
 //}

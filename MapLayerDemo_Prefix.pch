@@ -14,3 +14,4 @@
 #define MAP_OSM 2
 #define MAP_CUSTOM 3
 
+#define RELEASE_SAFELY(__POINTER) { [__POINTER release]; __POINTER = nil; }

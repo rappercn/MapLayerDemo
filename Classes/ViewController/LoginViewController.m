@@ -11,21 +11,20 @@
 #import "MyTeamViewController.h"
 #import "SettingsViewController.h"
 #import "GMapViewController.h"
-#import "Util.h"
 
 #import "ShipFocusViewController.h"
-#import "AppDelegate.h"
-@implementation LoginViewController
-@synthesize nameField,passWordField ;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
+@implementation LoginViewController
+@synthesize nameField,passWordField;
+
+//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+//{
+//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+//    if (self) {
+//        // Custom initialization
+//    }
+//    return self;
+//}
 
 - (void)viewDidLoad
 {
@@ -68,20 +67,21 @@
 //			mes = NSLocalizedString(@"当前使用3G连接网络",@"成功");
 //			break;
 //	}
-	
-	NSString * tle = NSLocalizedString(@"提示",@"提示");
-	NSString * yes = NSLocalizedString(@"确定",@"确定");
-    
-	UIAlertView *alert = [[UIAlertView alloc]initWithTitle:tle 
-												   message:mes 
-												  delegate:nil 
-										 cancelButtonTitle:yes 
-										 otherButtonTitles:nil,nil];
-	alert.delegate = self;
+
     if(mes != nil){
+        NSString * tle = NSLocalizedString(@"提示",@"提示");
+        NSString * yes = NSLocalizedString(@"确定",@"确定");
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:tle 
+                                                       message:mes 
+                                                      delegate:nil 
+                                             cancelButtonTitle:yes 
+                                             otherButtonTitles:nil,nil];
+        alert.delegate = self;
         [alert show];
+        [alert release];
     }
-	[alert release];	
+		
 //	[r release];
     
     //bRemeberPwd = NO;
@@ -120,82 +120,12 @@
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
--(void)login{
-    
-    
-   AppDelegate *delegate = [AppDelegate getAppDelegate];
-    [delegate displayHUD:self words:@"登录中"]; 
-    
-     [NSThread detachNewThreadSelector:@selector(loginThread)  toTarget:self withObject:nil];
-
-
-   
-}
-
--(void) loginThread{ 
-    
-    // 设置离线查看视频标志为否
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"offlineView"];
-    //接口对接实例
-    NSString *username = [nameField text];
-    NSString *pwd = [passWordField text]; 
-    NSDictionary *loginDictionary = [Util login:username passwd:pwd];
-    
-    [self performSelectorOnMainThread:@selector(gotoNextView:) withObject:loginDictionary waitUntilDone:NO];
-
-    
-    
-//    NSAutoreleasePool* p = [[NSAutoreleasePool alloc] init];
-//    [self performSelectorOnMainThread:@selector(doPlayVideo) withObject:nil waitUntilDone:NO];
-//    [p release];
-}
-
--(void) gotoNextView:(NSDictionary *)loginDictionary{
-
-    AppDelegate *delegate = [AppDelegate getAppDelegate];
-    [delegate dismissHUD];
-    NSString *failMessage = nil;
-    if (loginDictionary != nil) {
-        failMessage = [loginDictionary objectForKey:@"loginfailemessage"];
-    } else {
-        failMessage = @"连接服务器时发生错误";
-    }
-    NSString *pwd = [passWordField text]; 
-    
-    if (failMessage !=nil && ![failMessage isEqualToString:@""]) {
-        //NSLog(@"帐号或密码错误，请重新输入！");
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:failMessage delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        [alert show];
-        [alert release];
-        return;
-    }
-    else
-    {
-        NSString *userId = [loginDictionary objectForKey:@"operid"];
-        
-        [[NSUserDefaults standardUserDefaults] setValue:userId forKey:@"userId"];
-        NSString *passDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"password"];
-        if(passDefault == nil || ![pwd isEqualToString:passDefault]){
-            [[NSUserDefaults standardUserDefaults] setValue:pwd forKey:@"password"];
-        }
-        
-        //myfocusships 
-        
-        NSDictionary *shipsDictionary = [Util getAttentionShip:[loginDictionary objectForKey:@"operid"]];
-        NSMutableArray *shipsArray = [shipsDictionary objectForKey:@"return"];
-        delegate.myFocusShips = shipsArray;
-        
-        //myshipsTeam
-        //多用户的公司名称应写成plist，以userid为主件 暂时先放到defalt里面 有空改
-        [[NSUserDefaults standardUserDefaults] setValue:[loginDictionary objectForKey:@"comname"] forKey:[NSString stringWithFormat:@"comname%@",userId]];
-        NSDictionary *myShips =  [Util getSearchRecByKeyInFleet:[loginDictionary objectForKey:@"operid"] key:@"" start:@"1" end:[NSString stringWithFormat:@"%d",NSIntegerMax]];
-        NSMutableArray *myShipsArray = [myShips objectForKey:@"return"]; 
-        delegate.myShipsTeam = myShipsArray;
-        
+-(void)tryLoadMainView {
+    if (ApplicationDelegate.myFocusShips != nil && ApplicationDelegate.myShipsTeam != nil) {
+//        NSLog(@"%@",ApplicationDelegate.myShipsTeam);
+//        NSLog(@"%@",ApplicationDelegate.myFocusShips);
         //view
         GMapViewController *mapView = [[GMapViewController alloc] initWithNibName:@"GMapViewController" bundle:nil];
         UINavigationController *mapViewNaviController = [[[UINavigationController alloc] initWithRootViewController:mapView] autorelease];
@@ -220,20 +150,104 @@
         
         UITabBarController *tab = [[[UITabBarController alloc] init] autorelease];
         
-        
-        
-        
-        
         tab.viewControllers = [NSArray arrayWithObjects:mapViewNaviController, myTeamViewNaviController, searchViewNaviController, settingsController,focusViewNaviController, nil];
-        delegate.tabBarController = tab;
-        [self presentModalViewController:delegate.tabBarController animated:YES ];
+        ApplicationDelegate.tabBarController = tab;
+        [self presentModalViewController:ApplicationDelegate.tabBarController animated:YES ];
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+-(void) showMainViewWithDict:(NSDictionary*) dict {
+    
+    [[NSUserDefaults standardUserDefaults] setValue:dict[@"userid"] forKey:@"userid"];
+    NSString *pwd = passWordField.text;
+    [[NSUserDefaults standardUserDefaults] setValue:pwd forKey:@"password"];
+    
+    //myfocusships
+    [Util getAttentionShipWithOperid:dict[@"operid"] onComp:^(NSObject *responseData) {
+        if (responseData == nil) {
+            ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] init];
+        } else {
+            ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
+        }
+        [self tryLoadMainView];
+    }];
+    
+    //myshipsTeam
+    [Util getSearchRecByKeyInFleetWithOperid:dict[@"operid"] key:@"" onComp:^(NSObject *responseData) {
+        if (responseData == nil) {
+            ApplicationDelegate.myShipsTeam = [[NSMutableArray alloc] init];
+        } else {
+            ApplicationDelegate.myShipsTeam = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
+        }
+        [self tryLoadMainView];
+    }];
+//    //多用户的公司名称应写成plist，以userid为主件 暂时先放到defalt里面 有空改
+//    [[NSUserDefaults standardUserDefaults] setValue:[loginDictionary objectForKey:@"comname"] forKey:[NSString stringWithFormat:@"comname%@",userId]];
+//    NSDictionary *myShips =  [Util getSearchRecByKeyInFleet:[loginDictionary objectForKey:@"operid"] key:@"" start:@"1" end:[NSString stringWithFormat:@"%d",NSIntegerMax]];
+//    NSMutableArray *myShipsArray = [myShips objectForKey:@"return"];
+//    delegate.myShipsTeam = myShipsArray;
+    
+    
 }
+-(void)login{
+
+    [ApplicationDelegate displayHUD:self words:@"正在登录"];
+    ApplicationDelegate.myFocusShips = nil;
+    ApplicationDelegate.myShipsTeam = nil;
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"offlineView"];
+    //接口对接实例
+    NSString *username = [nameField text];
+    NSString *pwd = [passWordField text];
+    [Util loginWithUser:username passwd:pwd onComp:^(NSObject *responseData) {
+//        [ApplicationDelegate dismissHUD];
+        NSDictionary *dict = (NSDictionary*)responseData;
+        NSString *failMessage = nil;
+        if (dict != nil) {
+            failMessage = dict[@"loginfailemessage"];
+        } else {
+            failMessage = @"无法连接到服务器";
+        }
+        
+        if (failMessage !=nil && ![failMessage isEqualToString:@""]) {
+            //NSLog(@"帐号或密码错误，请重新输入！");
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:failMessage delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
+            [alert release];
+            return;
+        } else {
+            [self showMainViewWithDict:dict];
+        }
+    }];
+}
+//-(void) gotoNextView:(NSDictionary *)loginDictionary{
+//
+//    AppDelegate *delegate = [AppDelegate getAppDelegate];
+//    [delegate dismissHUD];
+//    NSString *failMessage = nil;
+//    if (loginDictionary != nil) {
+//        failMessage = [loginDictionary objectForKey:@"loginfailemessage"];
+//    } else {
+//        failMessage = @"连接服务器时发生错误";
+//    }
+//    NSString *pwd = [passWordField text]; 
+//    
+//    if (failMessage !=nil && ![failMessage isEqualToString:@""]) {
+//        //NSLog(@"帐号或密码错误，请重新输入！");
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:failMessage delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//        [alert show];
+//        [alert release];
+//        return;
+//    }
+//    else
+//    {
+//        
+//    }
+//}
+
+//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+//{
+//    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+//}
 
 - (IBAction)backgroundTap:(id)sender
 {

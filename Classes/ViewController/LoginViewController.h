@@ -15,7 +15,7 @@
     BOOL              bRemeberPwd;
     IBOutlet UITextField *nameField;
     IBOutlet UITextField *passWordField;
-    MBProgressHUD* progress_;
+//    MBProgressHUD* progress_;
     
 }
 @property (nonatomic, retain)IBOutlet UITextField *nameField;

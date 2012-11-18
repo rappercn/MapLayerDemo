@@ -33,10 +33,12 @@
 @property (nonatomic, retain) NSMutableArray* myShipsTeam;     //ship team
 @property (nonatomic, retain) ImageDownloader *imageDownloader;
 @property (nonatomic, retain) APIEngine *apiEngine;
+@property (nonatomic, retain) NSDictionary *seletedShip;
 @property (nonatomic, retain) NSMutableArray* shipMajor;       //local ships major
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (nonatomic, retain) NSManagedObjectModel *managedObjectModel;
+
 
 
 + (AppDelegate *)getAppDelegate;

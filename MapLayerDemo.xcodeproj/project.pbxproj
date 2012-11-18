@@ -68,6 +68,8 @@
 		29CEA09B16476D72000543B2 /* settingLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CEA08616476D72000543B2 /* settingLogo.png */; };
 		29CEA09C16476D72000543B2 /* showoption.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CEA08716476D72000543B2 /* showoption.png */; };
 		29CEA09D16476D72000543B2 /* typhoon.png in Resources */ = {isa = PBXBuildFile; fileRef = 29CEA08816476D72000543B2 /* typhoon.png */; };
+		3064B9F71658CAA10054CED1 /* ShipTipAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3064B9F61658CAA10054CED1 /* ShipTipAnnotation.m */; };
+		3064B9FB1658CBC70054CED1 /* ShipTipAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3064B9FA1658CBC70054CED1 /* ShipTipAnnotationView.m */; };
 		3089DDA016529603005E8E83 /* ShipDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3089DD9F16529603005E8E83 /* ShipDetailViewController.m */; };
 		3089F7531648B65C006BE2D6 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B4F8A516159C6A005C8312 /* CFNetwork.framework */; };
 		3089F75B16490413006BE2D6 /* btnLogin.png in Resources */ = {isa = PBXBuildFile; fileRef = 3089F75916490413006BE2D6 /* btnLogin.png */; };
@@ -202,6 +204,10 @@
 		29CEA08616476D72000543B2 /* settingLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settingLogo.png; sourceTree = "<group>"; };
 		29CEA08716476D72000543B2 /* showoption.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = showoption.png; sourceTree = "<group>"; };
 		29CEA08816476D72000543B2 /* typhoon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = typhoon.png; sourceTree = "<group>"; };
+		3064B9F51658CAA10054CED1 /* ShipTipAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShipTipAnnotation.h; sourceTree = "<group>"; };
+		3064B9F61658CAA10054CED1 /* ShipTipAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShipTipAnnotation.m; sourceTree = "<group>"; };
+		3064B9F91658CBC70054CED1 /* ShipTipAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShipTipAnnotationView.h; sourceTree = "<group>"; };
+		3064B9FA1658CBC70054CED1 /* ShipTipAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShipTipAnnotationView.m; sourceTree = "<group>"; };
 		3089DD9E16529603005E8E83 /* ShipDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShipDetailViewController.h; sourceTree = "<group>"; };
 		3089DD9F16529603005E8E83 /* ShipDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShipDetailViewController.m; sourceTree = "<group>"; };
 		3089F75916490413006BE2D6 /* btnLogin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btnLogin.png; sourceTree = "<group>"; };
@@ -447,6 +453,10 @@
 				29CEA062164765E9000543B2 /* TyphTipAnnotationView.m */,
 				3089F77D164CF218006BE2D6 /* MapOverlayView.h */,
 				3089F77E164CF218006BE2D6 /* MapOverlayView.m */,
+				3064B9F51658CAA10054CED1 /* ShipTipAnnotation.h */,
+				3064B9F61658CAA10054CED1 /* ShipTipAnnotation.m */,
+				3064B9F91658CBC70054CED1 /* ShipTipAnnotationView.h */,
+				3064B9FA1658CBC70054CED1 /* ShipTipAnnotationView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -699,6 +709,8 @@
 				3089DDA016529603005E8E83 /* ShipDetailViewController.m in Sources */,
 				30D92F981653E97F00C97983 /* ImageDownloader.m in Sources */,
 				30B10B48165713F600554459 /* APIEngine.m in Sources */,
+				3064B9F71658CAA10054CED1 /* ShipTipAnnotation.m in Sources */,
+				3064B9FB1658CBC70054CED1 /* ShipTipAnnotationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

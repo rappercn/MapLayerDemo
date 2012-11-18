@@ -19,7 +19,11 @@
         //        NSDictionary *response = [completedOperation responseJSON];
         //        imageURLBlock(response[@"photos"][@"photo"]);
         if (completedOperation.readonlyResponse.statusCode == 200 && completedOperation.responseString.length > 5) {
-            compBlock(completedOperation.responseJSON[@"return"]);
+            if (completedOperation.responseJSON[@"return"] != nil) {
+                compBlock(completedOperation.responseJSON[@"return"]);
+            } else {
+                compBlock(completedOperation.responseJSON);
+            }
         } else {
             compBlock(nil);
         }

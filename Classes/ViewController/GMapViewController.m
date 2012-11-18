@@ -26,9 +26,11 @@
 #import "ShipAnnotation.h"
 #import "ShipAnnotationView.h"
 #import "TyphoonDetailViewController.h"
-#import "ASIHTTPRequest.h"
-#import "JSONKit.h"
-#import "APIEngine.h"
+#import "ShipTipAnnotation.h"
+#import "ShipTipAnnotationView.h"
+//#import "ASIHTTPRequest.h"
+//#import "JSONKit.h"
+//#import "APIEngine.h"
 
 @implementation GMapViewController
 @synthesize levelData, gmapView;
@@ -43,64 +45,84 @@ static const int kCRulerTag = 10;
 #define R_64KT @"64kt"
 #define SHOW_TIP_LEVEL 4
 #define MAX_SHIP_COUNT 99
--(void)addShipIconWithData:(NSArray*)shipArray withAnnotationType:(NSInteger)annoType
+
+-(void)addShipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType  {
+    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([[shipdict objectForKey:@"lat"] floatValue], [[shipdict objectForKey:@"lon"] floatValue]);
+    ShipAnnotation *shipanno = [[ShipAnnotation alloc] initWithShipDictionary:shipdict];
+    shipanno.annotationType = annoType;
+    shipanno.coordinate = coord;
+    [gmapView addAnnotation:shipanno];
+    RELEASE_SAFELY(shipanno);
+}
+-(void)addShipTipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType {
+    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([[shipdict objectForKey:@"lat"] floatValue], [[shipdict objectForKey:@"lon"] floatValue]);
+    NSString *dispName = shipdict[@"shipnamecn"];
+    if (dispName != nil && ![dispName isEqualToString:@""]) {
+        dispName = shipdict[@"shipname"];
+    }
+    ShipTipAnnotation *tipanno = [[ShipTipAnnotation alloc] initWithShipId:shipdict[@"shipid"] dispName:dispName annoType:annoType];
+    tipanno.coordinate = coord;
+    [gmapView addAnnotation:tipanno];
+    RELEASE_SAFELY(tipanno);
+}
+-(void)addShipIconWithArray:(NSArray*)shipArray withAnnotationType:(NSInteger)annoType
 {
-    NSLog(@"shiparray count : %d",[shipArray count]);
+//    NSLog(@"shiparray count : %d",[shipArray count]);
 //    CLLocationCoordinate2D pt0 = [mapView convertPoint:CGPointMake(0, 0) toCoordinateFromView:nil];
 //    CLLocationCoordinate2D pt1 = [mapView convertPoint:CGPointMake(mapView.bounds.size.width, mapView.bounds.size.height) toCoordinateFromView:nil];
 //    MKMapRect maprect = MKMapRectMake(mapView.frame.origin.x, mapView.frame.origin.y, mapView.frame.size.width, mapView.frame.size.height);
 //    MKCoordinateRegion region = MKCoordinateRegionForMapRect(maprect);
-    NSMutableArray *tempArray = [[NSMutableArray alloc] init];
-    for (MKPointAnnotation *anno in gmapView.annotations) {
-        if ([anno isKindOfClass:[ShipAnnotation class]]) {
-            ShipAnnotation *shipanno = (ShipAnnotation*)anno;
-            shipanno.annotationType = annoType;
-            if (!shipanno.retainFlag) {
-                [tempArray addObject:anno];
-            }
-//            [shipanno release];
-//            if ([anno coordinate].latitude < pt0.latitude || [anno coordinate].longitude < pt0.longitude
-//                || [anno coordinate].latitude > pt1.latitude || [anno coordinate].longitude > pt1.longitude) {
-//                // out of visiblemapret,remove
-//                [removeArray addObject:anno];
-//                ShipAnnotation *shipanno = (ShipAnnotation*)anno;
-//                [onMapShipIdArray removeObject:[shipanno.shipDic objectForKey:@"shipid"]];
-//            }
+    NSMutableArray *removeArray = [[NSMutableArray alloc] init];
+    NSMutableArray *existShipidArray = [[NSMutableArray alloc] init];
+    for (ShipAnnotation *anno in gmapView.annotations) {
+        if (anno.annotationType == kCShipTypeMyTeam || anno.annotationType == kCShipTypeFollowed) {
+            [existShipidArray addObject:anno.shipdict[@"shipid"]];
+            continue;
         }
+        NSArray *shownArray = [shipArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(shipid == %@)", anno.shipdict[@"shipid"]]];
+        if ([shownArray count] > 0) {
+            [existShipidArray addObject:anno.shipdict[@"shipid"]];
+            continue;
+        }
+        [removeArray addObject:anno];
     }
-    if ([tempArray count] > 0) {
-        [gmapView removeAnnotations:tempArray];
+    if ([removeArray count] > 0) {
+        [gmapView removeAnnotations:removeArray];
     }
-    [tempArray release];
+    [removeArray release];
+    removeArray = nil;
 
-    tempArray = [[NSMutableArray alloc] init];
-//    int count = 0;
     for (NSDictionary *shipDict in shipArray) {
-//        count ++;
-//        if (count > MAX_SHIP_COUNT) {
-//            break;
-//        }
-        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([[shipDict objectForKey:@"lat"] floatValue], [[shipDict objectForKey:@"lon"] floatValue]);
-        ShipAnnotation *shipanno = [[ShipAnnotation alloc] initWithShipDictionary:shipDict];
-        shipanno.coordinate = coord;
-        [tempArray addObject:shipanno];
-        [shipanno release];
+        if ([existShipidArray containsObject:shipDict[@"shipid"]]) {
+            continue;
+        }
+        [self addShipAnnotationWithData:shipDict andType:annoType];
     }
-    if ([tempArray count] > 0) {
-        [gmapView addAnnotations:tempArray];
-    }
-    [tempArray release];
-    tempArray = nil;
     [ApplicationDelegate showShipCountOnTabbarWith:[shipArray count]];
 }
 -(void)removeTyphoon {
+    NSMutableArray *removeArray = [[NSMutableArray alloc] init];
     for (MKPointAnnotation *anno in gmapView.annotations) {
         if ([anno isKindOfClass:[TyphoonPointAnnotation class]] || [anno isKindOfClass:[TyphTipAnnotation class]]) {
-            [gmapView removeAnnotation:anno];
+            [removeArray addObject:anno];
+        }
+        
+//        if ([anno isKindOfClass:[TyphoonPointAnnotation class]] || [anno isKindOfClass:[TyphTipAnnotation class]]) {
+//            [gmapView removeAnnotation:anno];
+//        }
+    }
+    [gmapView removeAnnotations:removeArray];
+    [removeArray release];
+    removeArray = nil;
+    
+    for (id<MKOverlay> overlay in gmapView.overlays) {
+        if ([overlay isKindOfClass:[MKCircle class]] || [overlay isKindOfClass:[MKPolygon class]] || [overlay isKindOfClass:[MKPolyline class]]) {
+            [removeArray addObject:overlay];
         }
     }
-    
-    [gmapView removeOverlays:gmapView.overlays];
+    [gmapView removeOverlays:removeArray];
+    [removeArray release];
+    removeArray = nil;
 }
 -(void)addTyphoonTip {
 
@@ -208,17 +230,9 @@ static const int kCRulerTag = 10;
     [self addTyphoonTip];
 }
 -(void)getTyphoonInfo{
-    NSArray* tary = [(NSArray*)[NSUserDefaults standardUserDefaults] valueForKey:@"typids"];
+
     NSInteger interval = 9999;
-    if (tary) {
-        NSDate *last = (NSDate*)[[NSUserDefaults standardUserDefaults] valueForKey:@"typids_"];
-        interval = [[NSDate date] timeIntervalSinceDate:last];
-    }
-    if (!tary) {
-        [Util getTyphoonsId];
-        [[NSUserDefaults standardUserDefaults] setValue:tary forKey:@"typids"];
-        [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"typids_"];
-    } else {
+    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"typids_"] != nil) {
         NSDate *last = (NSDate*)[[NSUserDefaults standardUserDefaults] valueForKey:@"typids_"];
         interval = [[NSDate date] timeIntervalSinceDate:last];
     }
@@ -228,57 +242,95 @@ static const int kCRulerTag = 10;
     NSString *foreFile = [typFolder stringByAppendingString:@"/fore.plist"];
     
     if (interval > 3600) {
-        tary = [Util getTyphoonsId];
-        if (!tary) {
-            //show fail message;
-        } else {
-            [[NSUserDefaults standardUserDefaults] setValue:tary forKey:@"typids"];
-            [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"typids_"];
-        }
+        [[NSFileManager defaultManager] removeItemAtPath:pathFile error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:foreFile error:nil];
+        [Util getTyphoonsIdOnComp:^(NSObject *responseData) {
+            NSArray *idArray = (NSArray*)responseData;
+            if (idArray) {
+                [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"typids"];
+                [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"typids_"];
+                
+                if (typForeDic) {
+                    [typForeDic release];
+                    typForeDic = [[NSMutableDictionary alloc] init];
+                }
+                if (typPathDic) {
+                    [typPathDic release];
+                    typPathDic = [[NSMutableDictionary alloc] init];
+                }
+                for (NSString *tid in idArray) {
+                    [Util getTyphoonLastForecastById:tid OnComp:^(NSObject *responseData) {
+                        [typForeDic setValue:responseData forKey:tid];
+                        if ([typForeDic count] == [idArray count]) {
+                            [typForeDic writeToFile:foreFile atomically:YES];
+                            if ([typPathDic count] == [idArray count]) {
+                                [self drawTyphoon];
+                            }
+                        }
+                    }];
+                    [Util getTyphoonPathById:tid OnComp:^(NSObject *responseData) {
+                        [typPathDic setValue:responseData forKey:tid];
+                        if ([typPathDic count] == [idArray count]) {
+                            [typPathDic writeToFile:pathFile atomically:YES];
+                            if ([typForeDic count] == [idArray count]) {
+                                [self drawTyphoon];
+                            }
+                        }
+                    }];
+                }
+            }
+        }];
     } else {
         // read content from file
         if ([[NSFileManager defaultManager] fileExistsAtPath:foreFile]) {
             typForeDic = [[NSMutableDictionary alloc] initWithContentsOfFile:foreFile];
             typPathDic = [[NSMutableDictionary alloc] initWithContentsOfFile:pathFile];
-            return;
+            [self drawTyphoon];
+//            return;
         }
     }
-//    NSLog(@"%@",tary);
-    
-    [[NSFileManager defaultManager] removeItemAtPath:pathFile error:nil];
-    [[NSFileManager defaultManager] removeItemAtPath:foreFile error:nil];
-//    [[NSFileManager defaultManager] removeItemAtPath:typFolder error:nil];
-//    [[NSFileManager defaultManager] createDirectoryAtPath:typFolder withIntermediateDirectories:NO attributes:nil error:nil];
-    [typForeDic release];
-    typForeDic = [[NSMutableDictionary alloc] init];
-    [typPathDic release];
-    typPathDic = [[NSMutableDictionary alloc] init];
-    for (NSString *tid in tary) {
-        NSArray* tmpAry = [Util getTyphoonLastForecast:tid];
-        if (tmpAry) {
-            [typForeDic setValue:tmpAry forKey:tid];
-        }
-        tmpAry = [Util getTyphoonPath:tid];
-        if (tmpAry) {
-            [typPathDic setValue:tmpAry forKey:tid];
-        }
+
+//    [typForeDic release];
+//    typForeDic = [[NSMutableDictionary alloc] init];
+//    [typPathDic release];
+//    typPathDic = [[NSMutableDictionary alloc] init];
+//    for (NSString *tid in tary) {
+//        NSArray* tmpAry = [Util getTyphoonLastForecast:tid];
+//        if (tmpAry) {
+//            [typForeDic setValue:tmpAry forKey:tid];
+//        }
+//        tmpAry = [Util getTyphoonPath:tid];
+//        if (tmpAry) {
+//            [typPathDic setValue:tmpAry forKey:tid];
+//        }
+//    }
+//    [typForeDic writeToFile:foreFile atomically:YES];
+//    [typPathDic writeToFile:pathFile atomically:YES];
+}
+-(void)removeAllShipFromMap {
+    NSMutableArray *removeArray = [[NSMutableArray alloc] init];
+    for (ShipAnnotation *anno in gmapView.annotations) {
+        [removeArray addObject:anno];
     }
-    [typForeDic writeToFile:foreFile atomically:YES];
-    [typPathDic writeToFile:pathFile atomically:YES];
+    [gmapView removeAnnotations:removeArray];
+    RELEASE_SAFELY(removeArray);
 }
 -(void)segButtonSelected:(id)sender
 {
+    [self removeAllShipFromMap];
     UISegmentedControl* seg = (UISegmentedControl*) sender;
     if (seg.selectedSegmentIndex == 0) {
-        [self removeTyphoon];
-        UIActivityIndicatorView *actView = (UIActivityIndicatorView*)self.navigationItem.rightBarButtonItem.customView;
-        [actView stopAnimating];
-        [actView removeFromSuperview];
-//        [actView release];
-        self.navigationItem.rightBarButtonItem.customView = nil;
+        [self addShipIconWithArray:ApplicationDelegate.myShipsTeam withAnnotationType:kCShipTypeMyTeam];
+         //[self removeTyphoon];
+//        UIActivityIndicatorView *actView = (UIActivityIndicatorView*)self.navigationItem.rightBarButtonItem.customView;
+//        [actView stopAnimating];
+//        [actView removeFromSuperview];
+////        [actView release];
+//        self.navigationItem.rightBarButtonItem.customView = nil;
     } else {
-        [self getTyphoonInfo];
-        [self drawTyphoon];
+        [self addShipIconWithArray:ApplicationDelegate.myFocusShips withAnnotationType:kCShipTypeMyTeam];
+//        [self getTyphoonInfo];
+//        [self drawTyphoon];
     }
     NSLog(@"segButtonSelected:%d", seg.selectedSegmentIndex);
 }
@@ -444,7 +496,7 @@ static const int kCRulerTag = 10;
     
     if (prevUrl == nil || prevUrl != taskUrl) {
         requesting = YES;
-        MKNetworkOperation *op = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSArray *responseData) {
+        MKNetworkOperation *op = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSObject *responseData) {
             if (op.readonlyRequest.URL.absoluteString != taskUrl) {
                 requesting = NO;
                 [self doNextTaskWithPrevUrl:op.readonlyRequest.URL.absoluteString];
@@ -452,7 +504,7 @@ static const int kCRulerTag = 10;
             }
 //            NSLog(@"request finished, should reload overlay.%@",request.username);
 //            NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
-            if ([responseData count] > 0) {
+            if ([(NSArray*)responseData count] > 0) {
                 //        [self reloadShipMapOverlaysWithShowShip:NO];
                 
                 for (id<TileOverlay> overlay in gmapView.overlays) {
@@ -461,8 +513,8 @@ static const int kCRulerTag = 10;
                         break;
                     }
                 }
-                normalShipArray = responseData;
-                [self addShipIconWithData:normalShipArray withAnnotationType:kCShipTypeNormal];
+                normalShipArray = (NSArray*)responseData;
+                [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeNormal];
             } else {
                 //        [self reloadShipMapOverlaysWithShowShip:YES];
                 BOOL exist = NO;
@@ -522,7 +574,7 @@ static const int kCRulerTag = 10;
         [mkNetOp cancel];
     }
     requesting = YES;
-    MKNetworkOperation *op = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSArray *responseData) {
+    MKNetworkOperation *op = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSObject *responseData) {
 //        if (op.readonlyRequest.URL.absoluteString != taskUrl) {
 //            requesting = NO;
 //            [self doNextTaskWithPrevUrl:op.readonlyRequest.URL.absoluteString];
@@ -530,7 +582,7 @@ static const int kCRulerTag = 10;
 //        }
         //            NSLog(@"request finished, should reload overlay.%@",request.username);
         //            NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
-        if ([responseData count] > 0) {
+        if ([(NSArray*)responseData count] > 0) {
             //        [self reloadShipMapOverlaysWithShowShip:NO];
             
             for (id<TileOverlay> overlay in gmapView.overlays) {
@@ -540,8 +592,8 @@ static const int kCRulerTag = 10;
                     break;
                 }
             }
-            normalShipArray = responseData;
-            [self addShipIconWithData:normalShipArray withAnnotationType:kCShipTypeNormal];
+            normalShipArray = (NSArray*)responseData;
+            [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeNormal];
         } else {
             //        [self reloadShipMapOverlaysWithShowShip:YES];
             BOOL exist = NO;
@@ -619,7 +671,7 @@ static const int kCRulerTag = 10;
         segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar; 
         //    segmentedControl.momentary = YES; 
         segmentedControl.multipleTouchEnabled=NO; 
-        [segmentedControl addTarget:self action:@selector(segButtonSelected:) forControlEvents:UIControlEventValueChanged];     
+        [segmentedControl addTarget:self action:@selector(segButtonSelected:) forControlEvents:UIControlEventValueChanged];
         self.navigationItem.titleView = segmentedControl;
         [segmentedControl release]; 
         self.title = @"海图";
@@ -650,6 +702,8 @@ static const int kCRulerTag = 10;
                  @"", @"", @"", @"",
                  @"", @"", @"", @"",
                  nil];
+    [((UISegmentedControl*)self.navigationItem.titleView) setSelectedSegmentIndex:0];
+    [self segButtonSelected:((UISegmentedControl*)self.navigationItem.titleView)];
 }
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -663,22 +717,34 @@ static const int kCRulerTag = 10;
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    AppDelegate *delegate = [AppDelegate getAppDelegate];
-    if (delegate.showShip) {
-        delegate.showShip = NO;
+//    AppDelegate *delegate = [AppDelegate getAppDelegate];
+    NSDictionary *ship = ApplicationDelegate.seletedShip;
+    if (ship != nil) {
+        CLLocationCoordinate2D coor = CLLocationCoordinate2DMake([ship[@"lat"] doubleValue], [ship[@"lon"] doubleValue]);
         MKMapRect r = [gmapView visibleMapRect];
-        MKMapPoint pt = MKMapPointForCoordinate(delegate.coord);
+        MKMapPoint pt = MKMapPointForCoordinate(coor);
         r.origin.x = pt.x - r.size.width * 0.5;
         r.origin.y = pt.y - r.size.height * 0.5;
         [gmapView setVisibleMapRect:r animated:YES];
         
+        ShipAnnotation *anno = nil;
         for (int i = 0; i < [gmapView.annotations count]; i++) {
             id<MKAnnotation> annotation = [gmapView.annotations objectAtIndex:i];
-            if ([annotation coordinate].latitude == delegate.coord.latitude && [annotation coordinate].longitude == delegate.coord.longitude) {
-                [gmapView selectAnnotation:annotation animated:YES];
-                break;
+            if ([annotation isKindOfClass:[ShipAnnotation class]]) {
+                NSDictionary *dict = [(ShipAnnotation*)annotation shipdict];
+                if (dict[@"shipid"] == ship[@"shipid"]) {
+                    anno = (ShipAnnotation*)annotation;
+                    break;
+                }
             }
         }
+        
+        if (anno == nil) {
+            anno = [[ShipAnnotation alloc] initWithShipDictionary:ship];
+            [self.gmapView addAnnotation:anno];
+        }
+        [gmapView selectAnnotation:anno animated:YES];
+        ApplicationDelegate.seletedShip = nil;
     }
 }
 
@@ -779,6 +845,16 @@ static const int kCRulerTag = 10;
         tipView.canShowCallout = NO;
         tipView.annotation = annotation;
         return tipView;
+    } else if ([annotation isKindOfClass:[ShipTipAnnotation class]]) {
+        static NSString *shipTipAnnoViewId = @"shipTipAnnoViewId";
+        ShipTipAnnotationView *tipView = (ShipTipAnnotationView *)[gmapView dequeueReusableAnnotationViewWithIdentifier:shipTipAnnoViewId];
+        if (tipView == nil) {
+            tipView = [[[ShipTipAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:shipTipAnnoViewId] autorelease];
+        }
+        tipView.enabled = YES;
+        tipView.canShowCallout = NO;
+        tipView.annotation = annotation;
+        return tipView;
     }
     return nil;
 }
@@ -788,6 +864,7 @@ static const int kCRulerTag = 10;
 //        ShipAnnotationView *shipView = (ShipAnnotationView*)view;
 //        int index = shipView.arrayIndex;
         ShipDetailViewController *next = [[ShipDetailViewController alloc] initWithNibName:@"ShipDetailViewController"];
+        next.title = @"详细信息";
         next.shipdict = ((ShipAnnotation*)view.annotation).shipdict;
         NSLog(@"%@",next.shipdict);
 //        AppDelegate *delegate = [AppDelegate getAppDelegate];
@@ -802,12 +879,6 @@ static const int kCRulerTag = 10;
 
 -(void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-//    if (reloadReq) {
-//        [reloadReq cancel];
-////        [reloadReq release];
-////        reloadReq = nil;
-//    }
-//    NSLog(@"zoomlevel : %f", [mapView getZoomLevel]);
     [self reloadMapViewRuler];
 //    [NSThread detachNewThreadSelector:@selector(showShipInRect) toTarget:self withObject:nil];
     
@@ -824,63 +895,63 @@ static const int kCRulerTag = 10;
 //    NSLog(@"regiondidchangeanimated");
 }
 
-#pragma mark - ASIHTTPRequest Delegate
-- (void)requestFinished:(ASIHTTPRequest *)request
-{
-    
-    if (request.url.absoluteString != taskUrl) {
-        NSLog(@"request finished, still have task.%@",request.username);
-        requesting = NO;
-        [self doNextTaskWithPrevUrl:request.url.absoluteString];
-        return;
-    }
-    NSLog(@"request finished, should reload overlay.%@",request.username);
-    NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
-    if ([json length] > 2) {
-//        [self reloadShipMapOverlaysWithShowShip:NO];
-        
-        for (id<TileOverlay> overlay in gmapView.overlays) {
-            if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
-//                if ([overlay showShipMap]) {
-                    [gmapView removeOverlay:overlay];
-//                    [(id<TileOverlay>)overlay setShowShipMap:NO];
-//                    [gmapView addOverlay:overlay];
-//                }
-                break;
-            }
-        }
-        NSDictionary *dic = [json objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-        normalShipArray = [dic objectForKey:@"return"];
-        [self addShipIconWithData:normalShipArray withAnnotationType:kCShipTypeNormal];
-    } else {
-//        [self reloadShipMapOverlaysWithShowShip:YES];
-        BOOL exist = NO;
-        for (id<TileOverlay> overlay in gmapView.overlays) {
-            if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
-                exist = YES;
-                break;
-            }
-        }
-        if (!exist) {
-            ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
-            [gmapView addOverlay:shipOverlay];
-            [shipOverlay release];
-        }
-        [[AppDelegate getAppDelegate] showShipCountOnTabbarWith:0];
-    }
-    requesting = NO;
-//    taskUrl = nil; 
-    [self hideReloadProgress];
-}
+//#pragma mark - ASIHTTPRequest Delegate
+//- (void)requestFinished:(ASIHTTPRequest *)request
+//{
+//    
+//    if (request.url.absoluteString != taskUrl) {
+//        NSLog(@"request finished, still have task.%@",request.username);
+//        requesting = NO;
+//        [self doNextTaskWithPrevUrl:request.url.absoluteString];
+//        return;
+//    }
+//    NSLog(@"request finished, should reload overlay.%@",request.username);
+//    NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
+//    if ([json length] > 2) {
+////        [self reloadShipMapOverlaysWithShowShip:NO];
+//        
+//        for (id<TileOverlay> overlay in gmapView.overlays) {
+//            if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
+////                if ([overlay showShipMap]) {
+//                    [gmapView removeOverlay:overlay];
+////                    [(id<TileOverlay>)overlay setShowShipMap:NO];
+////                    [gmapView addOverlay:overlay];
+////                }
+//                break;
+//            }
+//        }
+//        NSDictionary *dic = [json objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
+//        normalShipArray = [dic objectForKey:@"return"];
+//        [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeNormal];
+//    } else {
+////        [self reloadShipMapOverlaysWithShowShip:YES];
+//        BOOL exist = NO;
+//        for (id<TileOverlay> overlay in gmapView.overlays) {
+//            if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
+//                exist = YES;
+//                break;
+//            }
+//        }
+//        if (!exist) {
+//            ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
+//            [gmapView addOverlay:shipOverlay];
+//            [shipOverlay release];
+//        }
+//        [[AppDelegate getAppDelegate] showShipCountOnTabbarWith:0];
+//    }
+//    requesting = NO;
+////    taskUrl = nil; 
+//    [self hideReloadProgress];
+//}
 
-- (void)requestFailed:(ASIHTTPRequest *)request
-{
-    requesting = NO;
-	NSError *error = [request error];
-    NSLog(@"%@, url:%@", error,request.url.absoluteString);
-    taskUrl = nil;
-    [self hideReloadProgress];
-//    NSLog(@"requestFailed");
-//    [self doNextTaskWithPrevUrl:request.url.absoluteString];
-}
+//- (void)requestFailed:(ASIHTTPRequest *)request
+//{
+//    requesting = NO;
+//	NSError *error = [request error];
+//    NSLog(@"%@, url:%@", error,request.url.absoluteString);
+//    taskUrl = nil;
+//    [self hideReloadProgress];
+////    NSLog(@"requestFailed");
+////    [self doNextTaskWithPrevUrl:request.url.absoluteString];
+//}
 @end

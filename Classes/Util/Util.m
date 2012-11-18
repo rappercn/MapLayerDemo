@@ -123,17 +123,22 @@
 
 
 
-+(NSDictionary*)login:(NSString *)name passwd:(NSString*) passwd{
-    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
-    [param setObject:name forKey:@"param_opercode"];
-    [param setObject:passwd forKey:@"param_operpwd"];
-    NSString *url = [NSString stringWithFormat:@"%@login",INTERFACE_URL];
-    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
-    if (jsonString) {
-        NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-        return jsonDictionary;
-    }
-    return nil;
++(void)loginWithUser:(NSString *)name passwd:(NSString *)passwd onComp:(APIResponseBlock)compBlock {
+//    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
+//    [param setObject:name forKey:@"param_opercode"];
+//    [param setObject:passwd forKey:@"param_operpwd"];
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"login&param_opercode=%@&param_operpwd=%@", name, passwd];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+        //        errorBlock(error);
+    }];
+//    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
+//    if (jsonString) {
+//        NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
+//        return jsonDictionary;
+//    }
+//    return nil;
 }
 
 +(NSDictionary*)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType{
@@ -157,25 +162,36 @@
     return jsonDictionary;
 } 
 
-+(NSDictionary*)getAttentionShip:(NSString *)userId{
-     NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
-    [param setObject:userId forKey:@"param_operid"];
-    NSString *url = [NSString stringWithFormat:@"%@getAttentionShip",INTERFACE_URL];
-    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
-    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    return jsonDictionary;
++(void)getAttentionShipWithOperid:(NSString *)operid onComp:(APIResponseBlock) compBlock {
+//     NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
+//    [param setObject:userId forKey:@"param_operid"];
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getAttentionShip&param_operid=%@",operid];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+        
+    }];
+//    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
+//    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
+//    return jsonDictionary;
 }
 
-+(NSDictionary*)getSearchRecByKeyInFleet:(NSString *)userId key:(NSString *) key start:(NSString *) start end :(NSString *) end{
-    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:4] autorelease];
-    [param setObject:userId forKey:@"param_operid"];
-    [param setObject:key forKey:@"param_key"];
-    [param setObject:start forKey:@"param_start"];
-    [param setObject:end forKey:@"param_end"];
-    NSString *url = [NSString stringWithFormat:@"%@getSearchRecByKeyInFleet",INTERFACE_URL];
-    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
-    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    return jsonDictionary;
++(void)getSearchRecByKeyInFleetWithOperid:(NSString *)operid key:(NSString *)key onComp:(APIResponseBlock)compBlock{
+//    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:4] autorelease];
+//    [param setObject:userId forKey:@"param_operid"];
+//    [param setObject:key forKey:@"param_key"];
+//    [param setObject:start forKey:@"param_start"];
+//    [param setObject:end forKey:@"param_end"];
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getSearchRecByKeyInFleet&param_operid=%@&param_key=%@&param_start=1&param_end=99",operid,key];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+        
+    }];
+//    NSString *url = [NSString stringWithFormat:@"%@getSearchRecByKeyInFleet",INTERFACE_URL];
+//    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
+//    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
+//    return jsonDictionary;
 }
 
 +(NSDictionary*)getCompanyGroups:(NSString *)userId{
@@ -339,59 +355,43 @@
 
 
 
-+(NSArray*)getTyphoonsId{
++(void)getTyphoonsIdOnComp:(APIResponseBlock)compBlock {
     NSString *url = [INTERFACE_URL stringByAppendingString:@"getTyphoonsId"];
-    NSString* jstr = [self getHttpData:url dataDictionary:nil];
-    NSDictionary *jdic = [jstr objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    return [jdic objectForKey:@"return"];
-}
-+(NSArray*)getTyphoonLastForecast:(NSString *)tid{
-    NSString *url = [INTERFACE_URL stringByAppendingString:@"getTyphoonLatestForecast"];
-    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
-    [param setObject:tid forKey:@"param_typhid"];
-    NSString* jstr = [self getHttpData:url dataDictionary:param];
-    NSDictionary *jdic = [jstr objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    return [jdic objectForKey:@"return"];
-}
-+(NSArray*)getTyphoonPath:(NSString *)tid{
-    NSString *url = [INTERFACE_URL stringByAppendingString:@"getTyphoonPath"];
-    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
-    [param setObject:tid forKey:@"param_typhid"];
-    NSString* jstr = [self getHttpData:url dataDictionary:param];
-    NSDictionary *jdic = [jstr objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    return [jdic objectForKey:@"return"];
-}
-//-(ASIHTTPRequest*)asynShipsFromPoint:(CLLocationCoordinate2D)pt0 toPoint:(CLLocationCoordinate2D)pt1 withCallback:(SEL)method andParent:(id<NSObject>)parent {
-////+(ASIHTTPRequest*)asynShipsWithinLeft:(double)left top:(double)top right:(double)right bottom:(double)bottom max:(int)max {
-//    callback = method;
-//    delegate = parent;
-//    NSString *url = [INTERFACE_URL stringByAppendingString:@"checkVehicleDistribution"];
-//    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:4] autorelease];
-//    [param setObject:[NSString stringWithFormat:@"%f",pt0.latitude] forKey:@"param_dleft"];
-//    [param setObject:[NSString stringWithFormat:@"%f",pt0.longitude] forKey:@"param_dtop"];
-//    [param setObject:[NSString stringWithFormat:@"%f",pt1.latitude] forKey:@"param_dright"];
-//    [param setObject:[NSString stringWithFormat:@"%f",pt1.longitude] forKey:@"param_dbottom"];
-//    [param setObject:[NSString stringWithFormat:@"%d",600] forKey:@"param_numlimit"];
-//    return [self asynHttpData:url dataDictionary:param];
-////    NSString* jstr = [self getHttpData:url dataDictionary:param];
-////    NSDictionary *jdic = [jstr objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-////    return [jdic objectForKey:@"return"];
-//}
-
-//#pragma mark -
-//#pragma mark Asynconnection Delegate
-//- (void)requestFinished:(ASIHTTPRequest *)request
-//{
-//    NSString *jstr = [[NSString alloc] initWithData:request.responseData encoding:NSUTF8StringEncoding];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+//        errorBlock(error);
+    }];
+//    NSString* jstr = [self getHttpData:url dataDictionary:nil];
 //    NSDictionary *jdic = [jstr objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-//    [delegate performSelector:callback withObject:jdic withObject:self];
-//}
-//
-//- (void)requestFailed:(ASIHTTPRequest *)request
-//{
-//	NSError *error = [request error];
-//	NSLog(@"%@", error);
-//}
+//    return [jdic objectForKey:@"return"];
+}
++(void)getTyphoonLastForecastById:(NSString *)tid onComp:(APIResponseBlock)compBlock {
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getTyphoonLatestForecast&param_typhid=%@",tid];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+//        errorBlock(error);
+    }];
+//    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
+//    [param setObject:tid forKey:@"param_typhid"];
+//    NSString* jstr = [self getHttpData:url dataDictionary:param];
+//    NSDictionary *jdic = [jstr objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
+//    return [jdic objectForKey:@"return"];
+}
++(void)getTyphoonPathById:(NSString *)tid onComp:(APIResponseBlock)compBlock {
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getTyphoonPath&param_typhid=%@",tid];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+//        errorBlock(error);
+    }];
+//    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
+//    [param setObject:tid forKey:@"param_typhid"];
+//    NSString* jstr = [self getHttpData:url dataDictionary:param];
+//    NSDictionary *jdic = [jstr objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
+//    return [jdic objectForKey:@"return"];
+}
 +(NSDate*)getNSDateFromDateString:(NSString *)dateString {
     [NSDateFormatter setDefaultFormatterBehavior:NSDateFormatterBehavior10_4];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];

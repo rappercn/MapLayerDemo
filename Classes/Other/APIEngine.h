@@ -8,7 +8,7 @@
 
 @interface APIEngine : MKNetworkEngine
 
-typedef void (^APIResponseBlock)(NSArray *responseData);
+typedef void (^APIResponseBlock)(NSObject *responseData);
 typedef void (^APIErrorBlock)(NSError* error);
 -(MKNetworkOperation*) requestDataFrom:(NSString*)remoteURL onCompletion:(APIResponseBlock)compBlock onError:(APIErrorBlock)errorBlock;
 @end
