@@ -10,7 +10,6 @@
 @property (nonatomic, assign) int tag;
 @property (nonatomic, assign) BOOL showMap;
 @property (nonatomic, assign) BOOL showShipMap;
-@property (nonatomic, assign) BOOL mapOverlay;
 - (NSString *)urlForShipWithX:(NSUInteger)x andY:(NSUInteger)y andZoomLevel:(NSUInteger)zoomLevel;
 - (NSString *)imageSavePathWithX:(NSUInteger)x andY:(NSUInteger)y andZoomLevel:(NSUInteger)zoomLevel;
 @end

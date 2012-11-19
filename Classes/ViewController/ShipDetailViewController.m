@@ -7,19 +7,22 @@
 //
 
 #import "ShipDetailViewController.h"
-#import "ShipData.h"
-#import <MapKit/MapKit.h>
+//#import "ShipData.h"
+//#import <MapKit/MapKit.h>
 #import "AppDelegate.h"
 #import "ShipDetailFocused.h"
-#import "Util.h"
-#import "JSONKit.h"
+//#import "Util.h"
+//#import "JSONKit.h"
 @implementation ShipDetailViewController
 @synthesize focusButton;
+@synthesize shipdict;
 @synthesize baseData;
 -(void)showShip
 {
+    double lat = [[shipdict objectForKey:@"lat"] floatValue];
+    double lon = [[shipdict objectForKey:@"lon"] floatValue];
     CLLocationCoordinate2D coord = 
-        CLLocationCoordinate2DMake(baseData.lat, baseData.lon);
+        CLLocationCoordinate2DMake(lat, lon);
     AppDelegate *delegate = [AppDelegate getAppDelegate];
     delegate.coord = coord;
     delegate.showShip = YES;
@@ -38,13 +41,24 @@
 {
     return [super initWithNibName:nibNameOrNil bundle:nil];
 }
-
+-(void)showButtonTitle{
+    focusButton.frame = CGRectMake(230, 300, 80, 40);
+    [focusButton setTitle:@"test" forState:UIControlStateNormal];
+    [focusButton setTitle:@"test" forState:UIControlStateHighlighted];
+    if(!isFocused){
+        //        self.focusButton.titleLabel.text = @"关注";
+        [focusButton setTitle:@"关注" forState:UIControlStateNormal];
+    }else{
+        //        self.focusButton.titleLabel.text = @"";
+        [focusButton setTitle:@"取消关注" forState:UIControlStateNormal];
+    }
+}
 - (IBAction)focusButtonPress:(UIButton *)sender {
     NSDictionary *returnDic = [[[NSDictionary alloc] init ] autorelease];
     if(isFocused){
-        returnDic = [Util delAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:baseData.mobileId];
+        returnDic = [Util delAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"]];
     }else{
-        returnDic = [Util addAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:baseData.mobileId];
+        returnDic = [Util addAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"]];
     }
     isFocused = !isFocused;
 
@@ -61,27 +75,12 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"操作%@",message]  delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     [alert show];
     [alert release];
-    
-    
-}
-
--(void)showButtonTitle{
-     focusButton.frame = CGRectMake(230, 300, 80, 40);
-    [focusButton setTitle:@"test" forState:UIControlStateNormal];
-    [focusButton setTitle:@"test" forState:UIControlStateHighlighted];
-    if(!isFocused){
-//        self.focusButton.titleLabel.text = @"关注";
-        [focusButton setTitle:@"关注" forState:UIControlStateNormal];
-    }else{
-//        self.focusButton.titleLabel.text = @"";
-         [focusButton setTitle:@"取消关注" forState:UIControlStateNormal];
-    }
 }
 
 - (void)viewDidLoad
 {
     NSArray *myfocus = [AppDelegate getMyFocusShips];
-    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"fulldisplayname contains[cd] %@", self.baseData.shipName];
+    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"fulldisplayname contains[cd] %@", [shipdict objectForKey:@"shipname"]];
     NSArray *isFocusArray = [myfocus filteredArrayUsingPredicate:resultPredicate];
     if(isFocusArray == nil || isFocusArray.count == 0){
         isFocused = false;
@@ -91,117 +90,104 @@
     [self showButtonTitle];
 
     //self.shipfocused = [AppDelegate getMyFavArray];
-    [self saveShipDetailFocused:baseData.shipName];
+//    [self saveShipDetailFocused:[shipdict objectForKey:@"shipname"]];
     // genarate label
-    NSArray *leftPart = [NSArray arrayWithObjects:
-                          @"中文船名:",
-                          @"英文船名:",
-                          @"船舶类型:",
-                          @"船籍:",
-                          @"船长(米):",
-                          @"船宽(米):",
-                          @"时间:",
-                          @"纬度:",
-                          @"经度:",
-                          @"航速(节):",
-                          @"航向:",
-                          @"平均速度:",
-                          @"最后距离(海里):",
-                          nil];
+    NSString *leftCaps[] = {
+        @"中文船名:",
+        @"英文船名:",
+        @"船舶类型:",
+        @"船籍:",
+        @"船长(米):",
+        @"船宽(米):",
+        @"时间:",
+        @"纬度:",
+        @"经度:",
+        @"航速(节):",
+        @"航向:",
+        @"平均速度:",
+        @"最后距离(海里):"
+    };
    // NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
    // [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
    // NSString *gpsTime;
-    NSArray *leftValue = [NSArray arrayWithObjects:
-                          baseData.shipName,
-                          baseData.shipName,
-                          baseData.shipType,
-                          //@"货船",
-                          @"中国",
-                          [NSString stringWithFormat:@"%f",baseData.shipLength],
-                          [NSString stringWithFormat:@"%f",baseData.shipWidth],
-                          baseData.gpsTime,
-                          baseData.latitude,
-                          baseData.longitude,
-                          [NSString stringWithFormat:@"%f",baseData.speed],
-                          [NSString stringWithFormat:@"%f",baseData.direction],
-                          [NSString stringWithFormat:@"%f",baseData.averageSpeed],
-                          [NSString stringWithFormat:@"%f",baseData.distanceMoved],
-//                          @"123°45'123",
-//                          @"20°11'22",
-//                          @"20.1",
-//                          @"123.4",
-//                          @"15.7",
-//                          @"12.3",
-//                          @"20°11'22",
-//                          @"20.1",
-//                          @"123.4",
-//                          @"15.7",
-//                          @"12.3",
-                          nil];
-    NSArray *rightPart = [NSArray arrayWithObjects:
-                          @"MMSI:",
-                          @"IMO:",
-                          @"呼号:",
-                          nil];
-    NSArray *rightValue = [NSArray arrayWithObjects:
-                          baseData.mmsi,
-                          baseData.imo,
-                          baseData.callSign,
-                           // @"123456",
-                          // @"123456789",
-                          // @"ABCDEFG",
-                           nil];
+    NSString *leftData[] = {
+        [shipdict objectForKey:@"shipnamecn"],
+        [shipdict objectForKey:@"shipname"],
+        [shipdict objectForKey:@"shiptype"],
+        @"/",
+        [NSString stringWithFormat:@"%d",[[shipdict objectForKey:@"shiplength"] intValue]],
+        [NSString stringWithFormat:@"%d",[[shipdict objectForKey:@"shipwidth"] intValue]],
+        [shipdict objectForKey:@"gpstime"],
+        [shipdict objectForKey:@"longitude"],
+        [shipdict objectForKey:@"latitude"],
+        [NSString stringWithFormat:@"%@",[shipdict objectForKey:@"speed"]],
+        [NSString stringWithFormat:@"%@",[shipdict objectForKey:@"direction"]],
+        [NSString stringWithFormat:@"%.1f",[[shipdict objectForKey:@"averagespeed"] floatValue]],
+        [NSString stringWithFormat:@"%.1f",[[shipdict objectForKey:@"distanceMoved"] floatValue]]
+    };
+//    NSLog(@"%f,%d,%u",[shipdict objectForKey:@"distanceMoved"],[shipdict objectForKey:@"distanceMoved"],[shipdict objectForKey:@"distanceMoved"]);
+    NSString *rightCaps[] = {
+        @"MMSI:",
+        @"IMO:",
+        @"呼号:"
+    };
+
+    NSString *rightData[] = {
+        [NSString stringWithFormat:@"%d",[[shipdict objectForKey:@"mmsi"] intValue]],
+        [NSString stringWithFormat:@"%d",[[shipdict objectForKey:@"imo"] intValue]],
+        [shipdict objectForKey:@"callsign"]
+    };
     
-    for (int i = 0; i < leftPart.count; i++) {
+    int lCount = 13;
+    for (int i = 0; i < lCount; i++) {
         UILabel *label;
-        if (i == leftPart.count - 1) {
+        if (i == lCount - 1) {
             label = [[UILabel alloc] initWithFrame:CGRectMake(5, 5 + i * 28, 103, 21)];
         } else {
             label = [[UILabel alloc] initWithFrame:CGRectMake(5, 5 + i * 28, 64, 21)];
         }
         label.font = [UIFont systemFontOfSize:14];
         label.textAlignment = UITextAlignmentRight;
-        label.text = [leftPart objectAtIndex:i];
+        label.text = leftCaps[i];
         [self.view addSubview:label];
         [label release];
         
         if (i <= 1) {
             // name field
             label = [[UILabel alloc] initWithFrame:CGRectMake(77, 5 + i * 28, 200, 21)];
-        } else if (i < leftPart.count - 1) {
+        } else if (i < lCount - 1) {
             label = [[UILabel alloc] initWithFrame:CGRectMake(77, 5 + i * 28, 150, 21)];
         } else {
             label = [[UILabel alloc] initWithFrame:CGRectMake(116, 5 + i * 28, 150, 21)];
         }
         label.font = [UIFont systemFontOfSize:14];
-        label.text = [leftValue objectAtIndex:i];
+        label.text = leftData[i];
         [self.view addSubview:label];
         [label release];
     }
     
-    for (int i = 0; i < rightPart.count; i++) {
+    int rCount = 3;
+    for (int i = 0; i < rCount; i++) {
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(165, 61 + i * 28, 42, 21)];
         label.font = [UIFont systemFontOfSize:14];
         label.textAlignment = UITextAlignmentRight;
-        label.text = [rightPart objectAtIndex:i];
+        label.text = rightCaps[i];
         [self.view addSubview:label];
         [label release];
         
         label = [[UILabel alloc] initWithFrame:CGRectMake(215, 61 + i * 28, 100, 21)];
         label.font = [UIFont systemFontOfSize:14];
-        label.text = [rightValue objectAtIndex:i];
+        label.text = rightData[i];
         [self.view addSubview:label];
         [label release];
     }
-    
-   // UIButton 
 }
 
--(void)viewWillAppear:(BOOL)animated{
-       // [self saveShipDetailFocused:baseData.shipName];
-}
+//-(void)viewWillAppear:(BOOL)animated{
+//       // [self saveShipDetailFocused:baseData.shipName];
+//}
 
-
+<<<<<<< HEAD
 -(void)saveShipDetailFocused:(NSString*) shipName  {
 //    NSManagedObjectContext *context = [AppDelegate getManagedObjectContext];   
 //    NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -271,37 +257,40 @@
             self.baseData = [dataTmp retain];
       //  }
     }
+=======
+>>>>>>> Using MKNetworkKit instead of ASIHTTPRequest.
 
 
-}
 
-- (void)saveContext:(NSManagedObjectContext*) managedObjectContext
-{
-    NSError *error = nil;
-    // NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    if (managedObjectContext != nil)
-    {
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error])
-        {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }else{
-            
-        }
-    }
-}
+//- (void)saveContext:(NSManagedObjectContext*) managedObjectContext
+//{
+//    NSError *error = nil;
+//    // NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+//    if (managedObjectContext != nil)
+//    {
+//        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error])
+//        {
+//            /*
+//             Replace this implementation with code to handle the error appropriately.
+//             
+//             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+//             */
+//            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+//            abort();
+//        }else{
+//            
+//        }
+//    }
+//}
 
 
 #pragma mark -
 - (void)dealloc {
    // [shipfocused release];
    // shipfocused = nil;
+    [focusButton removeFromSuperview];
     [focusButton release];
+    focusButton = nil;
     [super dealloc];
 }
 //- (void)viewDidUnload {

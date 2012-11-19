@@ -7,10 +7,10 @@
 //
 
 #import "MapOverlayView.h"
-
 #import "TileOverlay.h"
-#import "ASIHTTPRequest.h"
-#import "ASINetworkQueue.h"
+#import "MapTileOverlay.h"
+//#import "ASIHTTPRequest.h"
+//#import "ASINetworkQueue.h"
 
 #pragma mark Private methods
 @interface MapOverlayView()
@@ -58,7 +58,7 @@
 - (NSUInteger)zoomLevelForZoomScale:(MKZoomScale)zoomScale {
     CGFloat realScale = zoomScale / [[UIScreen mainScreen] scale];
     NSUInteger z = (NSUInteger)(log(realScale)/log(2.0)+20.0);
-    
+
     z += ([[UIScreen mainScreen] scale] - 1.0);
     return z;
 }
@@ -94,24 +94,24 @@
     
     return CGPointMake(x, y);
 }
--(void) loadFileFromUrl:(NSURL*)fileUrl savePath:(NSString*)savePath metadata:(NSDictionary *)metadata {
-
-    ASIHTTPRequest * request = [ASIHTTPRequest requestWithURL:fileUrl];
-    [request setDownloadDestinationPath:savePath];
-    [request setAllowResumeForFileDownloads:YES];
-    [request setDelegate:self];
-    [request setTimeOutSeconds:20];
-    [request setNumberOfTimesToRetryOnTimeout:1];
-    request.userInfo = metadata;
-//    [request startAsynchronous];
-    
-    ASINetworkQueue   * queue = [[[ASINetworkQueue alloc] init] autorelease];
-    [queue setMaxConcurrentOperationCount:2];
-    [queue setShowAccurateProgress:YES];
-    [queue addOperation:request];
-//    [queueDictionary setObject:queue forKey:fileName];
-    [queue go];
-}
+//-(void) loadFileFromUrl:(NSURL*)fileUrl savePath:(NSString*)savePath metadata:(NSDictionary *)metadata {
+//
+//    ASIHTTPRequest * request = [ASIHTTPRequest requestWithURL:fileUrl];
+//    [request setDownloadDestinationPath:savePath];
+//    [request setAllowResumeForFileDownloads:YES];
+//    [request setDelegate:self];
+//    [request setTimeOutSeconds:20];
+//    [request setNumberOfTimesToRetryOnTimeout:1];
+//    request.userInfo = metadata;
+////    [request startAsynchronous];
+//    
+//    ASINetworkQueue   * queue = [[[ASINetworkQueue alloc] init] autorelease];
+//    [queue setMaxConcurrentOperationCount:2];
+//    [queue setShowAccurateProgress:YES];
+//    [queue addOperation:request];
+////    [queueDictionary setObject:queue forKey:fileName];
+//    [queue go];
+//}
 
 #pragma mark MKOverlayView methods
 
@@ -129,10 +129,13 @@
  * can be forced by calling setNeedsDisplayInMapRect:zoomScale:)
  */
 - (BOOL)canDrawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale {
+    
+    if (downloaded) {
+        return YES;
+    }
+    
     NSUInteger zoomLevel = [self zoomLevelForZoomScale:zoomScale];
     CGPoint mercatorPoint = [self mercatorTileOriginForMapRect:mapRect];
-    
-    //NSLog(@"overlay:%@", self.overlay);
     
     // Hook on TileOverlay that allows an overlay to limit the boundaries it attempts to load.
     if ([(id<TileOverlay>)self.overlay canDrawMapRect:mapRect zoomScale:zoomScale] != YES) {
@@ -142,6 +145,9 @@
     NSUInteger tilex = floor(mercatorPoint.x * [self worldTileWidthForZoomLevel:zoomLevel]);
     NSUInteger tiley = floor(mercatorPoint.y * [self worldTileWidthForZoomLevel:zoomLevel]);
     
+//    NSLog(@"step1 %d,%d,%d,---- %.1f,%.1f", zoomLevel, tilex, tiley, mapRect.origin.x,mapRect.origin.y);
+    
+//    NSLog(@"%@", [Util getCachePath]);
     NSString *url = [(id<TileOverlay>)self.overlay urlForPointWithX:tilex andY:tiley andZoomLevel:zoomLevel];
     if (![url hasPrefix:@"http"]) {
         return YES;
@@ -150,19 +156,47 @@
     //    id<TileOverlay> overlay = (id<TileOverlay>)self.overlay;
     //    [overlay setTag:0];
     //    ASIHTTPRequest *req = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:url]];
-    NSDictionary *metaData = [NSDictionary dictionaryWithObjectsAndKeys:
-                              [NSNumber numberWithDouble:mapRect.origin.x], @"mr_origin_x",
-                              [NSNumber numberWithDouble:mapRect.origin.y], @"mr_origin_y",
-                              [NSNumber numberWithDouble:mapRect.size.width], @"mr_size_w",
-                              [NSNumber numberWithDouble:mapRect.size.height], @"mr_size_h",
-                              [NSNumber numberWithFloat:zoomScale], @"zoomScale",
-                              [NSNumber numberWithInt:zoomLevel], @"zoomLevel",
-                              [NSNumber numberWithInt:tilex], @"tilex",
-                              [NSNumber numberWithInt:tiley], @"tiley",
-                              nil];
+//    self.metadata = @{
+//        @"mr_origin_x" : @(mapRect.origin.x),
+//        @"mr_origin_y" : @(mapRect.origin.y),
+//        @"mr_size_w" : @(mapRect.size.width),
+//        @"mr_size_h" : @(mapRect.size.height),
+//        @"zoomScale" : @(zoomScale),
+//        @"zoomLevel" : @(zoomLevel),
+//        @"tilex" : @(tilex),
+//        @"tiley" : @(tiley)
+//    };
+//    NSDictionary *metaData = [NSDictionary dictionaryWithObjectsAndKeys:
+//                              [NSNumber numberWithDouble:mapRect.origin.x], @"mr_origin_x",
+//                              [NSNumber numberWithDouble:mapRect.origin.y], @"mr_origin_y",
+//                              [NSNumber numberWithDouble:mapRect.size.width], @"mr_size_w",
+//                              [NSNumber numberWithDouble:mapRect.size.height], @"mr_size_h",
+//                              [NSNumber numberWithFloat:zoomScale], @"zoomScale",
+//                              [NSNumber numberWithInt:zoomLevel], @"zoomLevel",
+//                              [NSNumber numberWithInt:tilex], @"tilex",
+//                              [NSNumber numberWithInt:tiley], @"tiley",
+//                              nil];
     
     NSString *savePath = [(id<TileOverlay>)self.overlay imageSavePathWithX:tilex andY:tiley andZoomLevel:zoomLevel];
-    [self loadFileFromUrl:[NSURL URLWithString:url] savePath:savePath metadata:metaData];
+
+    self.netOperation = [ApplicationDelegate.imageDownloader
+                         downloadMapImageFrom:url
+                         toFile:savePath
+                         onCompletion:^() {
+                             downloaded = YES;
+                             [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
+//                             [self finishDownload];
+                         } onError:^(NSError *error){
+                             downloaded = YES;
+//                             NSLog(@"%@", error);
+//                             if (tiley==0 && tilex != 0) {
+//                                 int i=1;
+//                             }
+                             [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
+//                             [self finishDownload];
+                         }];
+    
+//    [self loadFileFromUrl:[NSURL URLWithString:url] savePath:savePath metadata:metaData];
     return NO;
 }
 
@@ -183,78 +217,88 @@
     
     NSUInteger tilex = floor(mercatorPoint.x * [self worldTileWidthForZoomLevel:zoomLevel]);
     NSUInteger tiley = floor(mercatorPoint.y * [self worldTileWidthForZoomLevel:zoomLevel]);
-    
+//    NSLog(@"draw map %d,%d,%d,---- %.1f,%.1f", zoomLevel, tilex, tiley, mapRect.origin.x,mapRect.origin.y);
     UIGraphicsPushContext(context);
 
     NSString *mapPath = [overlay urlForPointWithX:tilex andY:tiley andZoomLevel:zoomLevel];
     UIImage *map = nil;
     if ([[NSFileManager defaultManager] fileExistsAtPath:mapPath]) {
+        NSLog(@"map exist,draw map normal");
         map = [UIImage imageWithContentsOfFile:mapPath];
-    } else if ([overlay mapOverlay]) {
+//        NSLog(@"draw map:%@", mapPath);
+//        NSLog(@"draw map for %d,%d,%d", zoomLevel, tilex, tiley);
+    } else if ([overlay isKindOfClass:[MapTileOverlay class]]) {
+        NSLog(@"map not exist,need to draw numm map");
         map = [UIImage imageNamed:@"null.jpg"];
+//        NSLog(@"draw nil map for %d,%d,%d,%@", zoomLevel, tilex, tiley);
     }
+//    map = [UIImage imageNamed:@"null.jpg"];
     if (map != nil) {
         [map drawInRect:[self rectForMapRect:mapRect] blendMode:kCGBlendModeNormal alpha:overlay.defaultAlpha];
     }
 
     UIGraphicsPopContext();
-    
+    downloaded = NO;
 }
 
-#pragma mark -
-#pragma mark Asynconnection Delegate
-- (void)requestFinished:(ASIHTTPRequest *)request
-{
-    if (request.responseStatusCode != 200) {
-        //        if ([request.url.path hasSuffix:@".jpg"]) {
-        [[NSFileManager defaultManager] removeItemAtPath:request.downloadDestinationPath error:nil];
-//        UIImage *img = [UIImage imageNamed:@"null.jpg"];
-//        NSData *imgData = UIImageJPEGRepresentation(img, 1);
-//        [imgData writeToFile:request.downloadDestinationPath atomically:YES];
-//        [img release];
-        //        }
-        return;
-    }
-    
-    NSDictionary *mdata = (NSDictionary *)[request userInfo];
-    NSNumber *mr_origin_x = [mdata objectForKey:@"mr_origin_x"];
-    NSNumber *mr_origin_y = [mdata objectForKey:@"mr_origin_y"];
-    NSNumber *mr_size_w = [mdata objectForKey:@"mr_size_w"];
-    NSNumber *mr_size_h = [mdata objectForKey:@"mr_size_h"];
-    
-    MKMapRect mapRect = MKMapRectMake(
-                                      [mr_origin_x doubleValue],
-                                      [mr_origin_y doubleValue],
-                                      [mr_size_w doubleValue],
-                                      [mr_size_h doubleValue]);
-    NSNumber *zoomScaleNumber = [mdata objectForKey:@"zoomScale"];
-    MKZoomScale zoomScale = [zoomScaleNumber floatValue];
-//    NSNumber *zoomLevelNumber = [mdata objectForKey:@"zoomLevel"];
-//    NSInteger zoomLevel = [zoomLevelNumber intValue];
-//    NSNumber *tx = [mdata objectForKey:@"tilex"];
-//    NSInteger tilex = [tx intValue];
-//    NSNumber *ty = [mdata objectForKey:@"tiley"];
-//    NSInteger tiley = [ty intValue];
-    
-//    if ([request.url.path hasSuffix:@".jpg"]) {
-//        [self loadSpotMap:zoomLevel tilex:tilex tiley:tiley metadata:mdata];
+//#pragma mark -
+//#pragma mark Asynconnection Delegate
+//- (void)requestFinished:(ASIHTTPRequest *)request
+//{
+//    if (request.responseStatusCode != 200) {
+//        //        if ([request.url.path hasSuffix:@".jpg"]) {
+//        [[NSFileManager defaultManager] removeItemAtPath:request.downloadDestinationPath error:nil];
+////        UIImage *img = [UIImage imageNamed:@"null.jpg"];
+////        NSData *imgData = UIImageJPEGRepresentation(img, 1);
+////        [imgData writeToFile:request.downloadDestinationPath atomically:YES];
+////        [img release];
+//        //        }
+//        return;
 //    }
-    [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
-    //    req = nil;
-}
+//    
+//    NSDictionary *mdata = (NSDictionary *)[request userInfo];
+//    NSNumber *mr_origin_x = [mdata objectForKey:@"mr_origin_x"];
+//    NSNumber *mr_origin_y = [mdata objectForKey:@"mr_origin_y"];
+//    NSNumber *mr_size_w = [mdata objectForKey:@"mr_size_w"];
+//    NSNumber *mr_size_h = [mdata objectForKey:@"mr_size_h"];
+//    
+//    MKMapRect mapRect = MKMapRectMake(
+//                                      [mr_origin_x doubleValue],
+//                                      [mr_origin_y doubleValue],
+//                                      [mr_size_w doubleValue],
+//                                      [mr_size_h doubleValue]);
+//    NSNumber *zoomScaleNumber = [mdata objectForKey:@"zoomScale"];
+//    MKZoomScale zoomScale = [zoomScaleNumber floatValue];
+////    NSNumber *zoomLevelNumber = [mdata objectForKey:@"zoomLevel"];
+////    NSInteger zoomLevel = [zoomLevelNumber intValue];
+////    NSNumber *tx = [mdata objectForKey:@"tilex"];
+////    NSInteger tilex = [tx intValue];
+////    NSNumber *ty = [mdata objectForKey:@"tiley"];
+////    NSInteger tiley = [ty intValue];
+//    
+////    if ([request.url.path hasSuffix:@".jpg"]) {
+////        [self loadSpotMap:zoomLevel tilex:tilex tiley:tiley metadata:mdata];
+////    }
+//    [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
+//    //    req = nil;
+//}
 
-- (void)requestFailed:(ASIHTTPRequest *)request
-{
-	NSError *error = [request error];
-	NSLog(@"%@", error);
-    //    [req release];
-    //    req = nil;
-}
+//- (void)requestFailed:(ASIHTTPRequest *)request
+//{
+//	NSError *error = [request error];
+//	NSLog(@"%@", error);
+//    //    [req release];
+//    //    req = nil;
+//}
 
 #pragma mark -
 #pragma mark Memory management
 
 - (void)dealloc {
+//    if (self.netOperation) {
+//        [self.netOperation cancel];
+//        self.netOperation = nil;
+//    }
     [super dealloc];
 }
 

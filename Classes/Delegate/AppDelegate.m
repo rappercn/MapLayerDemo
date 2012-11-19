@@ -27,6 +27,7 @@
 @synthesize managedObjectModel ;
 @synthesize myFocusShips;
 @synthesize myShipsTeam;
+@synthesize imageDownloader;
 + (AppDelegate *)getAppDelegate {
     return (AppDelegate *) [[UIApplication sharedApplication] delegate];
 }
@@ -47,8 +48,12 @@
 }
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSMutableDictionary *headerFields = [NSMutableDictionary dictionary];
+    [headerFields setValue:@"iOS" forKey:@"x-client-identifier"];
+    self.imageDownloader = [[ImageDownloader alloc] initWithHostName:IMAGE_HOST];
+//    [self.imageDownloader emptyCache];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
+    self.apiEngine = [[APIEngine alloc] initWithHostName:@"218.241.183.164"];
     // create coredata
    // [self createEditableCopyOfDatabaseIfNeeded];
     
@@ -85,7 +90,7 @@
     NSError *error = nil;
     NSPersistentStoreCoordinator *p = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:managedObjectModel];
    if(![p addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]){
-        NSLog([NSString stringWithFormat:@"%@,%@",error,[error userInfo]]);
+        NSLog(@"%@,%@",error,[error userInfo]);
     }else{
        NSManagedObjectContext *managedObjectContextTem = [[NSManagedObjectContext alloc] init];
         self.managedObjectContext = managedObjectContextTem;

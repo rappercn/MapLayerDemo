@@ -14,8 +14,8 @@
     Boolean isFocused;
 }
 @property (retain, nonatomic) IBOutlet UIButton *focusButton;
-
-@property (nonatomic, retain) ShipData *baseData;
+@property (retain,nonatomic) ShipData *baseData;
+@property (nonatomic, retain) NSDictionary *shipdict;
 -(id) initWithNibName:(NSString *)nibNameOrNil;
 - (IBAction)focusButtonPress:(UIButton *)sender;
 //@property (nonatomic, retain) NSMutableArray *shipfocused;

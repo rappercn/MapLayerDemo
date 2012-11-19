@@ -12,7 +12,7 @@
 #import "SettingsViewController.h"
 #import "GMapViewController.h"
 #import "Util.h"
-#import "Reachability.h"
+
 #import "ShipFocusViewController.h"
 #import "AppDelegate.h"
 @implementation LoginViewController
@@ -39,8 +39,9 @@
     // Do any additional setup after loading the view from its nib.
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loginbg.png"]];
     // reachability
-    Reachability *r = [Reachability alloc];
-	NetworkStatus netStatus = [r internetConnectionStatus];
+//    Reachability *r = [[Reachability alloc] init];
+//    NetworkStatus netStatus = [r currentReachabilityStatus];
+//	NetworkStatus netStatus = [r internetConnectionStatus];
 	NSString * mes = nil;    
 //    BOOL isReach = [r isReachable];
 //    if(isReach){
@@ -56,17 +57,17 @@
 //        mes = NSLocalizedString(@"当前无可用网络",@"失败");
 //    }
 
-	switch (netStatus) {
-		case NotReachable:
-			mes = NSLocalizedString(@"当前无可用网络",@"失败");
-			break;
-		case ReachableViaWiFi:
-			//mes = NSLocalizedString(@"当前使用WIFI连接网络",@"成功");
-			break;
-		case ReachableViaWWAN:
-			mes = NSLocalizedString(@"当前使用3G连接网络",@"成功");
-			break;
-	}
+//	switch (netStatus) {
+//		case NotReachable:
+//			mes = NSLocalizedString(@"当前无可用网络",@"失败");
+//			break;
+//		case ReachableViaWiFi:
+//			//mes = NSLocalizedString(@"当前使用WIFI连接网络",@"成功");
+//			break;
+//		case ReachableViaWWAN:
+//			mes = NSLocalizedString(@"当前使用3G连接网络",@"成功");
+//			break;
+//	}
 	
 	NSString * tle = NSLocalizedString(@"提示",@"提示");
 	NSString * yes = NSLocalizedString(@"确定",@"确定");
@@ -81,7 +82,7 @@
         [alert show];
     }
 	[alert release];	
-	[r release];
+//	[r release];
     
     //bRemeberPwd = NO;
   

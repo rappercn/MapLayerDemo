@@ -5,10 +5,10 @@
 //  Created by 老王八 :D on 12-6-7.
 //  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
 //
-#import <UIKit/UIKit.h>
+//#import <UIKit/UIKit.h>
 #import "GMapViewController.h"
 
-#import "OSMTileOverlay.h"
+//#import "OSMTileOverlay.h"
 #import "MKMapView+Additions.h"
 //#import "CustomOverlayView.h"
 #import "MapOverlayView.h"
@@ -18,7 +18,7 @@
 #import "ShipData.h"
 #import "ShipDetailViewController.h"
 #import "MapRulerView.h"
-#import "Util.h"
+//#import "Util.h"
 #import "TyphoonPointAnnotation.h"
 #import "TyphoonPointAnnotationView.h"
 #import "TyphTipAnnotation.h"
@@ -28,6 +28,7 @@
 #import "TyphoonDetailViewController.h"
 #import "ASIHTTPRequest.h"
 #import "JSONKit.h"
+#import "APIEngine.h"
 
 @implementation GMapViewController
 @synthesize levelData, gmapView;
@@ -90,7 +91,7 @@ static const int kCRulerTag = 10;
     }
     [tempArray release];
     tempArray = nil;
-    [[AppDelegate getAppDelegate] showShipCountOnTabbarWith:[shipArray count]];
+    [ApplicationDelegate showShipCountOnTabbarWith:[shipArray count]];
 }
 -(void)removeTyphoon {
     for (MKPointAnnotation *anno in gmapView.annotations) {
@@ -423,8 +424,7 @@ static const int kCRulerTag = 10;
     ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
     [gmapView addOverlay:shipOverlay];
     [shipOverlay release];
-//    [gmapView addOverlay:overlay];
-//    [overlay release];
+
     logo.frame = frame;
 }
 //-(void)shipLoaded:(NSArray*)shipArray {
@@ -443,19 +443,50 @@ static const int kCRulerTag = 10;
 -(void)doNextTaskWithPrevUrl:(NSString*)prevUrl {
     
     if (prevUrl == nil || prevUrl != taskUrl) {
-//        NSAutoreleasePool* p = [[NSAutoreleasePool alloc] init];
-//        [self performSelectorOnMainThread:@selector(startNewRequest) withObject:nil waitUntilDone:NO];
-//        [p release];
-
-        number++;
-        NSLog(@"start new request:%d",number);
         requesting = YES;
-        ASIHTTPRequest *req = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:taskUrl]];
-        req.delegate = self;
-        req.username=[NSString stringWithFormat:@"%d", number];
-        [req setTimeOutSeconds:30];
-        [req startAsynchronous];
-        
+        MKNetworkOperation *op = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSArray *responseData) {
+            if (op.readonlyRequest.URL.absoluteString != taskUrl) {
+                requesting = NO;
+                [self doNextTaskWithPrevUrl:op.readonlyRequest.URL.absoluteString];
+                return;
+            }
+//            NSLog(@"request finished, should reload overlay.%@",request.username);
+//            NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
+            if ([responseData count] > 0) {
+                //        [self reloadShipMapOverlaysWithShowShip:NO];
+                
+                for (id<TileOverlay> overlay in gmapView.overlays) {
+                    if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
+                        [gmapView removeOverlay:overlay];
+                        break;
+                    }
+                }
+                normalShipArray = responseData;
+                [self addShipIconWithData:normalShipArray withAnnotationType:kCShipTypeNormal];
+            } else {
+                //        [self reloadShipMapOverlaysWithShowShip:YES];
+                BOOL exist = NO;
+                for (id<TileOverlay> overlay in gmapView.overlays) {
+                    if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
+                        exist = YES;
+                        break;
+                    }
+                }
+                if (!exist) {
+                    ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
+                    [gmapView addOverlay:shipOverlay];
+                    [shipOverlay release];
+                }
+                [ApplicationDelegate showShipCountOnTabbarWith:0];
+            }
+            requesting = NO;
+            //    taskUrl = nil; 
+            [self hideReloadProgress];
+        } onError:^(NSError *error) {
+            requesting = NO;
+            taskUrl = nil;
+            [self hideReloadProgress];
+        }];
     } else {
         taskUrl = nil;
         [self hideReloadProgress];
@@ -483,10 +514,58 @@ static const int kCRulerTag = 10;
     
 //    BOOL startRequest = (taskUrl == nil);
     taskUrl = [urlString retain];
-    if (!requesting) {
-        [self doNextTaskWithPrevUrl:nil];
-    }
+//    if (!requesting) {
+//        [self doNextTaskWithPrevUrl:nil];
+//    }
 
+    if (requesting) {
+        [mkNetOp cancel];
+    }
+    requesting = YES;
+    MKNetworkOperation *op = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSArray *responseData) {
+//        if (op.readonlyRequest.URL.absoluteString != taskUrl) {
+//            requesting = NO;
+//            [self doNextTaskWithPrevUrl:op.readonlyRequest.URL.absoluteString];
+//            return;
+//        }
+        //            NSLog(@"request finished, should reload overlay.%@",request.username);
+        //            NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
+        if ([responseData count] > 0) {
+            //        [self reloadShipMapOverlaysWithShowShip:NO];
+            
+            for (id<TileOverlay> overlay in gmapView.overlays) {
+                if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
+                    [gmapView removeOverlay:overlay];
+                    NSLog(@"remove overlay.........");
+                    break;
+                }
+            }
+            normalShipArray = responseData;
+            [self addShipIconWithData:normalShipArray withAnnotationType:kCShipTypeNormal];
+        } else {
+            //        [self reloadShipMapOverlaysWithShowShip:YES];
+            BOOL exist = NO;
+            for (id<TileOverlay> overlay in gmapView.overlays) {
+                if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
+                    exist = YES;
+                    break;
+                }
+            }
+            if (!exist) {
+                NSLog(@"add overlay--------------");
+                ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
+                [gmapView addOverlay:shipOverlay];
+                [shipOverlay release];
+            }
+            [ApplicationDelegate showShipCountOnTabbarWith:0];
+        }
+//        requesting = NO;
+        [self hideReloadProgress];
+    } onError:^(NSError *error) {
+        requesting = NO;
+        taskUrl = nil;
+        [self hideReloadProgress];
+    }];
 }
 -(void)hideShipInRect {
     NSMutableArray *removeArray = [[NSMutableArray alloc] init];
@@ -706,12 +785,14 @@ static const int kCRulerTag = 10;
 - (void)mapView:(MKMapView *)aMapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     
     if ([view isKindOfClass:[ShipAnnotationView class]]) {
-        ShipAnnotationView *shipView = (ShipAnnotationView*)view;
-        int index = shipView.arrayIndex;
+//        ShipAnnotationView *shipView = (ShipAnnotationView*)view;
+//        int index = shipView.arrayIndex;
         ShipDetailViewController *next = [[ShipDetailViewController alloc] initWithNibName:@"ShipDetailViewController"];
-        AppDelegate *delegate = [AppDelegate getAppDelegate];
-        NSArray *array = delegate.myfav;
-        next.baseData = [array objectAtIndex:index];
+        next.shipdict = ((ShipAnnotation*)view.annotation).shipdict;
+        NSLog(@"%@",next.shipdict);
+//        AppDelegate *delegate = [AppDelegate getAppDelegate];
+//        NSArray *array = delegate.myfav;
+//        next.baseData = [array objectAtIndex:index];
         [self.navigationController pushViewController:next animated:YES];
     } else if ([view isKindOfClass:[TyphoonPointAnnotationView class]]) {
         

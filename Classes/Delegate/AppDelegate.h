@@ -6,11 +6,18 @@
 //  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+//#import <UIKit/UIKit.h>
+//#import "Util.h"
 #import <MapKit/MapKit.h>
-#import "Util.h"
-#import <CoreData/CoreData.h>
+#import "ImageDownloader.h"
+#import "APIEngine.h"
 #import "MBProgressHUD.h"
+//@class MBProgressHUD;
+//@class MBProgressHUDDelegate;
+#define ApplicationDelegate ((AppDelegate *)[UIApplication sharedApplication].delegate)
+#define IMAGE_HOST @"map.ctrack.com.cn"
+
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate,MBProgressHUDDelegate> {
 //    NSMutableArray* myfav;
     NSManagedObjectContext *managedObjectContext;
@@ -24,7 +31,8 @@
 @property (nonatomic, retain) NSMutableArray* myfav;           //local ships detail
 @property (nonatomic, retain) NSMutableArray* myFocusShips;    //my focus ships
 @property (nonatomic, retain) NSMutableArray* myShipsTeam;     //ship team
-
+@property (nonatomic, retain) ImageDownloader *imageDownloader;
+@property (nonatomic, retain) APIEngine *apiEngine;
 @property (nonatomic, retain) NSMutableArray* shipMajor;       //local ships major
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;

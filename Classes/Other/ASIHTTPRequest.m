@@ -13,7 +13,7 @@
 #import "ASIHTTPRequest.h"
 #import <zlib.h>
 #if TARGET_OS_IPHONE
-#import "Reachability.h"
+//#import "Reachability.h"
 #import "ASIAuthenticationDialog.h"
 #import <MobileCoreServices/MobileCoreServices.h>
 #else
@@ -820,7 +820,7 @@ static NSOperationQueue *sharedQueue = nil;
 		return;
 	}
 	
-	[self requestStarted];
+//	[self requestStarted];
 	
 	[self setDownloadComplete:NO];
 	[self setComplete:NO];
@@ -1843,7 +1843,7 @@ static NSOperationQueue *sharedQueue = nil;
 	}
 
 	CFRelease(message);
-	[self requestReceivedResponseHeaders];
+//	[self requestReceivedResponseHeaders];
 }
 
 #pragma mark http authentication

@@ -6,8 +6,13 @@
 //  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <MapKit/MapKit.h>
 
-@interface MapOverlayView : MKOverlayView
+@interface MapOverlayView : MKOverlayView {
+    BOOL downloaded;
+}
+
+@property (nonatomic, strong) MKNetworkOperation *netOperation;
+//@property (nonatomic, strong) NSDictionary *metadata;
 
 @end

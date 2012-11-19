@@ -24,8 +24,9 @@
     NSMutableArray *onMapShipDataArray;
     NSArray *normalShipArray;
     NSString *taskUrl;
-    int number;
+//    int number;
     BOOL requesting;
+    MKNetworkOperation *mkNetOp;
 }
 @property (nonatomic, retain) IBOutlet MKMapView *gmapView;
 @property (nonatomic, retain) LevelMapData* levelData;
