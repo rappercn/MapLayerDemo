@@ -127,32 +127,37 @@
 //        NSLog(@"%@",ApplicationDelegate.myShipsTeam);
 //        NSLog(@"%@",ApplicationDelegate.myFocusShips);
         //view
-        GMapViewController *mapView = [[GMapViewController alloc] initWithNibName:@"GMapViewController" bundle:nil];
-        UINavigationController *mapViewNaviController = [[[UINavigationController alloc] initWithRootViewController:mapView] autorelease];
-        [mapView release];
-        
-        UIViewController *myTeamView = [[MyTeamViewController alloc] initWithNibName:@"MyTeamViewController" bundle:nil];
-        UINavigationController* myTeamViewNaviController = [[[UINavigationController alloc] initWithRootViewController:myTeamView] autorelease];
-        [myTeamView release];
-        
-        SearchShipViewController *searchView = [[SearchShipViewController alloc] initWithNibName:@"SearchShipViewController" bundle:nil];
-        UINavigationController *searchViewNaviController = [[[UINavigationController alloc] initWithRootViewController:searchView] autorelease];
-        [searchView release];
-        
-        SettingsViewController *settingsView = [[SettingsViewController alloc] initWithNibName:@"SettingsViewController" bundle:nil];
-        UINavigationController *settingsController = [[[UINavigationController alloc] initWithRootViewController:settingsView] autorelease];
-        [settingsView release];
-        
-        ShipFocusViewController *focusShipView = [[ShipFocusViewController alloc] initWithNibName:@"ShipFocusViewController" bundle:nil];
-        UINavigationController *focusViewNaviController = [[[UINavigationController alloc] initWithRootViewController:focusShipView] autorelease];
-        [focusShipView release];
-        
-        
-        UITabBarController *tab = [[[UITabBarController alloc] init] autorelease];
-        
-        tab.viewControllers = [NSArray arrayWithObjects:mapViewNaviController, myTeamViewNaviController, searchViewNaviController, settingsController,focusViewNaviController, nil];
-        ApplicationDelegate.tabBarController = tab;
-        [self presentModalViewController:ApplicationDelegate.tabBarController animated:YES ];
+    GMapViewController *mapView = [[GMapViewController alloc] initWithNibName:@"GMapViewController" bundle:nil];
+    UINavigationController *mapViewNaviController = [[[UINavigationController alloc] initWithRootViewController:mapView] autorelease];
+    mapViewNaviController.navigationBar.tintColor=[UIColor darkGrayColor];
+    [mapView release];
+    
+    UIViewController *myTeamView = [[MyTeamViewController alloc] initWithNibName:@"MyTeamViewController" bundle:nil];
+    UINavigationController* myTeamViewNaviController = [[[UINavigationController alloc] initWithRootViewController:myTeamView] autorelease];
+    myTeamViewNaviController.navigationBar.tintColor=[UIColor darkGrayColor];
+    [myTeamView release];
+    
+    SearchShipViewController *searchView = [[SearchShipViewController alloc] initWithNibName:@"SearchShipViewController" bundle:nil];
+    UINavigationController *searchViewNaviController = [[[UINavigationController alloc] initWithRootViewController:searchView] autorelease];
+    searchViewNaviController.navigationBar.tintColor=[UIColor darkGrayColor];
+    [searchView release];
+    
+    SettingsViewController *settingsView = [[SettingsViewController alloc] initWithNibName:@"SettingsViewController" bundle:nil];
+    UINavigationController *settingsController = [[[UINavigationController alloc] initWithRootViewController:settingsView] autorelease];
+    settingsController.navigationBar.tintColor=[UIColor darkGrayColor];
+    [settingsView release];
+    
+    ShipFocusViewController *focusShipView = [[ShipFocusViewController alloc] initWithNibName:@"ShipFocusViewController" bundle:nil];
+    UINavigationController *focusViewNaviController = [[[UINavigationController alloc] initWithRootViewController:focusShipView] autorelease];
+    focusViewNaviController.navigationBar.tintColor=[UIColor darkGrayColor];
+    [focusShipView release];
+    
+    
+    UITabBarController *tab = [[[UITabBarController alloc] init] autorelease];
+//    tab.tabBar.tintColor = [UIColor darkGrayColor];
+    tab.viewControllers = [NSArray arrayWithObjects:mapViewNaviController, myTeamViewNaviController, searchViewNaviController, settingsController,focusViewNaviController, nil];
+    ApplicationDelegate.tabBarController = tab;
+    [self presentModalViewController:ApplicationDelegate.tabBarController animated:YES ];
 //    }
 }
 -(void) getMyTeamShip:(NSString*)operid {
