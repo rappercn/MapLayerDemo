@@ -1,5 +1,5 @@
-#import <UIKit/UIKit.h>
-#import "MapLayerDemoAppDelegate.h"
+//#import <UIKit/UIKit.h>
+//#import "MapLayerDemoAppDelegate.h"
 
 int main(int argc, char *argv[])
 {

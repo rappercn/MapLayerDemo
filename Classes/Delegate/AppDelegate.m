@@ -230,10 +230,10 @@
     //return  [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES) lastObject];
 }
 
-- (void)hudWasHidden:(MBProgressHUD *)hud   
+- (void)hudWasHidden
 {  
-    NSLog(@"Hud: %@", hud);  
-    // Remove HUD from screen when the HUD was hidded  
+//    NSLog(@"Hud: %@", hud);  
+    // Remove HUD from screen when the HUD was hidded
     [progress_ removeFromSuperview];  
     [progress_ release];  
     progress_ = nil;  

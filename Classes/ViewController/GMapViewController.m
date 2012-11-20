@@ -33,7 +33,7 @@
 //#import "APIEngine.h"
 
 @implementation GMapViewController
-@synthesize levelData, gmapView;
+@synthesize gmapView;
 
 static const int kCRulerTag = 10;
 #define TILE_RECT 256
@@ -257,8 +257,10 @@ static const int kCRulerTag = 10;
         [Util getTyphoonsIdOnComp:^(NSObject *responseData) {
             NSArray *idArray = (NSArray*)responseData;
             if (idArray) {
-                [[NSUserDefaults standardUserDefaults] setValue:nil forKey:@"typids"];
-                [[NSUserDefaults standardUserDefaults] setValue:[NSDate date] forKey:@"typids_"];
+                NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+                [def setValue:nil forKey:@"typids"];
+                [def setValue:[NSDate date] forKey:@"typids_"];
+                [def synchronize];
                 
                 if (typForeDic) {
                     [typForeDic release];
@@ -269,7 +271,7 @@ static const int kCRulerTag = 10;
                     typPathDic = [[NSMutableDictionary alloc] init];
                 }
                 for (NSString *tid in idArray) {
-                    [Util getTyphoonLastForecastById:tid OnComp:^(NSObject *responseData) {
+                    [Util getTyphoonLastForecastById:tid onComp:^(NSObject *responseData) {
                         [typForeDic setValue:responseData forKey:tid];
                         if ([typForeDic count] == [idArray count]) {
                             [typForeDic writeToFile:foreFile atomically:YES];
@@ -278,7 +280,7 @@ static const int kCRulerTag = 10;
                             }
                         }
                     }];
-                    [Util getTyphoonPathById:tid OnComp:^(NSObject *responseData) {
+                    [Util getTyphoonPathById:tid onComp:^(NSObject *responseData) {
                         [typPathDic setValue:responseData forKey:tid];
                         if ([typPathDic count] == [idArray count]) {
                             [typPathDic writeToFile:pathFile atomically:YES];
@@ -407,72 +409,70 @@ static const int kCRulerTag = 10;
     }
     return nil;
 }
--(void)reloadShipMapOverlaysWithShowShip:(BOOL)showship {
-//    NSLog(@"--------------");
-//    [gmapView removeOverlays:gmapView.overlays];
-//    JeppesenTileOverlay *overlay = [[JeppesenTileOverlay alloc] init];
-//    overlay.showShipMap = showship;
-//    if (currentMap == MAP_CUSTOM) {
-//        overlay.showMap = YES;
-//    } else {
-//        overlay.showMap = NO;
-//    }
-//    [gmapView addOverlay:overlay];
-//    [overlay release];
-//    NSLog(@"+++++++++++++++++");
-}
+//-(void)reloadShipMapOverlaysWithShowShip:(BOOL)showship {
+////    NSLog(@"--------------");
+////    [gmapView removeOverlays:gmapView.overlays];
+////    JeppesenTileOverlay *overlay = [[JeppesenTileOverlay alloc] init];
+////    overlay.showShipMap = showship;
+////    if (currentMap == MAP_CUSTOM) {
+////        overlay.showMap = YES;
+////    } else {
+////        overlay.showMap = NO;
+////    }
+////    [gmapView addOverlay:overlay];
+////    [overlay release];
+////    NSLog(@"+++++++++++++++++");
+//}
 -(void)reloadMapViewOverlays
 {
-    NSString *mapType = [[NSUserDefaults standardUserDefaults] valueForKey:@"mapType"];
-    if (mapType == nil) {
-        mapType = [[NSString alloc] initWithFormat:@"%d", MAP_CUSTOM];
-        [[NSUserDefaults standardUserDefaults] setValue:mapType forKey:@"mapType"];
-    }
-    if (currentMap == mapType.intValue) {
+//    NSString *mapType = [[NSUserDefaults standardUserDefaults] valueForKey:@"mapType"];
+//    if (mapType == nil) {
+//        mapType = [[NSString alloc] initWithFormat:@"%d", MAP_CUSTOM];
+//        [[NSUserDefaults standardUserDefaults] setValue:mapType forKey:@"mapType"];
+//    }
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    if (useMap == [def boolForKey:@"useMap"] &&
+        showShipName == [def boolForKey:@"showShipName"] &&
+        showTyphoon == [def boolForKey:@"showTyphoon"]) {
         return;
     }
-    currentMap = mapType.intValue;
+    
+    useMap = [def boolForKey:@"useMap"];
+    showShipName = [def boolForKey:@"showShipName"];
+    showTyphoon = [def boolForKey:@"showTyphoon"];
+    
     [gmapView removeOverlays:gmapView.overlays];
-    UIImageView *logo = [gmapView mapLogo];
+//    UIImageView *logo = [gmapView mapLogo];
     MapRulerView *ruler = (MapRulerView*) [gmapView viewWithTag:kCRulerTag];
     if (ruler != nil) {
         CGRect rulerFrame = ruler.frame;
         rulerFrame.origin.x = -200;
     }
-    CGRect frame = logo.frame;
+//    CGRect frame = logo.frame;
     
-    
-    
-//    JeppesenTileOverlay *overlay = [[JeppesenTileOverlay alloc] init];
-//    overlay.showShipMap = YES;
-    if (currentMap == MAP_CUSTOM) {
+    if (useMap) {
         MapTileOverlay *mapOverlay = [[MapTileOverlay alloc] init];
         [gmapView addOverlay:mapOverlay];
         [mapOverlay release];
-//        overlay.showMap = YES;
         MapRulerView *ruler = [self reloadMapViewRuler];
         [gmapView addSubview:ruler];
         [ruler release];
-        frame.origin.y = -100;
-//    } else if (currentMap == MAP_OSM) {
-//        //    // ----- Add our overlay layer to the map
-//        OSMTileOverlay *overlay = [[OSMTileOverlay alloc] init];
-//        [mapView addOverlay:overlay];
-//        [overlay release];
-//        UIImage *img = [UIImage imageNamed:@"osmLogo"];
-//        [logo setImage:img];
-//        frame = CGRectMake(10, self.view.bounds.size.height - 40, 90, 30);
+//        frame.origin.y = -100;
     } else {
-//        overlay.showMap = NO;
-        UIImage *img = [UIImage imageNamed:@"google"];
-        [logo setImage:img];
-        frame = CGRectMake(240, self.view.bounds.size.height - 30, 69, 23);
+//        UIImage *img = [UIImage imageNamed:@"google"];
+//        [logo setImage:img];
+//        frame = CGRectMake(240, self.view.bounds.size.height - 30, 69, 23);
     }
+    
     ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
     [gmapView addOverlay:shipOverlay];
     [shipOverlay release];
 
-    logo.frame = frame;
+    if (showTyphoon) {
+        [self getTyphoonInfo];
+    }
+    
+//    logo.frame = frame;
 }
 //-(void)shipLoaded:(NSArray*)shipArray {
 //    
@@ -487,58 +487,58 @@ static const int kCRulerTag = 10;
 //    [req setTimeOutSeconds:30];
 //    [req startAsynchronous];
 //}
--(void)doNextTaskWithPrevUrl:(NSString*)prevUrl {
-    
-    if (prevUrl == nil || prevUrl != taskUrl) {
-        requesting = YES;
-        MKNetworkOperation *op = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSObject *responseData) {
-            if (op.readonlyRequest.URL.absoluteString != taskUrl) {
-                requesting = NO;
-                [self doNextTaskWithPrevUrl:op.readonlyRequest.URL.absoluteString];
-                return;
-            }
-//            NSLog(@"request finished, should reload overlay.%@",request.username);
-//            NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
-            if ([(NSArray*)responseData count] > 0) {
-                //        [self reloadShipMapOverlaysWithShowShip:NO];
-                
-                for (id<TileOverlay> overlay in gmapView.overlays) {
-                    if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
-                        [gmapView removeOverlay:overlay];
-                        break;
-                    }
-                }
-                normalShipArray = (NSArray*)responseData;
-                [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeNormal];
-            } else {
-                //        [self reloadShipMapOverlaysWithShowShip:YES];
-                BOOL exist = NO;
-                for (id<TileOverlay> overlay in gmapView.overlays) {
-                    if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
-                        exist = YES;
-                        break;
-                    }
-                }
-                if (!exist) {
-                    ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
-                    [gmapView addOverlay:shipOverlay];
-                    [shipOverlay release];
-                }
-                [ApplicationDelegate showShipCountOnTabbarWith:0];
-            }
-            requesting = NO;
-            //    taskUrl = nil; 
-            [self hideReloadProgress];
-        } onError:^(NSError *error) {
-            requesting = NO;
-            taskUrl = nil;
-            [self hideReloadProgress];
-        }];
-    } else {
-        taskUrl = nil;
-        [self hideReloadProgress];
-    }
-}
+//-(void)doNextTaskWithPrevUrl:(NSString*)prevUrl {
+//    
+//    if (prevUrl == nil || prevUrl != taskUrl) {
+//        requesting = YES;
+//        MKNetworkOperation *op = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSObject *responseData) {
+//            if (op.readonlyRequest.URL.absoluteString != taskUrl) {
+//                requesting = NO;
+//                [self doNextTaskWithPrevUrl:op.readonlyRequest.URL.absoluteString];
+//                return;
+//            }
+////            NSLog(@"request finished, should reload overlay.%@",request.username);
+////            NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
+//            if ([(NSArray*)responseData count] > 0) {
+//                //        [self reloadShipMapOverlaysWithShowShip:NO];
+//                
+//                for (id<TileOverlay> overlay in gmapView.overlays) {
+//                    if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
+//                        [gmapView removeOverlay:overlay];
+//                        break;
+//                    }
+//                }
+//                normalShipArray = (NSArray*)responseData;
+//                [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeNormal];
+//            } else {
+//                //        [self reloadShipMapOverlaysWithShowShip:YES];
+//                BOOL exist = NO;
+//                for (id<TileOverlay> overlay in gmapView.overlays) {
+//                    if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
+//                        exist = YES;
+//                        break;
+//                    }
+//                }
+//                if (!exist) {
+//                    ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
+//                    [gmapView addOverlay:shipOverlay];
+//                    [shipOverlay release];
+//                }
+//                [ApplicationDelegate showShipCountOnTabbarWith:0];
+//            }
+//            requesting = NO;
+//            //    taskUrl = nil; 
+//            [self hideReloadProgress];
+//        } onError:^(NSError *error) {
+//            requesting = NO;
+//            taskUrl = nil;
+//            [self hideReloadProgress];
+//        }];
+//    } else {
+//        taskUrl = nil;
+//        [self hideReloadProgress];
+//    }
+//}
 //-(void)addTaskUrl:(NSString*)url {
 //    BOOL startRequest = (taskUrl == nil);
 //    taskUrl = [url retain];
@@ -569,7 +569,7 @@ static const int kCRulerTag = 10;
         [mkNetOp cancel];
     }
     requesting = YES;
-    MKNetworkOperation *op = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSObject *responseData) {
+    mkNetOp = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSObject *responseData) {
 //        if (op.readonlyRequest.URL.absoluteString != taskUrl) {
 //            requesting = NO;
 //            [self doNextTaskWithPrevUrl:op.readonlyRequest.URL.absoluteString];
@@ -684,6 +684,11 @@ static const int kCRulerTag = 10;
     [self.navigationController setNavigationBarHidden:NO];
     [gmapView setDelegate:self];
     
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    useMap = ![def boolForKey:@"useMap"];
+    showShipName = [def boolForKey:@"showShipName"];
+    showTyphoon = [def boolForKey:@"showTyphoon"];
+    
     meterArray = [[NSArray arrayWithObjects:
                   @"5000000", @"2000000", @"1000000", @"500000",
                   @"200000", @"100000", @"100000", @"50000",
@@ -741,6 +746,10 @@ static const int kCRulerTag = 10;
         [gmapView selectAnnotation:anno animated:YES];
         ApplicationDelegate.seletedShip = nil;
     }
+}
+-(void)dealloc {
+    [super dealloc];
+    [mkNetOp release];
 }
 
 #pragma mark - MKMapView Delegate

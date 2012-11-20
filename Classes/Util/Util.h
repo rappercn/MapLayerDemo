@@ -41,8 +41,8 @@
 + (NSString*)getHttpData:(NSString *)url dataDictionary:(NSDictionary *)dic;
 + (NSDictionary*)login:(NSString *)name passwd:(NSString*) passwd;
 + (void)getTyphoonsIdOnComp:(APIResponseBlock)compBlock;
-+ (void)getTyphoonLastForecastById:(NSString*)tid OnComp:(APIResponseBlock)compBlock;
-+ (void)getTyphoonPathById:(NSString*)tid OnComp:(APIResponseBlock)compBlock;
++ (void)getTyphoonLastForecastById:(NSString*)tid onComp:(APIResponseBlock)compBlock;
++ (void)getTyphoonPathById:(NSString*)tid onComp:(APIResponseBlock)compBlock;
 //- (ASIHTTPRequest*)asynShipsFromPoint:(CLLocationCoordinate2D)pt0 toPoint:(CLLocationCoordinate2D)pt1 withCallback:(SEL)method andParent:(id)parent;
 //- (ASIHTTPRequest*)asynHttpData:(NSString *)url dataDictionary:(NSDictionary *)dic;
 //+ (ASIHTTPRequest*)asynHttpData:(NSString *)url dataDictionary:(NSDictionary *)dic callback:(SEL)method parent:(id)parent;

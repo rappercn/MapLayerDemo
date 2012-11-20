@@ -11,6 +11,26 @@
 
 @implementation SettingsViewController
 @synthesize settingSections, simpleTableView;
+
+#pragma mark - Private Methods
+- (void)switchAction:(id)sender{
+    UISwitch *sw = (UISwitch *)sender;
+    switch (sw.tag) {
+        case 100:
+            [[NSUserDefaults standardUserDefaults] setBool:sw.on forKey:@"useMap"];
+            break;
+        case 101:
+            [[NSUserDefaults standardUserDefaults] setBool:sw.on forKey:@"showTyphoon"];
+            break;
+        case 102:
+            [[NSUserDefaults standardUserDefaults] setBool:sw.on forKey:@"showShipName"];
+            break;
+        default:
+            break;
+    }
+}
+
+#pragma mark - View Delegate
 -(id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -21,48 +41,30 @@
     return self;
 }
 
-- (void)switchActionMap:(id)sender{
-    UISwitch *switchap = (UISwitch *)sender;
-    if(switchap.on){
-        [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"isNeedMap"];
-    }else{
-        [[NSUserDefaults standardUserDefaults] setValue:@"NO" forKey:@"isNeedMap"];
-    }
-}
-
-- (void)switchActionTyphoon:(id)sender{
-    UISwitch *switchTy = (UISwitch *)sender;
-    if(switchTy.on){
-        [[NSUserDefaults standardUserDefaults] setValue:@"YES" forKey:@"isNeedTyphoon"];
-    }else{
-        [[NSUserDefaults standardUserDefaults] setValue:@"NO" forKey:@"isNeedTyphoon"];
-    }
-}
-
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-    mapSwitch =[[[UISwitch alloc] initWithFrame:CGRectMake(232, 60, 322, 222)] autorelease];
-    [mapSwitch addTarget:self action: @selector(switchActionMap:) forControlEvents:UIControlEventValueChanged];
-    NSString *mapDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"isNeedMap"];
-    if(mapDefault != nil && [mapDefault isEqualToString:@"YES"]){
-        isNeedMap = YES;
-    }else{
-        isNeedMap = NO;
-    }
-    [mapSwitch setOn:isNeedMap];
-    [self.view addSubview:mapSwitch];
-    
-    typhoonSwitch =[[[UISwitch alloc] initWithFrame:CGRectMake(232,108, 322, 222)] autorelease];
-    [typhoonSwitch addTarget:self action: @selector(switchActionTyphoon:) forControlEvents:UIControlEventValueChanged];
-    NSString *typhoonDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"isNeedTyphoon"];
-    if(typhoonDefault != nil && [typhoonDefault isEqualToString:@"YES"]){
-        isNeedTyphoon = YES;
-    }else{
-        isNeedTyphoon = NO;
-    }
-    [typhoonSwitch setOn:isNeedTyphoon];
-    [self.view addSubview:typhoonSwitch];
+//    mapSwitch =[[[UISwitch alloc] initWithFrame:CGRectMake(232, 60, 322, 222)] autorelease];
+//    [mapSwitch addTarget:self action: @selector(switchActionMap:) forControlEvents:UIControlEventValueChanged];
+//    NSString *mapDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"isNeedMap"];
+//    if(mapDefault != nil && [mapDefault isEqualToString:@"YES"]){
+//        isNeedMap = YES;
+//    }else{
+//        isNeedMap = NO;
+//    }
+//    [mapSwitch setOn:isNeedMap];
+//    [self.view addSubview:mapSwitch];
+//    
+//    typhoonSwitch =[[[UISwitch alloc] initWithFrame:CGRectMake(232,108, 322, 222)] autorelease];
+//    [typhoonSwitch addTarget:self action: @selector(switchActionTyphoon:) forControlEvents:UIControlEventValueChanged];
+//    NSString *typhoonDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"isNeedTyphoon"];
+//    if(typhoonDefault != nil && [typhoonDefault isEqualToString:@"YES"]){
+//        isNeedTyphoon = YES;
+//    }else{
+//        isNeedTyphoon = NO;
+//    }
+//    [typhoonSwitch setOn:isNeedTyphoon];
+//    [self.view addSubview:typhoonSwitch];
     
 
 }
@@ -71,26 +73,32 @@
     [super viewWillAppear:animated];
     [self.tableView reloadData];
 }
+-(void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 1;
+	return 2;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-//	if(section==0){
+	if(section==0){
         return @"设置";
-//    }else if (section == 1) {
-//        return @"台风";
-//    }
-//    return @"";
+    }
+    return @"";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return 2;
+	if (section == 0) {
+        return 3;
+    } else {
+        return 1;
+    }
 }
 
 // to determine specific row height for each cell, override this.
@@ -99,7 +107,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	//return ([indexPath row] == 0) ? 50.0 : 38.0;
-    return 50.0;
+    return 40.0;
 }
 
 // to determine which UITableViewCell to be used on a given row.
@@ -108,12 +116,12 @@
 {
 	UITableViewCell *cell = nil;
 
-    static NSString *cellId = @"cell";
+    NSString *cellId = [@"SettingCell" stringByAppendingFormat:@"%d",indexPath.section];
     cell = [self.tableView dequeueReusableCellWithIdentifier:cellId];
     if (cell == nil)
     {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId] autorelease];
-        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.accessoryType =UITableViewCellAccessoryNone;// UITableViewCellAccessoryDisclosureIndicator;
     }
 //		else
@@ -125,12 +133,37 @@
 //				[viewToRemove removeFromSuperview];
 //		}
   //  NSString *mapId = [[NSUserDefaults standardUserDefaults] valueForKey:@"mapType"];
-    if(indexPath.row==0){
-        cell.textLabel.text = @"地图";
-    }else if (indexPath.row == 1) {
-        cell.textLabel.text = @"台风";
+    static NSString *text[] = {@"使用海图", @"显示台风", @"显示船名"};
+    if (indexPath.section == 0) {
+        cell.textLabel.text = text[indexPath.row];
+        UISwitch *sw=[[UISwitch alloc] initWithFrame:CGRectMake(220, 6, 79, 27)];
+        sw.tag = 100 + indexPath.row;
+        [sw addTarget:self action:@selector(switchAction:) forControlEvents:UIControlEventValueChanged];
+        switch (sw.tag) {
+            case 100:
+                sw.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"];
+                break;
+            case 101:
+                sw.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"showTyphoon"];
+                break;
+            case 102:
+                sw.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"showShipName"];
+                break;
+            default:
+                break;
+        }
+        [cell.contentView addSubview:sw];
+        [sw release];
+    } else {
+        
     }
-;
+
+//    if(indexPath.row==0){
+//        cell.textLabel.text = @;
+//    }else if (indexPath.row == 1) {
+//        cell.textLabel.text = @"显示台风";
+//    }
+//;
 
 	    
 	return cell;

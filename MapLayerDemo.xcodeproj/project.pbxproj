@@ -34,7 +34,6 @@
 		29CEA047164764E3000543B2 /* JeppesenTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CEA03F164764E3000543B2 /* JeppesenTileOverlay.m */; };
 		29CEA048164764E3000543B2 /* OSMRestrictedBoundsTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CEA041164764E3000543B2 /* OSMRestrictedBoundsTileOverlay.m */; };
 		29CEA049164764E3000543B2 /* OSMTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CEA043164764E3000543B2 /* OSMTileOverlay.m */; };
-		29CEA04B16476565000543B2 /* MapLayerDemoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CEA04A16476565000543B2 /* MapLayerDemoAppDelegate.m */; };
 		29CEA063164765E9000543B2 /* CustomAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CEA04E164765E9000543B2 /* CustomAnnotation.m */; };
 		29CEA064164765E9000543B2 /* CustomOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CEA050164765E9000543B2 /* CustomOverlayView.m */; };
 		29CEA065164765E9000543B2 /* MapRulerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 29CEA052164765E9000543B2 /* MapRulerView.m */; };
@@ -157,7 +156,6 @@
 		29CEA042164764E3000543B2 /* OSMTileOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSMTileOverlay.h; sourceTree = "<group>"; };
 		29CEA043164764E3000543B2 /* OSMTileOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSMTileOverlay.m; sourceTree = "<group>"; };
 		29CEA044164764E3000543B2 /* TileOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TileOverlay.h; sourceTree = "<group>"; };
-		29CEA04A16476565000543B2 /* MapLayerDemoAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapLayerDemoAppDelegate.m; sourceTree = "<group>"; };
 		29CEA04D164765E9000543B2 /* CustomAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomAnnotation.h; sourceTree = "<group>"; };
 		29CEA04E164765E9000543B2 /* CustomAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomAnnotation.m; sourceTree = "<group>"; };
 		29CEA04F164765E9000543B2 /* CustomOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomOverlayView.h; sourceTree = "<group>"; };
@@ -228,7 +226,6 @@
 		308E581815804DFF0075A2D1 /* ShipData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShipData.m; sourceTree = "<group>"; };
 		308E581A15804E000075A2D1 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		308E581B15804E000075A2D1 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		308E581C15804E000075A2D1 /* MapLayerDemoAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapLayerDemoAppDelegate.h; sourceTree = "<group>"; };
 		308E581F15804E010075A2D1 /* MKMapView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+Additions.h"; sourceTree = "<group>"; };
 		308E582015804E010075A2D1 /* MKMapView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+Additions.m"; sourceTree = "<group>"; };
 		308E582115804E010075A2D1 /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
@@ -475,10 +472,8 @@
 		308E581915804DFF0075A2D1 /* Delegate */ = {
 			isa = PBXGroup;
 			children = (
-				29CEA04A16476565000543B2 /* MapLayerDemoAppDelegate.m */,
 				308E581A15804E000075A2D1 /* AppDelegate.h */,
 				308E581B15804E000075A2D1 /* AppDelegate.m */,
-				308E581C15804E000075A2D1 /* MapLayerDemoAppDelegate.h */,
 			);
 			path = Delegate;
 			sourceTree = "<group>";
@@ -594,7 +589,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MapLayerDemo" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -689,7 +684,6 @@
 				29CEA047164764E3000543B2 /* JeppesenTileOverlay.m in Sources */,
 				29CEA048164764E3000543B2 /* OSMRestrictedBoundsTileOverlay.m in Sources */,
 				29CEA049164764E3000543B2 /* OSMTileOverlay.m in Sources */,
-				29CEA04B16476565000543B2 /* MapLayerDemoAppDelegate.m in Sources */,
 				29CEA063164765E9000543B2 /* CustomAnnotation.m in Sources */,
 				29CEA064164765E9000543B2 /* CustomOverlayView.m in Sources */,
 				29CEA065164765E9000543B2 /* MapRulerView.m in Sources */,
