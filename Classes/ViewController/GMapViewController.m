@@ -57,7 +57,7 @@ static const int kCRulerTag = 10;
 -(void)addShipTipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType {
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([[shipdict objectForKey:@"lat"] floatValue], [[shipdict objectForKey:@"lon"] floatValue]);
     NSString *dispName = shipdict[@"shipnamecn"];
-    if (dispName != nil && ![dispName isEqualToString:@""]) {
+    if (dispName == nil || [dispName isEqualToString:@""]) {
         dispName = shipdict[@"shipname"];
     }
     ShipTipAnnotation *tipanno = [[ShipTipAnnotation alloc] initWithShipId:shipdict[@"shipid"] dispName:dispName annoType:annoType];

@@ -123,7 +123,7 @@
 }
 
 -(void)tryLoadMainView {
-    if (ApplicationDelegate.myFocusShips != nil && ApplicationDelegate.myShipsTeam != nil) {
+//    if (ApplicationDelegate.myFocusShips != nil && ApplicationDelegate.myShipsTeam != nil) {
 //        NSLog(@"%@",ApplicationDelegate.myShipsTeam);
 //        NSLog(@"%@",ApplicationDelegate.myFocusShips);
         //view
@@ -153,9 +153,48 @@
         tab.viewControllers = [NSArray arrayWithObjects:mapViewNaviController, myTeamViewNaviController, searchViewNaviController, settingsController,focusViewNaviController, nil];
         ApplicationDelegate.tabBarController = tab;
         [self presentModalViewController:ApplicationDelegate.tabBarController animated:YES ];
-    }
+//    }
 }
-
+-(void) getMyTeamShip:(NSString*)operid {
+    //myshipsTeam
+    [Util getSearchRecByKeyInFleetWithOperid:operid key:@"" onComp:^(NSObject *responseData) {
+        if (responseData != nil) {
+//            ApplicationDelegate.myShipsTeam = [[NSMutableArray alloc] init];
+//        } else {
+            ApplicationDelegate.myShipsTeam = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
+        }
+        [self tryLoadMainView];
+    }];
+}
+-(void) getAttentionShip:(NSString*)operid {
+    ApplicationDelegate.myFocusShips = nil;
+    ApplicationDelegate.myShipsTeam = nil;
+    [Util getAttentionShipWithOperid:operid onComp:^(NSObject *responseData) {
+        if (responseData != nil) {
+//            ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] init];
+//        } else {
+//            ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
+            NSString *idlist = @"";
+            for (NSDictionary *dic in (NSArray*)responseData) {
+                if (dic[@"id"] != nil && dic[@"id"] != @"") {
+                    idlist = [idlist stringByAppendingFormat:@"%@,",dic[@"id"]];
+                }
+            }
+            if ([idlist length] > 0) {
+                [Util getFleetShipWithShipIds:idlist onComp:^(NSObject *responseData) {
+                    if (responseData != nil) {
+                        ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
+                    }
+                    [self getMyTeamShip:operid];
+                }];
+            } else {
+                [self getMyTeamShip:operid];
+            }
+        } else {
+            [self getMyTeamShip:operid];
+        }
+    }];
+}
 -(void) showMainViewWithDict:(NSDictionary*) dict {
     
     [[NSUserDefaults standardUserDefaults] setValue:dict[@"userid"] forKey:@"userid"];
@@ -163,24 +202,9 @@
     [[NSUserDefaults standardUserDefaults] setValue:pwd forKey:@"password"];
     
     //myfocusships
-    [Util getAttentionShipWithOperid:dict[@"operid"] onComp:^(NSObject *responseData) {
-        if (responseData == nil) {
-            ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] init];
-        } else {
-            ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
-        }
-        [self tryLoadMainView];
-    }];
+    [self getAttentionShip:dict[@"operid"]];
     
-    //myshipsTeam
-    [Util getSearchRecByKeyInFleetWithOperid:dict[@"operid"] key:@"" onComp:^(NSObject *responseData) {
-        if (responseData == nil) {
-            ApplicationDelegate.myShipsTeam = [[NSMutableArray alloc] init];
-        } else {
-            ApplicationDelegate.myShipsTeam = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
-        }
-        [self tryLoadMainView];
-    }];
+
 //    //多用户的公司名称应写成plist，以userid为主件 暂时先放到defalt里面 有空改
 //    [[NSUserDefaults standardUserDefaults] setValue:[loginDictionary objectForKey:@"comname"] forKey:[NSString stringWithFormat:@"comname%@",userId]];
 //    NSDictionary *myShips =  [Util getSearchRecByKeyInFleet:[loginDictionary objectForKey:@"operid"] key:@"" start:@"1" end:[NSString stringWithFormat:@"%d",NSIntegerMax]];
@@ -213,6 +237,7 @@
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:failMessage delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [alert show];
             [alert release];
+            [ApplicationDelegate dismissHUD];
             return;
         } else {
             [self showMainViewWithDict:dict];

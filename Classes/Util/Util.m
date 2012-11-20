@@ -161,7 +161,14 @@
     NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
     return jsonDictionary;
 } 
-
++(void)getFleetShipWithShipIds:(NSString *)idString onComp:(APIResponseBlock)compBlock {
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getFleetShipFullInfoByShipList&param_listshipid=%@",idString];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+        
+    }];
+}
 +(void)getAttentionShipWithOperid:(NSString *)operid onComp:(APIResponseBlock) compBlock {
 //     NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
 //    [param setObject:userId forKey:@"param_operid"];

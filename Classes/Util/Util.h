@@ -26,6 +26,7 @@
 +(NSDictionary*)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType;
 +(NSDictionary*)getAisShipFullInfoByShipId:(NSString *)listshipid;
 +(void)getAttentionShipWithOperid:(NSString *)operid onComp:(APIResponseBlock)compBlock;
++(void)getFleetShipWithShipIds:(NSString*)idString onComp:(APIResponseBlock)compBlock;
 +(void)getSearchRecByKeyInFleetWithOperid:(NSString *)operid key:(NSString *) key onComp:(APIResponseBlock)compBlock;
 +(NSDictionary*)getCompanyGroups:(NSString *)userId;
 +(NSDictionary*)getMobilesInfo:(NSString *)userId groupId:(NSString *) groupId ;
