@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "MBProgressHUD.h"
-@interface LoginViewController : UIViewController {
+@interface LoginViewController : UIViewController<UINavigationControllerDelegate> {
     UIButton        * checkRememberBtn;
    // UIButton        * loginBtn;
    // UIButton        * cancelBtn;

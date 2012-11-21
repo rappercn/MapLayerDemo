@@ -32,6 +32,7 @@
 //#import "JSONKit.h"
 //#import "APIEngine.h"
 
+
 @implementation GMapViewController
 @synthesize gmapView;
 
@@ -47,6 +48,15 @@ static const int kCRulerTag = 10;
 #define MAX_SHIP_COUNT 99
 
 -(void)addShipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType  {
+    double lat = 0.0;
+    double lon = 0.0;
+    if ([shipdict objectForKey:@"lat"] == nil) {
+        lat = [[shipdict objectForKey:@"lat"] floatValue];
+        lon = [[shipdict objectForKey:@"lon"] floatValue];
+        double lat2, lon2;
+    } else {
+        
+    }
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([[shipdict objectForKey:@"lat"] floatValue], [[shipdict objectForKey:@"lon"] floatValue]);
     ShipAnnotation *shipanno = [[ShipAnnotation alloc] initWithShipDictionary:shipdict];
     shipanno.annotationType = annoType;

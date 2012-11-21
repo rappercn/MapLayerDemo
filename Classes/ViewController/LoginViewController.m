@@ -29,7 +29,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     // hide keyboard
     UITapGestureRecognizer *tap = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTap:)] autorelease];
     tap.cancelsTouchesInView = NO;
@@ -127,6 +126,8 @@
 //        NSLog(@"%@",ApplicationDelegate.myShipsTeam);
 //        NSLog(@"%@",ApplicationDelegate.myFocusShips);
         //view
+    [ApplicationDelegate dismissHUD];
+    
     GMapViewController *mapView = [[GMapViewController alloc] initWithNibName:@"GMapViewController" bundle:nil];
     UINavigationController *mapViewNaviController = [[[UINavigationController alloc] initWithRootViewController:mapView] autorelease];
     mapViewNaviController.navigationBar.tintColor=[UIColor darkGrayColor];
@@ -157,7 +158,9 @@
 //    tab.tabBar.tintColor = [UIColor darkGrayColor];
     tab.viewControllers = [NSArray arrayWithObjects:mapViewNaviController, myTeamViewNaviController, searchViewNaviController, settingsController,focusViewNaviController, nil];
     ApplicationDelegate.tabBarController = tab;
-    [self presentModalViewController:ApplicationDelegate.tabBarController animated:YES ];
+//    NSLog(@"========%@----------", self.navigationController);
+    [self.navigationController pushViewController:ApplicationDelegate.tabBarController animated:YES];
+//    [self presentModalViewController:ApplicationDelegate.tabBarController animated:YES ];
 //    }
 }
 -(void) getMyTeamShip:(NSString*)operid {

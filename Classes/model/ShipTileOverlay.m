@@ -29,7 +29,8 @@
 }
 - (NSString *)urlForPointWithX:(NSUInteger)x andY:(NSUInteger)y andZoomLevel:(NSUInteger)zoomLevel {
     NSString *shipMapPath = [[Util getCachePath] stringByAppendingFormat:@"/shipmap/%d/%d-%d-%d.png",zoomLevel, zoomLevel, x, y];
-    
+    static NSString *mctShipUrl = @"http://map.ctrack.com.cn/CustomMap/mctShipGps";
+    static NSString *ggShipUrl = @"http://map.ctrack.com.cn/CustomMap/ggShipGps";
     if ([[NSFileManager defaultManager] fileExistsAtPath:shipMapPath]) {
         NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:shipMapPath error:nil];
         NSDate *cDate = [attrs objectForKey:NSFileCreationDate];
@@ -39,9 +40,17 @@
                 int lvl = pow(2, zoomLevel - 5);
                 int row = y / lvl;
                 int col = x / lvl;
-                shipMapPath = [@"http://map.ctrack.com.cn/CustomMap/mctShipGps" stringByAppendingFormat:@"/%d/R%d/C%d/%d-%d-%d.png", zoomLevel, row, col, zoomLevel, x, y];
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"]) {
+                    shipMapPath = [mctShipUrl stringByAppendingFormat:@"/%d/R%d/C%d/%d-%d-%d.png", zoomLevel, row, col, zoomLevel, x, y];
+                } else {
+                    shipMapPath = [ggShipUrl stringByAppendingFormat:@"/%d/R%d/C%d/%d-%d-%d.png", zoomLevel, row, col, zoomLevel, x, y];
+                }
             } else {
-                shipMapPath = [@"http://map.ctrack.com.cn/CustomMap/mctShipGps" stringByAppendingFormat:@"/%d/%d-%d-%d.png", zoomLevel, zoomLevel, x, y];
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"]) {
+                    shipMapPath = [mctShipUrl stringByAppendingFormat:@"/%d/%d-%d-%d.png", zoomLevel, zoomLevel, x, y];
+                } else {
+                    shipMapPath = [ggShipUrl stringByAppendingFormat:@"/%d/%d-%d-%d.png", zoomLevel, zoomLevel, x, y];
+                }
             }
         }
     } else {
@@ -49,16 +58,30 @@
             int lvl = pow(2, zoomLevel - 5);
             int row = y / lvl;
             int col = x / lvl;
-            shipMapPath = [@"http://map.ctrack.com.cn/CustomMap/mctShipGps" stringByAppendingFormat:@"/%d/R%d/C%d/%d-%d-%d.png", zoomLevel, row, col, zoomLevel, x, y];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"]) {
+                shipMapPath = [mctShipUrl stringByAppendingFormat:@"/%d/R%d/C%d/%d-%d-%d.png", zoomLevel, row, col, zoomLevel, x, y];
+            } else {
+                shipMapPath = [ggShipUrl stringByAppendingFormat:@"/%d/R%d/C%d/%d-%d-%d.png", zoomLevel, row, col, zoomLevel, x, y];
+            }
         } else {
-            shipMapPath = [@"http://map.ctrack.com.cn/CustomMap/mctShipGps" stringByAppendingFormat:@"/%d/%d-%d-%d.png", zoomLevel, zoomLevel, x, y];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"]) {
+                shipMapPath = [mctShipUrl stringByAppendingFormat:@"/%d/%d-%d-%d.png", zoomLevel, zoomLevel, x, y];
+            } else {
+                shipMapPath = [ggShipUrl stringByAppendingFormat:@"/%d/%d-%d-%d.png", zoomLevel, zoomLevel, x, y];
+            }
         }
     }
     return shipMapPath;
 }
 - (NSString *)imageSavePathWithX:(NSUInteger)x andY:(NSUInteger)y andZoomLevel:(NSUInteger)zoomLevel {
-    NSString *mapPath = [Util getCachePath:@"shipmap"];
-    mapPath = [Util getCachePath:[@"shipmap" stringByAppendingFormat:@"/%d", zoomLevel]];
+    NSString *pathType = nil;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"]) {
+        pathType = @"mctshipmap";
+    } else {
+        pathType = @"shipmap";
+    }
+    NSString *mapPath = [Util getCachePath:pathType];
+    mapPath = [Util getCachePath:[pathType stringByAppendingFormat:@"/%d", zoomLevel]];
     NSString *imgPath = [mapPath stringByAppendingFormat:@"/%d-%d-%d.png", zoomLevel, x, y];
     return imgPath;
 }

@@ -162,10 +162,21 @@
     //zx cut
    self.myfav = arrays;
    self.shipMajor = arraysMajor;
-    LoginViewController *login = [[LoginViewController alloc] init ];    
-   // MyFocusShipViewController *login = [[MyFocusShipViewController alloc] init];
-    self.window.rootViewController = login;
+    LoginViewController *login = [[LoginViewController alloc] init ];
+    
+    //zhouliwei
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
+    [self.window addSubview:nav.view];
+    
+    //    nav.delegate = self;
+    //    nav.view.frame = CGRectMake(0, 0, 320, 480);
+    nav.navigationBarHidden = YES;
     [self.window makeKeyAndVisible];
+    
+    
+   // MyFocusShipViewController *login = [[MyFocusShipViewController alloc] init];
+//    self.window.rootViewController = login;
+//    [self.window makeKeyAndVisible];
     [login release];
     [arrays release];
     [arraysMajor release];

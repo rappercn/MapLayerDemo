@@ -8,7 +8,7 @@
 
 #import "SettingsViewController.h"
 #import "SimpleTableViewController.h"
-
+#import <QuartzCore/QuartzCore.h>
 @implementation SettingsViewController
 @synthesize settingSections, simpleTableView;
 
@@ -121,7 +121,12 @@
     if (cell == nil)
     {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId] autorelease];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        if (indexPath.section == 0) {
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        } else {
+            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+        }
+        
         cell.accessoryType =UITableViewCellAccessoryNone;// UITableViewCellAccessoryDisclosureIndicator;
     }
 //		else
@@ -155,7 +160,26 @@
         [cell.contentView addSubview:sw];
         [sw release];
     } else {
-        
+        UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(110.0, 0.0, 100.0, 40.0)];
+        [lbl setText:@"退出"];
+        [lbl setBackgroundColor:[UIColor clearColor]];
+        [lbl setTextAlignment:NSTextAlignmentCenter];
+        [cell addSubview:lbl];
+        [lbl release];
+//        UIButton *btn = [[UIButton buttonWithType:UIButtonTypeRoundedRect] autorelease];
+//        btn.frame = CGRectMake(10.0, 0.0, 300.0, 40.0);
+////        [btn setBackgroundColor:[UIColor grayColor]];
+//        [btn setTitle:@"退出" forState:UIControlStateNormal];
+//        [btn setTitle:@"退出" forState:uicontrol]
+//        btn.clipsToBounds = YES;
+//        
+//        btn.layer.cornerRadius = 20;//half of the width
+//        
+//        btn.layer.borderColor=[UIColor redColor].CGColor;
+//        
+//        btn.layer.borderWidth=2.0f;
+//        [cell addSubview:btn];
+//        [btn release];
     }
 
 //    if(indexPath.row==0){
@@ -170,6 +194,9 @@
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+//    [self.navigationController popToRootViewControllerAnimated:YES];
+    [self.parentViewController.navigationController popViewControllerAnimated:YES];
+
  //   SimpleTableViewController* next = [[SimpleTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
 //    next.openSectionIndex = [indexPath row];
 //    next.fatherSection = [indexPath section];
