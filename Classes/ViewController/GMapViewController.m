@@ -48,15 +48,15 @@ static const int kCRulerTag = 10;
 #define MAX_SHIP_COUNT 99
 
 -(void)addShipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType  {
-    double lat = 0.0;
-    double lon = 0.0;
-    if ([shipdict objectForKey:@"lat"] == nil) {
-        lat = [[shipdict objectForKey:@"lat"] floatValue];
-        lon = [[shipdict objectForKey:@"lon"] floatValue];
-        double lat2, lon2;
-    } else {
-        
-    }
+//    double lat = 0.0;
+//    double lon = 0.0;
+//    if ([shipdict objectForKey:@"lat"] == nil) {
+//        lat = [[shipdict objectForKey:@"lat"] floatValue];
+//        lon = [[shipdict objectForKey:@"lon"] floatValue];
+//        double lat2, lon2;
+//    } else {
+//        
+//    }
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([[shipdict objectForKey:@"lat"] floatValue], [[shipdict objectForKey:@"lon"] floatValue]);
     ShipAnnotation *shipanno = [[ShipAnnotation alloc] initWithShipDictionary:shipdict];
     shipanno.annotationType = annoType;
@@ -75,7 +75,7 @@ static const int kCRulerTag = 10;
     [gmapView addAnnotation:tipanno];
     RELEASE_SAFELY(tipanno);
 }
--(void)addShipIconWithArray:(NSArray*)shipArray withAnnotationType:(NSInteger)annoType
+-(void)addShipIconWithArray:(NSArray*)shipArray withAnnotationType:(NSInteger)annoType showBadge:(BOOL)showBadge
 {
     NSMutableArray *removeArray = [[NSMutableArray alloc] init];
     NSMutableArray *existShipidArray = [[NSMutableArray alloc] init];
@@ -106,8 +106,7 @@ static const int kCRulerTag = 10;
     if ([removeArray count] > 0) {
         [gmapView removeAnnotations:removeArray];
     }
-    [removeArray release];
-    removeArray = nil;
+    RELEASE_SAFELY(removeArray);
 
     for (NSDictionary *shipDict in shipArray) {
         if ([existShipidArray containsObject:shipDict[@"shipid"]]) {
@@ -118,7 +117,9 @@ static const int kCRulerTag = 10;
             [self addShipTipAnnotationWithData:shipDict andType:annoType];
         }
     }
-    [ApplicationDelegate showShipCountOnTabbarWith:[shipArray count]];
+    if (showBadge) {
+        [ApplicationDelegate showShipCountOnTabbarWith:[shipArray count]];
+    }
 }
 -(void)removeTyphoon {
     NSMutableArray *removeArray = [[NSMutableArray alloc] init];
@@ -327,7 +328,7 @@ static const int kCRulerTag = 10;
     [self removeAllShipFromMap];
     UISegmentedControl* seg = (UISegmentedControl*) sender;
     if (seg.selectedSegmentIndex == 0) {
-        [self addShipIconWithArray:ApplicationDelegate.myShipsTeam withAnnotationType:kCShipTypeMyTeam];
+        [self addShipIconWithArray:ApplicationDelegate.myShipsTeam withAnnotationType:kCShipTypeMyTeam showBadge:NO];
          //[self removeTyphoon];
 //        UIActivityIndicatorView *actView = (UIActivityIndicatorView*)self.navigationItem.rightBarButtonItem.customView;
 //        [actView stopAnimating];
@@ -335,11 +336,11 @@ static const int kCRulerTag = 10;
 ////        [actView release];
 //        self.navigationItem.rightBarButtonItem.customView = nil;
     } else {
-        [self addShipIconWithArray:ApplicationDelegate.myFocusShips withAnnotationType:kCShipTypeMyTeam];
+        [self addShipIconWithArray:ApplicationDelegate.myFocusShips withAnnotationType:kCShipTypeMyTeam showBadge:NO];
 //        [self getTyphoonInfo];
 //        [self drawTyphoon];
     }
-    NSLog(@"segButtonSelected:%d", seg.selectedSegmentIndex);
+//    NSLog(@"segButtonSelected:%d", seg.selectedSegmentIndex);
 }
 -(void)showReloadProgress {
     if (self.navigationItem.rightBarButtonItem.customView != nil) {
@@ -349,7 +350,7 @@ static const int kCRulerTag = 10;
     UIActivityIndicatorView *actView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     self.navigationItem.rightBarButtonItem.customView = actView;
     [actView startAnimating];
-    [actView release];
+    RELEASE_SAFELY(actView);
 }
 -(void)hideReloadProgress {
     NSLog(@"hide progress bar....");
@@ -452,37 +453,39 @@ static const int kCRulerTag = 10;
     showTyphoon = [def boolForKey:@"showTyphoon"];
     
     [gmapView removeOverlays:gmapView.overlays];
-//    UIImageView *logo = [gmapView mapLogo];
+
     MapRulerView *ruler = (MapRulerView*) [gmapView viewWithTag:kCRulerTag];
     if (ruler != nil) {
         CGRect rulerFrame = ruler.frame;
         rulerFrame.origin.x = -200;
+    } else {
+        MapRulerView *ruler = [self reloadMapViewRuler];
+        [gmapView addSubview:ruler];
+        RELEASE_SAFELY(ruler);
     }
-//    CGRect frame = logo.frame;
     
     if (useMap) {
         MapTileOverlay *mapOverlay = [[MapTileOverlay alloc] init];
         [gmapView addOverlay:mapOverlay];
-        [mapOverlay release];
-        MapRulerView *ruler = [self reloadMapViewRuler];
-        [gmapView addSubview:ruler];
-        [ruler release];
-//        frame.origin.y = -100;
-    } else {
-//        UIImage *img = [UIImage imageNamed:@"google"];
-//        [logo setImage:img];
-//        frame = CGRectMake(240, self.view.bounds.size.height - 30, 69, 23);
+        RELEASE_SAFELY(mapOverlay);
     }
     
     ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
     [gmapView addOverlay:shipOverlay];
-    [shipOverlay release];
+    RELEASE_SAFELY(shipOverlay);
 
     if (showTyphoon) {
         [self getTyphoonInfo];
     }
     
-//    logo.frame = frame;
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.0) {
+        UIImageView *logo = [gmapView mapLogo];
+        if (!useMap) {
+            logo.frame = CGRectMake(240.0, 340, 69, 23);
+        } else {
+            logo.frame = CGRectMake(-240.0, 340, 69, 23);
+        }
+    }
 }
 //-(void)shipLoaded:(NSArray*)shipArray {
 //    
@@ -580,6 +583,7 @@ static const int kCRulerTag = 10;
     }
     requesting = YES;
     mkNetOp = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSObject *responseData) {
+//        requesting = NO;
 //        if (op.readonlyRequest.URL.absoluteString != taskUrl) {
 //            requesting = NO;
 //            [self doNextTaskWithPrevUrl:op.readonlyRequest.URL.absoluteString];
@@ -598,7 +602,7 @@ static const int kCRulerTag = 10;
                 }
             }
             normalShipArray = (NSArray*)responseData;
-            [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeNormal];
+            [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeNormal showBadge:YES];
         } else {
             //        [self reloadShipMapOverlaysWithShowShip:YES];
             BOOL exist = NO;
@@ -616,7 +620,7 @@ static const int kCRulerTag = 10;
             }
             [ApplicationDelegate showShipCountOnTabbarWith:0];
         }
-//        requesting = NO;
+        requesting = NO;
         [self hideReloadProgress];
     } onError:^(NSError *error) {
         requesting = NO;
@@ -718,7 +722,7 @@ static const int kCRulerTag = 10;
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self reloadMapViewOverlays];
+    
     
 //    UIImage* image = [goo image];
 //    NSData* imagedata = UIImagePNGRepresentation(image);
@@ -726,7 +730,9 @@ static const int kCRulerTag = 10;
 }
 -(void)viewDidAppear:(BOOL)animated
 {
+    NSLog(@"did appear");
     [super viewDidAppear:animated];
+    [self reloadMapViewOverlays];
 //    AppDelegate *delegate = [AppDelegate getAppDelegate];
     NSDictionary *ship = ApplicationDelegate.seletedShip;
     if (ship != nil) {

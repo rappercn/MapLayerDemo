@@ -195,7 +195,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 //    [self.navigationController popToRootViewControllerAnimated:YES];
-    [self.parentViewController.navigationController popViewControllerAnimated:YES];
+    if (indexPath.section == 1) {
+        [self.parentViewController.navigationController popViewControllerAnimated:YES];
+    }
 
  //   SimpleTableViewController* next = [[SimpleTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
 //    next.openSectionIndex = [indexPath row];

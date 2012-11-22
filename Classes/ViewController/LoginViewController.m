@@ -29,6 +29,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+//    NSLog(@"%@..........",[[UIDevice currentDevice] systemVersion]);
     // hide keyboard
     UITapGestureRecognizer *tap = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTap:)] autorelease];
     tap.cancelsTouchesInView = NO;
