@@ -11,16 +11,17 @@
 #import <MapKit/MapKit.h>
 #import "ImageDownloader.h"
 #import "APIEngine.h"
-#import "MBProgressHUD.h"
+
+//#import "MBProgressHUD.h"
 //@class MBProgressHUD;
 //@class MBProgressHUDDelegate;
 #define ApplicationDelegate ((AppDelegate *)[UIApplication sharedApplication].delegate)
 #define IMAGE_HOST @"map.ctrack.com.cn"
+@class MBProgressHUD;
 
-
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UITabBarControllerDelegate,MBProgressHUDDelegate> {
+@interface AppDelegate : UIResponder <UIApplicationDelegate> {
 //    NSMutableArray* myfav;
-    NSManagedObjectContext *managedObjectContext;
+//    NSManagedObjectContext *managedObjectContext;
     MBProgressHUD* progress_;
 }
 
@@ -35,16 +36,16 @@
 @property (nonatomic, retain) APIEngine *apiEngine;
 @property (nonatomic, retain) NSDictionary *seletedShip;
 @property (nonatomic, retain) NSMutableArray* shipMajor;       //local ships major
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (nonatomic, retain) NSManagedObjectModel *managedObjectModel;
+//@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+//@property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+//@property (nonatomic, retain) NSManagedObjectModel *managedObjectModel;
 
 
 
 + (AppDelegate *)getAppDelegate;
 + (NSMutableArray *)getMyFavArray;
 + (NSMutableArray *)getShipMajor;
-+ (NSManagedObjectContext *)getManagedObjectContext;
+//+ (NSManagedObjectContext *)getManagedObjectContext;
 + (NSMutableArray *)getMyFocusShips ;
 + (NSMutableArray *)getMyShipsTeam ;
 

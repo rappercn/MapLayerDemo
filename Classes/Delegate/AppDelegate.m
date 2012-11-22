@@ -6,12 +6,12 @@
 //  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
 //
 
-#import "AppDelegate.h"
+//#import "AppDelegate.h"
 #import "GMapViewController.h"
 #import "MyTeamViewController.h"
 #import "SettingsViewController.h"
 #import "SimpleTableViewController.h"
-#import "ShipData.h"
+//#import "ShipData.h"
 #import "ShipDetailFocused.h"
 #import "LoginViewController.h"
 
@@ -19,12 +19,12 @@
 
 @synthesize window = _window;
 @synthesize tabBarController = _tabBarController;
-@synthesize myfav;
-@synthesize shipMajor;
+//@synthesize myfav;
+//@synthesize shipMajor;
 @synthesize coord, showShip;
-@synthesize managedObjectContext;
-@synthesize persistentStoreCoordinator ;
-@synthesize managedObjectModel ;
+//@synthesize managedObjectContext;
+//@synthesize persistentStoreCoordinator ;
+//@synthesize managedObjectModel ;
 @synthesize myFocusShips;
 @synthesize myShipsTeam;
 @synthesize imageDownloader;
@@ -43,9 +43,9 @@
 + (NSMutableArray *)getMyShipsTeam {
     return ((AppDelegate *) [[UIApplication sharedApplication] delegate]).myShipsTeam;
 }
-+ (NSManagedObjectContext *)getManagedObjectContext {
-    return ((AppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext;
-}
+//+ (NSManagedObjectContext *)getManagedObjectContext {
+//    return ((AppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext;
+//}
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     NSMutableDictionary *headerFields = [NSMutableDictionary dictionary];
@@ -82,53 +82,53 @@
    
    //[self copyDatabaseFileIfNeed];
 
-   NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"MapLayerDemo" withExtension:@"momd"];
-    NSManagedObjectModel *managedObjectModelTem = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-    self.managedObjectModel = managedObjectModelTem;     
-   // NSURL *storeURL = [NSURL URLWithString:[Util getDocumentPath] URLByAppendingPathComponent:@"MapLayerDemo.sqlite"];
-    NSURL *storeURL = [[self applicationDocumentsDirectory2] URLByAppendingPathComponent:@"MapLayerDemo.sqlite"];
-    NSError *error = nil;
-    NSPersistentStoreCoordinator *p = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:managedObjectModel];
-   if(![p addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]){
-        NSLog(@"%@,%@",error,[error userInfo]);
-    }else{
-       NSManagedObjectContext *managedObjectContextTem = [[NSManagedObjectContext alloc] init];
-        self.managedObjectContext = managedObjectContextTem;
-        [managedObjectContext setPersistentStoreCoordinator:p];
-        [managedObjectContextTem release];
-    }
-    
-    [managedObjectModelTem release];
-    [p release];
-    
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ShipDetailFocused" inManagedObjectContext:managedObjectContext];
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:entity];
-    
-   // NSPredicate *pre = [NSPredicate predicateWithFormat:@""];
-    
-   // NSManagedObject *managedObject = nil;
-    NSMutableArray *arrays = [[managedObjectContext executeFetchRequest:request error:&error] mutableCopy];
-    
-    [request release];
-    
-    
-    //major
-    NSEntityDescription *entityMajor = [NSEntityDescription entityForName:@"ShipMajor" inManagedObjectContext:managedObjectContext];
-    NSFetchRequest *requestMajor = [[NSFetchRequest alloc] init];
-    NSPredicate *resultPredicate;
-    resultPredicate = [NSPredicate predicateWithFormat:@"shipName != %@", @""];
-    [requestMajor setPredicate:resultPredicate];
-    
-    [requestMajor setEntity:entityMajor];
-    NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"shipName" ascending:YES];
-    NSArray *sorts = [[NSArray alloc] initWithObjects:sort,nil];
-    [requestMajor setSortDescriptors:sorts];
-    [sorts release];
-    [sort release];
-    NSMutableArray *arraysMajor = [[managedObjectContext executeFetchRequest:requestMajor error:&error] mutableCopy];
-
-    [requestMajor release];
+//   NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"MapLayerDemo" withExtension:@"momd"];
+//    NSManagedObjectModel *managedObjectModelTem = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+//    self.managedObjectModel = managedObjectModelTem;     
+//   // NSURL *storeURL = [NSURL URLWithString:[Util getDocumentPath] URLByAppendingPathComponent:@"MapLayerDemo.sqlite"];
+//    NSURL *storeURL = [[self applicationDocumentsDirectory2] URLByAppendingPathComponent:@"MapLayerDemo.sqlite"];
+//    NSError *error = nil;
+//    NSPersistentStoreCoordinator *p = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:managedObjectModel];
+//   if(![p addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]){
+//        NSLog(@"%@,%@",error,[error userInfo]);
+//    }else{
+//       NSManagedObjectContext *managedObjectContextTem = [[NSManagedObjectContext alloc] init];
+//        self.managedObjectContext = managedObjectContextTem;
+//        [managedObjectContext setPersistentStoreCoordinator:p];
+//        [managedObjectContextTem release];
+//    }
+//    
+//    [managedObjectModelTem release];
+//    [p release];
+//    
+//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"ShipDetailFocused" inManagedObjectContext:managedObjectContext];
+//    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+//    [request setEntity:entity];
+//    
+//   // NSPredicate *pre = [NSPredicate predicateWithFormat:@""];
+//    
+//   // NSManagedObject *managedObject = nil;
+//    NSMutableArray *arrays = [[managedObjectContext executeFetchRequest:request error:&error] mutableCopy];
+//    
+//    [request release];
+//    
+//    
+//    //major
+//    NSEntityDescription *entityMajor = [NSEntityDescription entityForName:@"ShipMajor" inManagedObjectContext:managedObjectContext];
+//    NSFetchRequest *requestMajor = [[NSFetchRequest alloc] init];
+//    NSPredicate *resultPredicate;
+//    resultPredicate = [NSPredicate predicateWithFormat:@"shipName != %@", @""];
+//    [requestMajor setPredicate:resultPredicate];
+//    
+//    [requestMajor setEntity:entityMajor];
+//    NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"shipName" ascending:YES];
+//    NSArray *sorts = [[NSArray alloc] initWithObjects:sort,nil];
+//    [requestMajor setSortDescriptors:sorts];
+//    [sorts release];
+//    [sort release];
+//    NSMutableArray *arraysMajor = [[managedObjectContext executeFetchRequest:requestMajor error:&error] mutableCopy];
+//
+//    [requestMajor release];
     
 //    if(arrays == nil){
 //        NSLog(@"error");
@@ -160,8 +160,8 @@
    
 
     //zx cut
-   self.myfav = arrays;
-   self.shipMajor = arraysMajor;
+//   self.myfav = arrays;
+//   self.shipMajor = arraysMajor;
     LoginViewController *login = [[LoginViewController alloc] init ];
     
     //zhouliwei
@@ -178,9 +178,9 @@
 //    self.window.rootViewController = login;
 //    [self.window makeKeyAndVisible];
     [login release];
-    [arrays release];
-    [arraysMajor release];
-    NSLog(@"init with %d ship data", myfav.count);
+//    [arrays release];
+//    [arraysMajor release];
+//    NSLog(@"init with %d ship data", myfav.count);
     return YES;
 }
 
@@ -226,37 +226,37 @@
 
 
 -(void)dealloc{
-     [managedObjectContext release];
-    [persistentStoreCoordinator release];
-    [managedObjectModel release];
+//     [managedObjectContext release];
+//    [persistentStoreCoordinator release];
+//    [managedObjectModel release];
     [myFocusShips release];
     [myShipsTeam release];
     [super dealloc];
 }
 
 
-- (NSURL *)applicationDocumentsDirectory2
-{
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    //return  [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES) lastObject];
-}
+//- (NSURL *)applicationDocumentsDirectory2
+//{
+//    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+//    //return  [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES) lastObject];
+//}
 
-- (void)hudWasHidden
-{  
-//    NSLog(@"Hud: %@", hud);  
-    // Remove HUD from screen when the HUD was hidded
-    [progress_ removeFromSuperview];  
-    [progress_ release];  
-    progress_ = nil;  
-    
-} 
+//- (void)hudWasHidden
+//{  
+////    NSLog(@"Hud: %@", hud);  
+//    // Remove HUD from screen when the HUD was hidded
+//    [progress_ removeFromSuperview];  
+//    [progress_ release];  
+//    progress_ = nil;  
+//    
+//} 
 
 -(void) displayHUD :(UIViewController *)controller words:(NSString *)words{
     progress_ = [[MBProgressHUD alloc] initWithView:controller.view];  
     [controller.view addSubview:progress_];  
     [controller.view bringSubviewToFront:progress_];  
-    progress_.delegate = self;  
-    progress_.labelText = [NSString stringWithFormat:@"%@...",words];  
+//    progress_.delegate = self;  
+    progress_.labelText = [NSString stringWithFormat:@"%@...",words];
     [progress_ show:YES];  
 }
 
@@ -265,8 +265,7 @@
     {  
         //sleep(3.0f);
         [progress_ removeFromSuperview];  
-        [progress_ release];  
-        progress_ = nil;  
+        RELEASE_SAFELY(progress_);
     }  
 }
 
