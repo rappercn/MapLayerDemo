@@ -39,6 +39,8 @@
     [super viewDidLoad];
 //    AppDelegate* delegate = [AppDelegate getAppDelegate];
 //    myFav = delegate.myfav;
+    AppDelegate *delegate = [AppDelegate getAppDelegate];
+    [delegate displayHUD:self words:@"查询中"];
     shipListTableView.delegate = self;
     openSectionIndex = NSNotFound;
     NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
@@ -46,22 +48,36 @@
     teamArray = [[[NSMutableArray alloc] initWithCapacity:favArray.count] retain];
    // NSArray* tmpArray = [[NSArray alloc] initWithObjects:@"默认船队", nil];
      NSMutableArray* tmpArray = [[NSMutableArray alloc] init];
-    NSDictionary *myShipGroups = [Util getCompanyGroups:userId];
-    NSArray *myShipArray = [myShipGroups objectForKey:@"return"];
-    for(int i=0;i<myShipArray.count;i++){
-        NSString *groupId = [[myShipArray objectAtIndex:i] objectForKey:@"groupid"];
-        NSString *groupName = [[myShipArray objectAtIndex:i] objectForKey:@"groupname"];
-        NSDictionary *groupTem = [NSDictionary dictionaryWithObjectsAndKeys:groupId,@"groupId",groupName,@"groupName",nil];
-        [tmpArray addObject:groupTem];
-    }
-   
-    [teamArray addObject:tmpArray];
-   // [tmpArray release];
-   // tmpArray = nil;
-   // tmpArray = [[NSArray alloc] initWithObjects:@"船队A", @"船队B", nil];
-   // [teamArray addObject:tmpArray];
-   // [tmpArray release];
-   // tmpArray = nil;
+    
+    [Util getCompanyGroups:userId onComp:^(NSObject *responseData) {
+        if (responseData != nil) {
+            
+            NSArray *myShipArray = (NSArray *)responseData;
+                for(int i=0;i<myShipArray.count;i++){
+                    NSString *groupId = [[myShipArray objectAtIndex:i] objectForKey:@"groupid"];
+                    NSString *groupName = [[myShipArray objectAtIndex:i] objectForKey:@"groupname"];
+                    NSDictionary *groupTem = [NSDictionary dictionaryWithObjectsAndKeys:groupId,@"groupId",groupName,@"groupName",nil];
+                    [tmpArray addObject:groupTem];
+                }
+               
+                [teamArray addObject:tmpArray];
+                [delegate dismissHUD];
+        }
+
+    }];
+    
+    
+//    NSDictionary *myShipGroups = [Util getCompanyGroups:userId];
+//    NSArray *myShipArray = [myShipGroups objectForKey:@"return"];
+//    for(int i=0;i<myShipArray.count;i++){
+//        NSString *groupId = [[myShipArray objectAtIndex:i] objectForKey:@"groupid"];
+//        NSString *groupName = [[myShipArray objectAtIndex:i] objectForKey:@"groupname"];
+//        NSDictionary *groupTem = [NSDictionary dictionaryWithObjectsAndKeys:groupId,@"groupId",groupName,@"groupName",nil];
+//        [tmpArray addObject:groupTem];
+//    }
+//   
+//    [teamArray addObject:tmpArray];
+
 }
 
 - (void)viewDidUnload

@@ -56,23 +56,20 @@
         [focusButton setTitle:@"取消关注" forState:UIControlStateNormal];
     }
 }
-- (IBAction)focusButtonPress:(UIButton *)sender {
-    NSDictionary *returnDic = [[[NSDictionary alloc] init ] autorelease];
-    if(isFocused){
-        returnDic = [Util delAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"]];
-    }else{
-        returnDic = [Util addAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"]];
-    }
-    isFocused = !isFocused;
 
+-(void)alertFocusMessage:(NSString *)returnData{
     NSString *message = @"";
-    if([returnDic objectForKey:@"return"] != nil && [[returnDic objectForKey:@"return"] isEqual:@"1"]){
+    isFocused = !isFocused;
+    if(returnData != nil && [returnData isEqualToString:@"1"]){
         message = @"成功";
         [self showButtonTitle];
-        NSDictionary *shipsDictionary = [Util getAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]];
-        NSMutableArray *shipsArray = [shipsDictionary objectForKey:@"return"];
-        [AppDelegate getAppDelegate].myFocusShips = shipsArray;
-    }else {
+        [Util getAttentionShipFullInfo:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"] onComp:^(NSObject *responseData) {
+            if (responseData != nil) {
+                ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
+            }
+        }];
+        
+    }else{
         message = @"失败";
     }
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"操作%@",message]  delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
@@ -80,11 +77,52 @@
     [alert release];
 }
 
+- (IBAction)focusButtonPress:(UIButton *)sender {
+    NSDictionary *returnDic = [[[NSDictionary alloc] init ] autorelease];
+    
+    
+   // __block NSString  *returnData = @"";
+
+    if(isFocused){
+        [Util delAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"] onComp:^(NSObject *responseData) {
+            
+            [self alertFocusMessage:(NSString *)responseData];
+        }];
+    }else{
+        [Util addAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"] onComp:^(NSObject *responseData) {
+            [self alertFocusMessage:(NSString *)responseData];
+
+        }];
+    }
+ 
+    
+//    if(isFocused){
+//        returnDic = [Util delAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"]];
+//    }else{
+//        returnDic = [Util addAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"]];
+//    }
+//    isFocused = !isFocused;
+//
+//    NSString *message = @"";
+//    if([returnDic objectForKey:@"return"] != nil && [[returnDic objectForKey:@"return"] isEqual:@"1"]){
+//        message = @"成功";
+//        [self showButtonTitle];
+//        NSDictionary *shipsDictionary = [Util getAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]];
+//        NSMutableArray *shipsArray = [shipsDictionary objectForKey:@"return"];
+//        [AppDelegate getAppDelegate].myFocusShips = shipsArray;
+//    }else {
+//        message = @"失败";
+//    }
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"操作%@",message]  delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//    [alert show];
+//    [alert release];
+}
+
 #pragma mark - View Delegate
 - (void)viewDidLoad
 {
     NSArray *myfocus = [AppDelegate getMyFocusShips];
-    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"fulldisplayname contains[cd] %@", [shipdict objectForKey:@"shipname"]];
+    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"shipname contains[cd] %@", [shipdict objectForKey:@"shipname"]];
     NSArray *isFocusArray = [myfocus filteredArrayUsingPredicate:resultPredicate];
     if(isFocusArray == nil || isFocusArray.count == 0){
         isFocused = false;
@@ -195,17 +233,16 @@
 //}
 
 
--(void)saveShipDetailFocused:(NSString*) shipName  {
-        NSDictionary *detailDictionary = [Util getAisShipFullInfoByShipId:baseData.mobileId];
-
-        if(detailDictionary != nil ){
-
-            ShipData *dataTmp = [[[ShipData alloc] init] autorelease];
-//            dataTmp = [dataTmp transferFromDictionaryToShipData:detailDictionary];
-         
-            self.baseData = [dataTmp retain];
-    }
-}
+//-(void)saveShipDetailFocused:(NSString*) shipName  {
+//        NSDictionary *detailDictionary = [Util getAisShipFullInfoByShipId:baseData.mobileId];
+//
+//        if(detailDictionary != nil ){
+//
+//            ShipData *dataTmp = [[[ShipData alloc] init] autorelease];
+//        
+//            self.baseData = [dataTmp retain];
+//    }
+//}
 
 
 //- (void)saveContext:(NSManagedObjectContext*) managedObjectContext

@@ -23,16 +23,22 @@
 + (NSString*)getMapNameByMapId:(NSString*)mapId;
 + (NSString *)getServiceDataByJson:(NSString *) url;
 + (void)loginWithUser:(NSString *)name passwd:(NSString*) passwd onComp:(APIResponseBlock)compBlock;
-+(NSDictionary*)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType;
+//+(NSDictionary*)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType;
++(void)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType onComp:(APIResponseBlock)compBlock ;
 +(NSDictionary*)getAisShipFullInfoByShipId:(NSString *)listshipid;
 +(void)getAttentionShipWithOperid:(NSString *)operid onComp:(APIResponseBlock)compBlock;
 +(void)getFleetShipWithShipIds:(NSString*)idString onComp:(APIResponseBlock)compBlock;
 +(void)getSearchRecByKeyInFleetWithOperid:(NSString *)operid key:(NSString *) key onComp:(APIResponseBlock)compBlock;
-+(NSDictionary*)getCompanyGroups:(NSString *)userId;
-+(NSDictionary*)getMobilesInfo:(NSString *)userId groupId:(NSString *) groupId ;
-+(NSDictionary*)addAttentionShip:(NSString *)userId shipId:(NSString *) shipId;
-+(NSDictionary*)delAttentionShip:(NSString *)userId shipId:(NSString *) shipId;
 
++(void)getCompanyGroups:(NSString *)userId onComp:(APIResponseBlock)compBlock;
+//+(NSDictionary*)getCompanyGroups:(NSString *)userId;
++(void)getMobilesInfo:(NSString *)userId groupId:(NSString *) groupId onComp:(APIResponseBlock)compBlock;
+//+(NSDictionary*)getMobilesInfo:(NSString *)userId groupId:(NSString *) groupId ;
++(void)addAttentionShip:(NSString *)userId shipId:(NSString *) shipId onComp:(APIResponseBlock)compBlock;
+//+(NSDictionary*)addAttentionShip:(NSString *)userId shipId:(NSString *) shipId;
++(void)delAttentionShip:(NSString *)userId shipId:(NSString *) shipId onComp:(APIResponseBlock)compBlock;
+//+(NSDictionary*)delAttentionShip:(NSString *)userId shipId:(NSString *) shipId;
++(void)getAttentionShipFullInfo:(NSString *)userId onComp:(APIResponseBlock)compBlock;
 
 
 + (NSString*)getCachePath;

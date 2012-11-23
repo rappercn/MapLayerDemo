@@ -150,11 +150,14 @@
                 [tableView deselectRowAtIndexPath:indexPath animated:YES];     
                 return;    
             } else {
-                next.baseData = (ShipData*)[self.searchResults objectAtIndex:indexPath.row];
+               // next.baseData = (ShipData*)[self.searchResults objectAtIndex:indexPath.row];
+               
+                next.shipdict = [self.searchResults objectAtIndex:indexPath.row];
             }
         }
         else{
-            next.baseData = (ShipData*) [myfav objectAtIndex:indexPath.row];
+            //next.baseData = (ShipData*) [myfav objectAtIndex:indexPath.row];
+            next.shipdict = [myfav objectAtIndex:indexPath.row];
         }
         [self.navigationController pushViewController:next animated:YES];
 }
@@ -217,12 +220,11 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     return NO;
 }
 
--(void) backMajorThread:(NSDictionary *)dataArray{
+-(void) backMajorThread:(NSArray *)arrayDictionary{
     
     AppDelegate *delegate = [AppDelegate getAppDelegate];
     [delegate dismissHUD];
-    NSArray *arrayDictionary = [dataArray objectForKey:@"return"];
-    //NSArray *array = [arrayDictionary allKeys];
+//    NSArray *arrayDictionary = [dataArray objectForKey:@"return"];
     NSMutableArray *resultTem = [[[NSMutableArray alloc] init ] autorelease];
     for(int i=0;i<arrayDictionary.count;i++){
         NSDictionary *serviceResult = [arrayDictionary objectAtIndex:i];
@@ -263,14 +265,19 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
 
 -(void)searchThread{
    
-    //NSLog(searchBar.text);
     NSLog(@"zx coming");
     NSInteger start = 1;
-    NSInteger end = rowsPerPage; 
-    NSDictionary *dataArray = [Util getSearchRecByKeyInShipBaseInfo:inputShipName start_ship:[NSString stringWithFormat:@"%d",start] end_ship:[NSString stringWithFormat:@"%d",end] shipType:[NSString stringWithFormat:@"%d",searchTypeIdx]];
+    NSInteger end = rowsPerPage;
+    
+    [Util getSearchRecByKeyInShipBaseInfo:inputShipName start_ship:[NSString stringWithFormat:@"%d",start] end_ship:[NSString stringWithFormat:@"%d",end] shipType:[NSString stringWithFormat:@"%d",searchTypeIdx] onComp:^(NSObject *responseData) {
+        NSArray *arrayDictionary = (NSArray *)responseData;
+   [self performSelectorOnMainThread:@selector(backMajorThread:) withObject:arrayDictionary waitUntilDone:NO];
+        
+    }];
     
     
-    [self performSelectorOnMainThread:@selector(backMajorThread:) withObject:dataArray waitUntilDone:NO];
+//    NSDictionary *dataArray = [Util getSearchRecByKeyInShipBaseInfo:inputShipName start_ship:[NSString stringWithFormat:@"%d",start] end_ship:[NSString stringWithFormat:@"%d",end] shipType:[NSString stringWithFormat:@"%d",searchTypeIdx]];
+ //   [self performSelectorOnMainThread:@selector(backMajorThread:) withObject:dataArray waitUntilDone:NO];
 }
 
 -(void) searchBarSearchButtonClicked:(UISearchBar *)searchBar{
@@ -291,9 +298,9 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
 {   //当你按下这个按钮的时候, 意味着你需要看下一页了, 因此当前页码加1  
     currentPage ++;  
     NSMutableArray *more = [self GetRecord:currentPage]; //通过调用GetRecord方法, 将数据取出.  
-    //insert major
-    [self performSelectorOnMainThread:@selector(appendTableWith:) withObject:more waitUntilDone:YES];     
-    [self saveShipMajor:more];
+//    //insert major
+//    [self performSelectorOnMainThread:@selector(appendTableWith:) withObject:more waitUntilDone:YES];     
+//    [self saveShipMajor:more];
     
 }     
 -(void) appendTableWith:(NSMutableArray *)data     
@@ -319,38 +326,62 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
 
 
 -(NSMutableArray *)GetRecord:(NSInteger)p  
-{  
-    //NSString *serviceUrl = [NSString stringWithFormat:@"http://test.ctrack.com.cn/ShipDBCAppServer/PhoneShipWebService?fm=getSearchRecByKeyInShipBaseInfo&&param_keystr=%@&&param_start_ship=%d&&param_end_ship=%d&&param_type=%d",inputShipName,currentPage * rowsPerPage,(currentPage+1) * rowsPerPage,searchTypeIdx];
-    //NSString *json = [Util getServiceDataByJson:serviceUrl];
-    //NSDictionary *dataArray = [json mutableObjectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    NSDictionary *dataArray = [Util getSearchRecByKeyInShipBaseInfo:inputShipName start_ship:[NSString stringWithFormat:@"%d",currentPage * rowsPerPage+1] end_ship:[NSString stringWithFormat:@"%d",(currentPage+1) * rowsPerPage] shipType:[NSString stringWithFormat:@"%d",searchTypeIdx]];
-    NSArray *arrayDictionary = [dataArray objectForKey:@"return"];
+{
     NSMutableArray *array = [[NSMutableArray alloc] init ];
-    for(int i=0;i<arrayDictionary.count;i++){
-        NSDictionary *serviceResult = [arrayDictionary objectAtIndex:i];
-        ShipData *ship = [[[ShipData alloc] init] autorelease];
-         [ship setShipName:[serviceResult objectForKey:@"shipname"]];
-        if(searchTypeIdx == 0){
-         
-        }else if(searchTypeIdx == 1){
-          [ship setCallSign:[serviceResult objectForKey:@"callsign"]];            
-        }else if(searchTypeIdx == 2){
-            [ship setImo:[serviceResult objectForKey:@"imo"]];            
-        }else if(searchTypeIdx == 3){
-            [ship setMmsi:[serviceResult objectForKey:@"mmsi"]];            
+    [Util getSearchRecByKeyInShipBaseInfo:inputShipName start_ship:[NSString stringWithFormat:@"%d",currentPage * rowsPerPage+1] end_ship:[NSString stringWithFormat:@"%d",(currentPage+1) * rowsPerPage] shipType:[NSString stringWithFormat:@"%d",searchTypeIdx] onComp:^(NSObject *responseData) {
+        NSArray *arrayDictionary = (NSArray *)responseData;
+        for(int i=0;i<arrayDictionary.count;i++){
+            NSDictionary *serviceResult = [arrayDictionary objectAtIndex:i];
+            ShipData *ship = [[[ShipData alloc] init] autorelease];
+            [ship setShipName:[serviceResult objectForKey:@"shipname"]];
+            if(searchTypeIdx == 0){
+                
+            }else if(searchTypeIdx == 1){
+                [ship setCallSign:[serviceResult objectForKey:@"callsign"]];
+            }else if(searchTypeIdx == 2){
+                [ship setImo:[serviceResult objectForKey:@"imo"]];
+            }else if(searchTypeIdx == 3){
+                [ship setMmsi:[serviceResult objectForKey:@"mmsi"]];
+            }
+            [ship setMobileId:[serviceResult objectForKey:@"shipid"]];
+            [array addObject:ship];
+            // [ship release];
         }
-        [ship setMobileId:[serviceResult objectForKey:@"shipid"]];
-        [array addObject:ship];
-       // [ship release];
-    }
-    return [array autorelease];  
+        //insert major
+        [self performSelectorOnMainThread:@selector(appendTableWith:) withObject:array waitUntilDone:YES];
+        [self saveShipMajor:array];
+    }];
+    
+    
+    
+//    NSDictionary *dataArray = [Util getSearchRecByKeyInShipBaseInfo:inputShipName start_ship:[NSString stringWithFormat:@"%d",currentPage * rowsPerPage+1] end_ship:[NSString stringWithFormat:@"%d",(currentPage+1) * rowsPerPage] shipType:[NSString stringWithFormat:@"%d",searchTypeIdx]];
+//    NSArray *arrayDictionary = [dataArray objectForKey:@"return"];
+//    NSMutableArray *array = [[NSMutableArray alloc] init ];
+//    for(int i=0;i<arrayDictionary.count;i++){
+//        NSDictionary *serviceResult = [arrayDictionary objectAtIndex:i];
+//        ShipData *ship = [[[ShipData alloc] init] autorelease];
+//         [ship setShipName:[serviceResult objectForKey:@"shipname"]];
+//        if(searchTypeIdx == 0){
+//         
+//        }else if(searchTypeIdx == 1){
+//          [ship setCallSign:[serviceResult objectForKey:@"callsign"]];            
+//        }else if(searchTypeIdx == 2){
+//            [ship setImo:[serviceResult objectForKey:@"imo"]];            
+//        }else if(searchTypeIdx == 3){
+//            [ship setMmsi:[serviceResult objectForKey:@"mmsi"]];            
+//        }
+//        [ship setMobileId:[serviceResult objectForKey:@"shipid"]];
+//        [array addObject:ship];
+//       // [ship release];
+//    }
+    return [array autorelease];
 }  
 
 -(void)saveShipMajor:(NSMutableArray*) searchResultMore {
     NSMutableArray *insertArray = [[[NSMutableArray alloc] init] autorelease];
     for(int i=0;i<searchResultMore.count;i++){
-        NSManagedObjectContext *context = [AppDelegate getManagedObjectContext];
-        NSManagedObject *object = [NSEntityDescription insertNewObjectForEntityForName:@"ShipMajor" inManagedObjectContext:context];
+//        NSManagedObjectContext *context = [AppDelegate getManagedObjectContext];
+//        NSManagedObject *object = [NSEntityDescription insertNewObjectForEntityForName:@"ShipMajor" inManagedObjectContext:context];
         ShipData *ship = [searchResultMore objectAtIndex:i];
         
         NSPredicate *resultPredicate;
@@ -358,17 +389,17 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
         NSArray *tem = [myfav filteredArrayUsingPredicate:resultPredicate];
         
         if(tem.count ==0 ){
-            if(searchTypeIdx == 0){
-
-            }else if(searchTypeIdx == 1){
-                 [object setValue:ship.callSign forKey:@"callSign"];
-            }else if(searchTypeIdx == 2){
-                 [object setValue:ship.imo forKey:@"imo"];
-            }else if(searchTypeIdx == 3){
-                 [object setValue:ship.mmsi forKey:@"mmsi"];
-            }
-            [object setValue:ship.shipName forKey:@"shipName"];
-            [object setValue:ship.mobileId forKey:@"mobileId"];
+//            if(searchTypeIdx == 0){
+//
+//            }else if(searchTypeIdx == 1){
+//                 [object setValue:ship.callSign forKey:@"callSign"];
+//            }else if(searchTypeIdx == 2){
+//                 [object setValue:ship.imo forKey:@"imo"];
+//            }else if(searchTypeIdx == 3){
+//                 [object setValue:ship.mmsi forKey:@"mmsi"];
+//            }
+//            [object setValue:ship.shipName forKey:@"shipName"];
+//            [object setValue:ship.mobileId forKey:@"mobileId"];
            // 插入数据库暂时注销
            // [self saveContext:context];
             [insertArray addObject:ship];

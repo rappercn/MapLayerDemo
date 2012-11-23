@@ -87,11 +87,11 @@
     if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]){
       //  cell.textLabel.text = ((ShipData*) [searchResults objectAtIndex:indexPath.row]).shipName; 
         
-        NSString *name = [[searchResults objectAtIndex:indexPath.row] objectForKey:@"fulldisplayname"];
+        NSString *name = [[searchResults objectAtIndex:indexPath.row] objectForKey:@"shipname"];
         cell.textLabel.text = name;
     }
     else{
-        NSString *name = [[myFocusArray objectAtIndex:indexPath.row] objectForKey:@"fulldisplayname"];
+        NSString *name = [[myFocusArray objectAtIndex:indexPath.row] objectForKey:@"shipname"];
         cell.textLabel.text = name;
     }
     UIFont *font = [UIFont fontWithName:@"Arial" size:18];
@@ -103,16 +103,19 @@
         ShipDetailViewController *next = [[ShipDetailViewController alloc] initWithNibName:@"ShipDetailViewController" bundle:nil];
         if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]){
             
-            ShipData *ship = [[[ShipData alloc] init ] autorelease];
-            ship.mobileId = [[self.searchResults objectAtIndex:indexPath.row] objectForKey:@"id"];
-            ship.shipName = [[self.searchResults objectAtIndex:indexPath.row] objectForKey:@"fulldisplayname"];
-            next.baseData = ship;
+           // ShipData *ship = [[[ShipData alloc] init ] autorelease];
+           // ship.mobileId = [[self.searchResults objectAtIndex:indexPath.row] objectForKey:@"id"];
+           // ship.shipName = [[self.searchResults objectAtIndex:indexPath.row] objectForKey:@"shipname"];
+           // next.baseData = ship;
+           
+             next.shipdict = [self.searchResults objectAtIndex:indexPath.row];
         }
         else{
-            ShipData *ship = [[[ShipData alloc] init ] autorelease];
-            ship.mobileId = [[myFocusArray objectAtIndex:indexPath.row] objectForKey:@"id"];
-            ship.shipName = [[myFocusArray objectAtIndex:indexPath.row] objectForKey:@"fulldisplayname"];
-            next.baseData = ship;
+           // ShipData *ship = [[[ShipData alloc] init ] autorelease];
+           // ship.mobileId = [[myFocusArray objectAtIndex:indexPath.row] objectForKey:@"id"];
+           // ship.shipName = [[myFocusArray objectAtIndex:indexPath.row] objectForKey:@"shipname"];
+           // next.baseData = ship;
+               next.shipdict = [myFocusArray objectAtIndex:indexPath.row];
         }
         [self.navigationController pushViewController:next animated:YES];
 }
@@ -124,7 +127,7 @@
     NSPredicate *resultPredicate;
     switch (typeIndex) {
         case 0:
-            resultPredicate = [NSPredicate predicateWithFormat:@"fulldisplayname contains[cd] %@", searchText];
+            resultPredicate = [NSPredicate predicateWithFormat:@"shipname contains[cd] %@", searchText];
             break;
         case 1:
             resultPredicate = [NSPredicate predicateWithFormat:@"callSign contains[cd] %@", searchText];

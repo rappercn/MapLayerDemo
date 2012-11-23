@@ -124,34 +124,37 @@
 
 
 +(void)loginWithUser:(NSString *)name passwd:(NSString *)passwd onComp:(APIResponseBlock)compBlock {
-//    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
-//    [param setObject:name forKey:@"param_opercode"];
-//    [param setObject:passwd forKey:@"param_operpwd"];
+
     NSString *url = [INTERFACE_URL stringByAppendingFormat:@"login&param_opercode=%@&param_operpwd=%@", name, passwd];
     [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
         compBlock(responseData);
     } onError:^(NSError *error) {
         //        errorBlock(error);
     }];
-//    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
-//    if (jsonString) {
-//        NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-//        return jsonDictionary;
-//    }
-//    return nil;
+
 }
 
-+(NSDictionary*)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType{
-    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:4] autorelease];
-    [param setObject:keystr forKey:@"param_keystr"];
-    [param setObject:start_ship forKey:@"param_start_ship"];
-    [param setObject:end_ship forKey:@"param_end_ship"];
-    [param setObject:shipType forKey:@"param_type"];
-    NSString *url = [NSString stringWithFormat:@"%@getSearchRecByKeyInShipBaseInfo",INTERFACE_URL];
-    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
-    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    return jsonDictionary;
++(void*)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType onComp:(APIResponseBlock)compBlock {   
+    
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getSearchRecByKeyInShipBaseInfo&param_keystr=%@&param_start_ship=%@&param_end_ship=%@&param_type=%@", keystr, start_ship,end_ship,shipType];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+        //        errorBlock(error);
+    }];
 }
+
+//+(NSDictionary*)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType{
+//    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:4] autorelease];
+//    [param setObject:keystr forKey:@"param_keystr"];
+//    [param setObject:start_ship forKey:@"param_start_ship"];
+//    [param setObject:end_ship forKey:@"param_end_ship"];
+//    [param setObject:shipType forKey:@"param_type"];
+//    NSString *url = [NSString stringWithFormat:@"%@getSearchRecByKeyInShipBaseInfo",INTERFACE_URL];
+//    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
+//    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
+//    return jsonDictionary;
+//}
 
 +(NSDictionary*)getAisShipFullInfoByShipId:(NSString *)listshipid {
     NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
@@ -169,6 +172,16 @@
         
     }];
 }
+
++(void)getAttentionShipFullInfo:(NSString *)userId onComp:(APIResponseBlock)compBlock{
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getAttentionShipFullInfo&param_operid=%@",userId];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+        
+    }];
+}
+
 +(void)getAttentionShipWithOperid:(NSString *)operid onComp:(APIResponseBlock) compBlock {
 //     NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
 //    [param setObject:userId forKey:@"param_operid"];
@@ -201,44 +214,85 @@
 //    return jsonDictionary;
 }
 
-+(NSDictionary*)getCompanyGroups:(NSString *)userId{
-    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
-    [param setObject:userId forKey:@"param_operid"];
-    NSString *url = [NSString stringWithFormat:@"%@getCompanyGroups",INTERFACE_URL];
-    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
-    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    return jsonDictionary;
+
++(void)getCompanyGroups:(NSString *)userId onComp:(APIResponseBlock)compBlock{
+    
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getCompanyGroups&param_operid=%@", userId];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+        //        errorBlock(error);
+    }];
+    
+}
+//+(NSDictionary*)getCompanyGroups:(NSString *)userId{
+//    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
+//    [param setObject:userId forKey:@"param_operid"];
+//    NSString *url = [NSString stringWithFormat:@"%@getCompanyGroups",INTERFACE_URL];
+//    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
+//    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
+//    return jsonDictionary;
+//}
+
+
++(void)getMobilesInfo:(NSString *)userId groupId:(NSString *) groupId onComp:(APIResponseBlock)compBlock{
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getMobilesInfo&param_operid=%@&param_groupid=%@", userId,groupId];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+        //        errorBlock(error);
+    }];
 }
 
-+(NSDictionary*)getMobilesInfo:(NSString *)userId groupId:(NSString *) groupId {
-    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:4] autorelease];
-    [param setObject:userId forKey:@"param_operid"];
-    [param setObject:groupId forKey:@"param_groupid"];
-    NSString *url = [NSString stringWithFormat:@"%@getMobilesInfo",INTERFACE_URL];
-    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
-    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    return jsonDictionary;
+//+(NSDictionary*)getMobilesInfo:(NSString *)userId groupId:(NSString *) groupId {
+//    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:4] autorelease];
+//    [param setObject:userId forKey:@"param_operid"];
+//    [param setObject:groupId forKey:@"param_groupid"];
+//    NSString *url = [NSString stringWithFormat:@"%@getMobilesInfo",INTERFACE_URL];
+//    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
+//    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
+//    return jsonDictionary;
+//}
+
++(void)addAttentionShip:(NSString *)userId shipId:(NSString *) shipId onComp:(APIResponseBlock)compBlock{
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"addAttentionShip&param_operid=%@&param_shipid=%@", userId,shipId];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+        //        errorBlock(error);
+    }];
+    
 }
 
-+(NSDictionary*)addAttentionShip:(NSString *)userId shipId:(NSString *) shipId {
-    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
-    [param setObject:userId forKey:@"param_operid"];
-    [param setObject:shipId forKey:@"param_shipid"];
-    NSString *url = [NSString stringWithFormat:@"%@addAttentionShip",INTERFACE_URL];
-    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
-    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    return jsonDictionary;
+//+(NSDictionary*)addAttentionShip:(NSString *)userId shipId:(NSString *) shipId {
+//    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
+//    [param setObject:userId forKey:@"param_operid"];
+//    [param setObject:shipId forKey:@"param_shipid"];
+//    NSString *url = [NSString stringWithFormat:@"%@addAttentionShip",INTERFACE_URL];
+//    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
+//    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
+//    return jsonDictionary;
+//}
+
++(void)delAttentionShip:(NSString *)userId shipId:(NSString *) shipId onComp:(APIResponseBlock)compBlock{
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"delAttentionShip&param_operid=%@&param_shipid=%@", userId,shipId];
+    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+        compBlock(responseData);
+    } onError:^(NSError *error) {
+        //        errorBlock(error);
+    }];
+    
 }
 
-+(NSDictionary*)delAttentionShip:(NSString *)userId shipId:(NSString *) shipId {
-    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
-    [param setObject:userId forKey:@"param_operid"];
-    [param setObject:shipId forKey:@"param_shipid"];
-    NSString *url = [NSString stringWithFormat:@"%@delAttentionShip",INTERFACE_URL];
-    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
-    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
-    return jsonDictionary;
-}
+//+(NSDictionary*)delAttentionShip:(NSString *)userId shipId:(NSString *) shipId {
+//    NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:2] autorelease];
+//    [param setObject:userId forKey:@"param_operid"];
+//    [param setObject:shipId forKey:@"param_shipid"];
+//    NSString *url = [NSString stringWithFormat:@"%@delAttentionShip",INTERFACE_URL];
+//    NSString* jsonString = [Util getHttpData:url dataDictionary:param];
+//    NSDictionary *jsonDictionary = [jsonString objectFromJSONStringWithParseOptions:JKParseOptionLooseUnicode];
+//    return jsonDictionary;
+//}
 
 
 +(NSString*)getHttpData:(NSString *)url dataDictionary:(NSDictionary *)dic {

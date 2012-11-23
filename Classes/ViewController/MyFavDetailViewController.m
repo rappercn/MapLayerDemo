@@ -44,23 +44,39 @@
     [searchDisplayController.searchBar setShowsCancelButton:NO];
     searchDisplayController.searchBar.scopeButtonTitles = [NSArray arrayWithObjects:@"船名", @"呼号", @"imo", @"mmsi", nil];
     
-    
-    //AppDelegate* delegate = [AppDelegate getAppDelegate];
-    //myFav = delegate.myfav;
-    NSDictionary *myFavDictionary = [Util getMobilesInfo:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"] groupId:groupId];
-    NSArray *temarray = [myFavDictionary objectForKey:@"return"];
-    NSMutableArray *ships = [[[NSMutableArray alloc] initWithCapacity:50] autorelease];
-    for(int i=0;i<temarray.count;i++){
-        NSDictionary *shipDetail = [temarray objectAtIndex:i];
-        NSString *shipName = [shipDetail objectForKey:@"shipname"];
-        NSString *shipId = [shipDetail objectForKey:@"shipid"];
-        NSString *mmsi = [shipDetail objectForKey:@"mmsi"];
-        NSString *iso = [shipDetail objectForKey:@"iso"];
-        NSString *callSign = [shipDetail objectForKey:@"callsign"];
-        NSDictionary *shipTem = [NSDictionary dictionaryWithObjectsAndKeys:shipId,@"shipId",shipName,@"shipName",callSign,@"callSign",mmsi,@"mmsi",iso,@"iso",nil];
-        [ships addObject:shipTem];
-    }
-    myFav = [ships retain];
+    //暂时先用login的船队数据，有问题，以后改
+    [Util getMobilesInfo:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"] groupId:groupId onComp:^(NSObject *responseData) {
+        NSArray *temarray = (NSArray *)responseData;
+        NSMutableArray *ships = [[AppDelegate getMyShipsTeam] copy];
+        
+        for(int i=0;i<ships.count;i++){
+            NSDictionary *shipDetail = [temarray objectAtIndex:i];
+          NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"shipname contains[cd] %@", @"Hai Neng"];
+           NSArray *tem =  [ships filteredArrayUsingPredicate:resultPredicate];
+            if(tem !=nil && tem.count >0){
+
+            }else{
+                [ships removeObject:tem];
+            }
+        }
+        myFav = ships;
+        [self.tableView reloadData];
+    }];
+
+//    NSDictionary *myFavDictionary = [Util getMobilesInfo:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"] groupId:groupId];
+//    NSArray *temarray = [myFavDictionary objectForKey:@"return"];
+//    NSMutableArray *ships = [[[NSMutableArray alloc] initWithCapacity:50] autorelease];
+//    for(int i=0;i<temarray.count;i++){
+//        NSDictionary *shipDetail = [temarray objectAtIndex:i];
+//        NSString *shipName = [shipDetail objectForKey:@"shipname"];
+//        NSString *shipId = [shipDetail objectForKey:@"shipid"];
+//        NSString *mmsi = [shipDetail objectForKey:@"mmsi"];
+//        NSString *iso = [shipDetail objectForKey:@"iso"];
+//        NSString *callSign = [shipDetail objectForKey:@"callsign"];
+//        NSDictionary *shipTem = [NSDictionary dictionaryWithObjectsAndKeys:shipId,@"shipId",shipName,@"shipName",callSign,@"callSign",mmsi,@"mmsi",iso,@"iso",nil];
+//        [ships addObject:shipTem];
+//    }
+ //   myFav = [ships retain];
     favItemTableView.delegate = self;
     flag[openSectionIndex] = YES;
 
@@ -116,15 +132,17 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ShipDetailViewController *next = [[ShipDetailViewController alloc] initWithNibName:@"ShipDetailViewController" bundle:nil];
-    ShipData *ship = [[[ShipData alloc] init ] autorelease];    
+   // ShipData *ship = [[[ShipData alloc] init ] autorelease];
     if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]){
-        ship.mobileId = [[searchResults objectAtIndex:indexPath.row] objectForKey:@"shipId"];
-        ship.shipName = [[searchResults objectAtIndex:indexPath.row] objectForKey:@"shipName"];
-        next.baseData = ship;
+       // ship.mobileId = [[searchResults objectAtIndex:indexPath.row] objectForKey:@"shipId"];
+       // ship.shipName = [[searchResults objectAtIndex:indexPath.row] objectForKey:@"shipName"];
+       // next.baseData = ship;
+        next.shipdict = [searchResults objectAtIndex:indexPath.row];
     }else{
-        ship.mobileId = [[myFav objectAtIndex:indexPath.row] objectForKey:@"shipId"];
-        ship.shipName = [[myFav objectAtIndex:indexPath.row] objectForKey:@"shipName"];
-        next.baseData = ship;
+      //  ship.mobileId = [[myFav objectAtIndex:indexPath.row] objectForKey:@"shipId"];
+      //  ship.shipName = [[myFav objectAtIndex:indexPath.row] objectForKey:@"shipName"];
+      //  next.baseData = ship;
+        next.shipdict = [myFav objectAtIndex:indexPath.row];
     }
     [self.navigationController pushViewController:next animated:YES];
     
@@ -144,9 +162,9 @@
         [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg_on.png"]]];
     }
     if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]){
-         cell.textLabel.text = [[searchResults objectAtIndex:indexPath.row] objectForKey:@"shipName"];
+         cell.textLabel.text = [[searchResults objectAtIndex:indexPath.row] objectForKey:@"shipname"];
     }else{
-         cell.textLabel.text = [[myFav objectAtIndex:indexPath.row] objectForKey:@"shipName"];
+         cell.textLabel.text = [[myFav objectAtIndex:indexPath.row] objectForKey:@"shipname"];
     }
     UIFont *font = [UIFont fontWithName:@"Arial" size:18];
     cell.textLabel.font = font;
