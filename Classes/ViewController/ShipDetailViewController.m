@@ -7,7 +7,7 @@
 //
 
 #import "ShipDetailViewController.h"
-#import "ShipData.h"
+//#import "ShipData.h"
 //#import <MapKit/MapKit.h>
 //#import "AppDelegate.h"
 //#import "ShipDetailFocused.h"

@@ -8,7 +8,7 @@
 
 #import "MyFavDetailViewController.h"
 #import "ShipDetailViewController.h"
-#import "ShipData.h"
+//#import "ShipData.h"
 
 @implementation MyFavDetailViewController
 @synthesize favItemTableView, openSectionIndex, favArray,groupId,searchResults,searchType,searchDisplayController;

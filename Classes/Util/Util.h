@@ -9,10 +9,10 @@
 //#define INTERFACE_URL @"http://test.ctrack.com.cn/ShipDBCAppServer/PhoneShipWebService?fm="
 #define INTERFACE_URL @"http://218.241.183.164:7949/ShipDBCAppServer/PhoneShipWebService?fm="
 @class ShipData;
-@class ASIHTTPRequest;
+//@class ASIHTTPRequest;
 
 @interface Util : NSObject {
-    ASIHTTPRequest *asynRequest;
+//    ASIHTTPRequest *asynRequest;
     id<NSObject> delegate;
     SEL callback;
 }

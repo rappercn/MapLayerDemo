@@ -15,7 +15,7 @@
 #import "MapTileOverlay.h"
 #import "ShipTileOverlay.h"
 //#import "JeppesenTileOverlay.h"
-#import "ShipData.h"
+//#import "ShipData.h"
 #import "ShipDetailViewController.h"
 #import "MapRulerView.h"
 //#import "Util.h"

@@ -7,12 +7,12 @@
 //
 
 #import "ShipFocusViewController.h"
-#import "ShipData.h"
+//#import "ShipData.h"
 #import "ShipDetailViewController.h"
-#import "JSONKit.h"
-#import <CoreData/CoreData.h>
-#import "ShipMajor.h"
-#import "Util.h"
+//#import "JSONKit.h"
+//#import <CoreData/CoreData.h>
+//#import "ShipMajor.h"
+//#import "Util.h"
 @implementation ShipFocusViewController
 @synthesize searchDisplayController, searchResults, searchType,myFocusArray;
 -(id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
