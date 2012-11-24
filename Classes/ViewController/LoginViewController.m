@@ -25,6 +25,39 @@
 //    }
 //    return self;
 //}
+- (void) reachabilityChanged: (NSNotification* )note
+{
+    if (alerting) {
+        return;
+    }
+	Reachability* curReach = [note object];
+	NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
+    NetworkStatus status = [curReach currentReachabilityStatus];
+    NSString *msg = nil;
+    if (status == ReachableViaWWAN) {
+        msg = @"已经连接到运营商网络，您可能因此被收取高额通信费。强烈建议您连接到WIFI网络继续使用";
+    } else if (status == NotReachable) {
+        msg = @"当前没有可用网络，请确保您的网络畅通";
+    }
+    if (msg != nil) {
+        alerting = YES;
+        NSString * tle = NSLocalizedString(@"提示",@"提示");
+        NSString * yes = NSLocalizedString(@"确定",@"确定");
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:tle
+                                                       message:msg
+                                                      delegate:nil
+                                             cancelButtonTitle:yes
+                                             otherButtonTitles:nil,nil];
+        alert.delegate = self;
+        [alert show];
+        RELEASE_SAFELY(alert);
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    alerting = NO;
+}
 
 - (void)viewDidLoad
 {
@@ -41,50 +74,49 @@
 //    Reachability *r = [[Reachability alloc] init];
 //    NetworkStatus netStatus = [r currentReachabilityStatus];
 //	NetworkStatus netStatus = [r internetConnectionStatus];
-	NSString * mes = nil;    
-//    BOOL isReach = [r isReachable];
-//    if(isReach){
-//        BOOL isWiFi = [r isReachableViaWiFi];
-//        if(isWiFi){
-//            mes = NSLocalizedString(@"当前使用WIFI连接网络",@"成功");
-//        }else if ([r isReachableViaWWAN]) {
-//            mes = NSLocalizedString(@"当前使用3G连接网络",@"成功");
-//        }else {
-//            mes = NSLocalizedString(@"当前无可用网络",@"失败");
-//        }
-//    }else {
-//        mes = NSLocalizedString(@"当前无可用网络",@"失败");
-//    }
-
+//    NetworkStatus netStatus = [Util checkNetworkReachability];
+//
+//	NSString * mes = nil;
+//////    BOOL isReach = [r isReachable];
+//////    if(isReach){
+//////        BOOL isWiFi = [r isReachableViaWiFi];
+////        if(isWiFi){
+////            mes = NSLocalizedString(@"当前使用WIFI连接网络",@"成功");
+////        }else if ([r isReachableViaWWAN]) {
+////            mes = NSLocalizedString(@"当前使用3G连接网络",@"成功");
+////        }else {
+////            mes = NSLocalizedString(@"当前无可用网络",@"失败");
+////        }
+//////    }else {
+//////        mes = NSLocalizedString(@"当前无可用网络",@"失败");
+//////    }
+//
 //	switch (netStatus) {
 //		case NotReachable:
-//			mes = NSLocalizedString(@"当前无可用网络",@"失败");
+//			mes = NSLocalizedString(@"当前网络不可用",@"失败");
 //			break;
 //		case ReachableViaWiFi:
 //			//mes = NSLocalizedString(@"当前使用WIFI连接网络",@"成功");
 //			break;
 //		case ReachableViaWWAN:
-//			mes = NSLocalizedString(@"当前使用3G连接网络",@"成功");
+//			mes = NSLocalizedString(@"当前正使用移动网络",@"成功");
 //			break;
 //	}
-
-    if(mes != nil){
-        NSString * tle = NSLocalizedString(@"提示",@"提示");
-        NSString * yes = NSLocalizedString(@"确定",@"确定");
-        
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:tle 
-                                                       message:mes 
-                                                      delegate:nil 
-                                             cancelButtonTitle:yes 
-                                             otherButtonTitles:nil,nil];
-        alert.delegate = self;
-        [alert show];
-        [alert release];
-    }
-		
-//	[r release];
-    
-    //bRemeberPwd = NO;
+//
+//    if(mes != nil){
+//        NSString * tle = NSLocalizedString(@"提示",@"提示");
+//        NSString * yes = NSLocalizedString(@"确定",@"确定");
+//        
+//        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:tle 
+//                                                       message:mes 
+//                                                      delegate:nil 
+//                                             cancelButtonTitle:yes 
+//                                             otherButtonTitles:nil,nil];
+//        [alert show];
+//        RELEASE_SAFELY(alert);
+//    }
+	
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
   
     NSString *isChecked = [[NSUserDefaults standardUserDefaults] objectForKey:@"isChecked"];
     if(isChecked != nil){
@@ -144,20 +176,19 @@
     searchViewNaviController.navigationBar.tintColor=[UIColor darkGrayColor];
     [searchView release];
     
-    SettingsViewController *settingsView = [[SettingsViewController alloc] initWithNibName:@"SettingsViewController" bundle:nil];
-    UINavigationController *settingsController = [[[UINavigationController alloc] initWithRootViewController:settingsView] autorelease];
-    settingsController.navigationBar.tintColor=[UIColor darkGrayColor];
-    [settingsView release];
-    
     ShipFocusViewController *focusShipView = [[ShipFocusViewController alloc] initWithNibName:@"ShipFocusViewController" bundle:nil];
     UINavigationController *focusViewNaviController = [[[UINavigationController alloc] initWithRootViewController:focusShipView] autorelease];
     focusViewNaviController.navigationBar.tintColor=[UIColor darkGrayColor];
     [focusShipView release];
     
+    SettingsViewController *settingsView = [[SettingsViewController alloc] initWithNibName:@"SettingsViewController" bundle:nil];
+    UINavigationController *settingsController = [[[UINavigationController alloc] initWithRootViewController:settingsView] autorelease];
+    settingsController.navigationBar.tintColor=[UIColor darkGrayColor];
+    [settingsView release];
     
     UITabBarController *tab = [[[UITabBarController alloc] init] autorelease];
 //    tab.tabBar.tintColor = [UIColor darkGrayColor];
-    tab.viewControllers = [NSArray arrayWithObjects:mapViewNaviController, myTeamViewNaviController, searchViewNaviController, settingsController,focusViewNaviController, nil];
+    tab.viewControllers = [NSArray arrayWithObjects:mapViewNaviController, myTeamViewNaviController, searchViewNaviController,focusViewNaviController, settingsController, nil];
     ApplicationDelegate.tabBarController = tab;
 //    NSLog(@"========%@----------", self.navigationController);
     [self.navigationController pushViewController:ApplicationDelegate.tabBarController animated:YES];
@@ -180,28 +211,30 @@
     ApplicationDelegate.myShipsTeam = nil;
     [Util getAttentionShipWithOperid:operid onComp:^(NSObject *responseData) {
         if (responseData != nil) {
-//            ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] init];
-//        } else {
-//            ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
-            NSString *idlist = @"";
-            for (NSDictionary *dic in (NSArray*)responseData) {
-                if (dic[@"id"] != nil && dic[@"id"] != @"") {
-                    idlist = [idlist stringByAppendingFormat:@"%@,",dic[@"id"]];
-                }
-            }
-            if ([idlist length] > 0) {
-                [Util getFleetShipWithShipIds:idlist onComp:^(NSObject *responseData) {
-                    if (responseData != nil) {
-                        ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
-                    }
-                    [self getMyTeamShip:operid];
-                }];
-            } else {
-                [self getMyTeamShip:operid];
-            }
+            ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] init];
         } else {
-            [self getMyTeamShip:operid];
+            ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
         }
+        [self getMyTeamShip:operid];
+//            NSString *idlist = @"";
+//            for (NSDictionary *dic in (NSArray*)responseData) {
+//                if (dic[@"id"] != nil && dic[@"id"] != @"") {
+//                    idlist = [idlist stringByAppendingFormat:@"%@,",dic[@"id"]];
+//                }
+//            }
+//            if ([idlist length] > 0) {
+//                [Util getFleetShipWithShipIds:idlist onComp:^(NSObject *responseData) {
+//                    if (responseData != nil) {
+//                        ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
+//                    }
+//                    [self getMyTeamShip:operid];
+//                }];
+//            } else {
+//                [self getMyTeamShip:operid];
+//            }
+//        } else {
+//            [self getMyTeamShip:operid];
+//        }
     }];
 }
 -(void) showMainViewWithDict:(NSDictionary*) dict {

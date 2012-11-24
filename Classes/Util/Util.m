@@ -181,7 +181,7 @@
 +(void)getAttentionShipWithOperid:(NSString *)operid onComp:(APIResponseBlock) compBlock {
 //     NSMutableDictionary *param = [[[NSMutableDictionary alloc] initWithCapacity:1] autorelease];
 //    [param setObject:userId forKey:@"param_operid"];
-    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getAttentionShip&param_operid=%@",operid];
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getAttentionShipFullInfo&param_operid=%@",operid];
     [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
         compBlock(responseData);
     } onError:^(NSError *error) {
@@ -396,17 +396,17 @@
     }
     return cpath;
 }
-+ (NSString*)getMapNameByMapId:(NSString*)mapId
-{
-    if (mapId.intValue == MAP_OSM) {
-        return @"OpenStreetMap";
-    } else if (mapId.intValue == MAP_GOOGLE) {
-        return @"Google";
-    } else if (mapId.intValue == MAP_CUSTOM) {
-        return @"海图";
-    }
-    return nil;
-}
+//+ (NSString*)getMapNameByMapId:(NSString*)mapId
+//{
+//    if (mapId.intValue == MAP_OSM) {
+//        return @"OpenStreetMap";
+//    } else if (mapId.intValue == MAP_GOOGLE) {
+//        return @"Google";
+//    } else if (mapId.intValue == MAP_CUSTOM) {
+//        return @"海图";
+//    }
+//    return nil;
+//}
 
 
 
@@ -460,6 +460,18 @@
     [dateFormatter release];
     return dateFromString;
 }
-
++(NetworkStatus)checkNetworkReachability {
+    Reachability *r = [[Reachability alloc] init];
+    NetworkStatus netStatus = [r currentReachabilityStatus];
+//    RELEASE_SAFELY(r);
+    return netStatus;
+}
+//+(NetworkStatus)checkApiSvrReachability {
+//    Reachability *r = [Reachability reachabilityWithHostName: API_SERVER];
+//    NetworkStatus netStatus = [r currentReachabilityStatus];
+//}
+//+(NetworkStatus)checkMapSvrReachability {
+//    
+//}
 @end
 

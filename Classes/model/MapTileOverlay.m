@@ -36,9 +36,9 @@
     ret = [mapPath stringByAppendingFormat:@"/%d-%d-%d.jpg", zoomLevel, x, y];
     if (![[NSFileManager defaultManager] fileExistsAtPath:ret]) {
         if (zoomLevel <= 1) {
-            ret = [@"http://map.ctrack.com.cn/ChartMap" stringByAppendingFormat:@"/LN%d/R%08x/C%08x.jpg", zoomLevel, y, x];
+            ret = [MAP_SERVER_URL stringByAppendingFormat:@"/ChartMap/LN%d/R%08x/C%08x.jpg", zoomLevel, y, x];
         } else {
-            ret = [@"http://map.ctrack.com.cn/ChartMap" stringByAppendingFormat:@"/L%02d/R%08x/C%08x.jpg", zoomLevel - 2, y, x];
+            ret = [MAP_SERVER_URL stringByAppendingFormat:@"/ChartMap/L%02d/R%08x/C%08x.jpg", zoomLevel - 2, y, x];
         }
     }
     return ret;

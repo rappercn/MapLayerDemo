@@ -7,20 +7,24 @@
 //
 
 //#define INTERFACE_URL @"http://test.ctrack.com.cn/ShipDBCAppServer/PhoneShipWebService?fm="
+#define API_SERVER @"218.241.183.164"
 #define INTERFACE_URL @"http://218.241.183.164:7949/ShipDBCAppServer/PhoneShipWebService?fm="
-@class ShipData;
+#define MAP_SERVER @"map.ctrack.com.cn"
+#define MAP_SERVER_URL @"http://map.ctrack.com.cn"
+@class Reachability;
+//@class ShipData;
 //@class ASIHTTPRequest;
 
-@interface Util : NSObject {
+@interface Util : NSObject 
 //    ASIHTTPRequest *asynRequest;
-    id<NSObject> delegate;
-    SEL callback;
-}
+//    id<NSObject> delegate;
+//    SEL callback;
 
 
-+ (ShipData*)parseShipDataString:(NSString*)dataString;
+
+//+ (ShipData*)parseShipDataString:(NSString*)dataString;
 + (NSString*)getDocumentPath;
-+ (NSString*)getMapNameByMapId:(NSString*)mapId;
+//+ (NSString*)getMapNameByMapId:(NSString*)mapId;
 + (NSString *)getServiceDataByJson:(NSString *) url;
 + (void)loginWithUser:(NSString *)name passwd:(NSString*) passwd onComp:(APIResponseBlock)compBlock;
 //+(NSDictionary*)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType;
@@ -44,7 +48,7 @@
 + (NSString*)getCachePath;
 + (NSString*)getCachePath:(NSString*)p;
 + (NSString*)getMapNameByMapId:(NSString*)mapId;
-+ (NSString*)getHttpData:(NSString *)url dataDictionary:(NSDictionary *)dic;
+//+ (NSString*)getHttpData:(NSString *)url dataDictionary:(NSDictionary *)dic;
 + (NSDictionary*)login:(NSString *)name passwd:(NSString*) passwd;
 + (void)getTyphoonsIdOnComp:(APIResponseBlock)compBlock;
 + (void)getTyphoonLastForecastById:(NSString*)tid onComp:(APIResponseBlock)compBlock;
@@ -53,6 +57,7 @@
 //- (ASIHTTPRequest*)asynHttpData:(NSString *)url dataDictionary:(NSDictionary *)dic;
 //+ (ASIHTTPRequest*)asynHttpData:(NSString *)url dataDictionary:(NSDictionary *)dic callback:(SEL)method parent:(id)parent;
 +(NSDate*)getNSDateFromDateString:(NSString*)dateString;
-
-
+//+(NetworkStatus)checkApiSvrReachability;
+//+(NetworkStatus)checkMapSvrReachability;
++(NetworkStatus)checkNetworkReachability;
 @end

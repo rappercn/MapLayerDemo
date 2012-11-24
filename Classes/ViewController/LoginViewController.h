@@ -16,6 +16,7 @@
     IBOutlet UITextField *nameField;
     IBOutlet UITextField *passWordField;
 //    MBProgressHUD* progress_;
+    BOOL alerting;
     
 }
 @property (nonatomic, retain)IBOutlet UITextField *nameField;

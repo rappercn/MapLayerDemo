@@ -29,8 +29,8 @@
 }
 - (NSString *)urlForPointWithX:(NSUInteger)x andY:(NSUInteger)y andZoomLevel:(NSUInteger)zoomLevel {
     NSString *shipMapPath = [[Util getCachePath] stringByAppendingFormat:@"/shipmap/%d/%d-%d-%d.png",zoomLevel, zoomLevel, x, y];
-    static NSString *mctShipUrl = @"http://map.ctrack.com.cn/CustomMap/mctShipGps";
-    static NSString *ggShipUrl = @"http://map.ctrack.com.cn/CustomMap/ggShipGps";
+    NSString *mctShipUrl = [MAP_SERVER_URL stringByAppendingString:@"/CustomMap/mctShipGps"];
+    NSString *ggShipUrl = [MAP_SERVER_URL stringByAppendingString:@"/CustomMap/ggShipGps"];
     if ([[NSFileManager defaultManager] fileExistsAtPath:shipMapPath]) {
         NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:shipMapPath error:nil];
         NSDate *cDate = [attrs objectForKey:NSFileCreationDate];
