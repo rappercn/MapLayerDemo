@@ -14,7 +14,7 @@
 //#import "ShipMajor.h"
 //#import "Util.h"
 @implementation ShipFocusViewController
-@synthesize searchDisplayController, searchResults, searchType,myFocusArray;
+//@synthesize searchDisplayController, searchResults, searchType,myFocusArray;
 -(id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -31,91 +31,97 @@
     [super viewDidLoad];
     self.tableView.scrollEnabled = YES;
 
-    searchType = [[NSArray arrayWithObjects:@"shipName", @"callSign", @"imo", @"mmsi", nil] retain];
-    [self.tableView reloadData];
-    searchDisplayController.searchBar.placeholder = @"搜索";
-    [searchDisplayController.searchBar setShowsCancelButton:NO];
-    searchDisplayController.searchBar.scopeButtonTitles = [NSArray arrayWithObjects:@"船名", @"呼号", @"imo", @"mmsi", nil];
+//    searchType = [[NSArray arrayWithObjects:@"shipName", @"callSign", @"imo", @"mmsi", nil] retain];
+//    [self.tableView reloadData];
+    searchController.searchBar.placeholder = @"搜索";
+    [searchController.searchBar setShowsCancelButton:NO];
+    searchController.searchBar.scopeButtonTitles = [NSArray arrayWithObjects:@"船名", @"呼号", @"imo", @"mmsi", nil];
     
    
 }
 - (void)viewDidUnload {
-    [searchDisplayController release];
-    searchDisplayController = nil;
+//    [searchBar release];
+//    searchBar = nil;
+
     [super viewDidUnload];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    myFocusArray = [AppDelegate getMyFocusShips];
+//    myFocusArray = [AppDelegate getMyFocusShips];
     [[self tableView] reloadData];
 }
 
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger rows = 0;
+//    NSInteger rows = 0;
     
-    if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]){
-        rows = [self.searchResults count];
+    if ([tableView isEqual:searchController.searchResultsTableView]){
+        return [searchResults count];
     }
     else{
-        rows = [myFocusArray count];
+        return [ApplicationDelegate.myFocusShips count];
     }
-    return rows;
+//    return rows;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView 
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *cellid = @"focusCellId";
     
     UITableViewCell *cell = [tableView 
-                             dequeueReusableCellWithIdentifier:CellIdentifier];
+                             dequeueReusableCellWithIdentifier:cellid];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] 
                  initWithStyle:UITableViewCellStyleDefault 
-                 reuseIdentifier:CellIdentifier] autorelease];
+                 reuseIdentifier:cellid] autorelease];
         [cell setBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg.png"]]];
-        [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg_on.png"]]];
+//        [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg_on.png"]]];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.backgroundColor = [UIColor clearColor];
     }
     
 
-    /* Configure the cell. */
-    if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]){
-      //  cell.textLabel.text = ((ShipData*) [searchResults objectAtIndex:indexPath.row]).shipName; 
-        
-        NSString *name = [[searchResults objectAtIndex:indexPath.row] objectForKey:@"shipname"];
-        cell.textLabel.text = name;
+    NSString *title = nil;
+    if ([tableView isEqual:searchController.searchResultsTableView]){
+        title = searchResults[indexPath.row][@"shipnamecn"];
+        if (title != nil && ![title isEqualToString:@""]) {
+            cell.textLabel.text = title;
+        } else {
+            cell.textLabel.text = searchResults[indexPath.row][@"shipname"];
+        }
+    }else{
+        title = ApplicationDelegate.myFocusShips[indexPath.row][@"shipnamecn"];
+        if (title != nil && ![title isEqualToString:@""]) {
+            cell.textLabel.text = title;
+        } else {
+            cell.textLabel.text = ApplicationDelegate.myFocusShips[indexPath.row][@"shipname"];
+        }
     }
-    else{
-        NSString *name = [[myFocusArray objectAtIndex:indexPath.row] objectForKey:@"shipname"];
-        cell.textLabel.text = name;
-    }
-    UIFont *font = [UIFont fontWithName:@"Arial" size:18];
-    cell.textLabel.font = font;
+//    UIFont *font = [UIFont fontWithName:@"Arial" size:18];
+//    cell.textLabel.font = font;
     return cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
         ShipDetailViewController *next = [[ShipDetailViewController alloc] initWithNibName:@"ShipDetailViewController" bundle:nil];
-        if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]){
+        if ([tableView isEqual:searchController.searchResultsTableView]){
             
            // ShipData *ship = [[[ShipData alloc] init ] autorelease];
            // ship.mobileId = [[self.searchResults objectAtIndex:indexPath.row] objectForKey:@"id"];
            // ship.shipName = [[self.searchResults objectAtIndex:indexPath.row] objectForKey:@"shipname"];
            // next.baseData = ship;
            
-             next.shipdict = [self.searchResults objectAtIndex:indexPath.row];
+             next.shipdict = [searchResults objectAtIndex:indexPath.row];
         }
         else{
            // ShipData *ship = [[[ShipData alloc] init ] autorelease];
            // ship.mobileId = [[myFocusArray objectAtIndex:indexPath.row] objectForKey:@"id"];
            // ship.shipName = [[myFocusArray objectAtIndex:indexPath.row] objectForKey:@"shipname"];
            // next.baseData = ship;
-               next.shipdict = [myFocusArray objectAtIndex:indexPath.row];
+               next.shipdict = [ApplicationDelegate.myFocusShips objectAtIndex:indexPath.row];
         }
         [self.navigationController pushViewController:next animated:YES];
 }
@@ -127,10 +133,10 @@
     NSPredicate *resultPredicate;
     switch (typeIndex) {
         case 0:
-            resultPredicate = [NSPredicate predicateWithFormat:@"shipname contains[cd] %@", searchText];
+            resultPredicate = [NSPredicate predicateWithFormat:@"(shipname contains[cd] %@) OR (shipnamecn contains[cd] %@)", searchText, searchText];
             break;
         case 1:
-            resultPredicate = [NSPredicate predicateWithFormat:@"callSign contains[cd] %@", searchText];
+            resultPredicate = [NSPredicate predicateWithFormat:@"callsign contains[cd] %@", searchText];
             break;
         case 2:
             resultPredicate = [NSPredicate predicateWithFormat:@"imo contains[cd] %@", searchText];
@@ -141,13 +147,14 @@
         default:
             break;
     }
-    self.searchResults = [myFocusArray filteredArrayUsingPredicate:resultPredicate];
+    RELEASE_SAFELY(searchResults);
+    searchResults = [[NSMutableArray alloc] initWithArray:[ApplicationDelegate.myFocusShips filteredArrayUsingPredicate:resultPredicate]];
 }
 -(BOOL)searchDisplayController:(UISearchDisplayController *)controller 
 shouldReloadTableForSearchString:(NSString *)searchString
 {   
     
-    int idx = [self.searchDisplayController.searchBar selectedScopeButtonIndex];
+    int idx = [searchController.searchBar selectedScopeButtonIndex];
 //    NSString *searchField = [searchType objectAtIndex:idx];
     [self filterContentForSearchText:searchString typeIndex:idx];
 //                               scope:[[self.searchDisplayController.searchBar scopeButtonTitles]
@@ -160,8 +167,8 @@ shouldReloadTableForSearchString:(NSString *)searchString
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller 
 shouldReloadTableForSearchScope:(NSInteger)searchOption
 {
-    int idx = [self.searchDisplayController.searchBar selectedScopeButtonIndex];
-    [self filterContentForSearchText:[self.searchDisplayController.searchBar text] typeIndex:idx];
+    int idx = [searchController.searchBar selectedScopeButtonIndex];
+    [self filterContentForSearchText:[searchController.searchBar text] typeIndex:idx];
 //                               scope:[[self.searchDisplayController.searchBar scopeButtonTitles]
 //                                      objectAtIndex:searchOption]];
     
@@ -177,14 +184,18 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
 
 #pragma mark -
 - (void)dealloc {
-    [searchDisplayController release];
-    [myFocusArray release];
-    myFocusArray = nil;
-    [searchResults release];
-    searchResults = nil;
+//    [searchDisplayController release];
+    RELEASE_SAFELY(searchController);
+//    [myFocusArray release];
+//    myFocusArray = nil;
+//    [searchResults release];
+//    searchResults = nil;
 
-    [searchType release];
-    searchType = nil;
+    RELEASE_SAFELY(searchResults);
+//    [searchType release];
+//    searchType = nil;
+//    RELEASE_SAFELY(searchType);
+
     [super dealloc];
 }
 

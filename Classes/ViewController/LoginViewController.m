@@ -210,7 +210,7 @@
     ApplicationDelegate.myFocusShips = nil;
     ApplicationDelegate.myShipsTeam = nil;
     [Util getAttentionShipWithOperid:operid onComp:^(NSObject *responseData) {
-        if (responseData != nil) {
+        if (responseData == nil) {
             ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] init];
         } else {
             ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];

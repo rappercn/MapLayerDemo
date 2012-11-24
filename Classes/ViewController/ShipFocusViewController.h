@@ -9,14 +9,15 @@
 #import <Foundation/Foundation.h>
 
 @interface ShipFocusViewController : UITableViewController <UISearchBarDelegate> {
-    UISearchDisplayController *searchDisplayController;
+
+    IBOutlet UISearchDisplayController *searchController;
     NSMutableArray *searchResults;
-    NSArray *searchType;
+//    NSArray *searchType;
 }
 
-@property (nonatomic, retain) IBOutlet UISearchDisplayController *searchDisplayController;
-@property (nonatomic, copy) NSMutableArray *searchResults;
-@property (nonatomic, retain) NSArray *searchType;
-
-@property(nonatomic ,retain)NSArray *myFocusArray;
+//@property (nonatomic, retain) IBOutlet UISearchDisplayController *searchDisplayController;
+//@property (nonatomic, copy) NSMutableArray *searchResults;
+//@property (nonatomic, retain) NSArray *searchType;
+//
+//@property(nonatomic ,retain)NSArray *myFocusArray;
 @end

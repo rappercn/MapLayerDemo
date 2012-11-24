@@ -130,7 +130,7 @@
 
 }
 
-+(void*)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType onComp:(APIResponseBlock)compBlock {   
++(void)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType onComp:(APIResponseBlock)compBlock {
     
     NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getSearchRecByKeyInShipBaseInfo&param_keystr=%@&param_start_ship=%@&param_end_ship=%@&param_type=%@", keystr, start_ship,end_ship,shipType];
     [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
