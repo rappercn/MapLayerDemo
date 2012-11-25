@@ -239,9 +239,12 @@
 }
 -(void) showMainViewWithDict:(NSDictionary*) dict {
     
-    [[NSUserDefaults standardUserDefaults] setValue:dict[@"userid"] forKey:@"userid"];
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    [def setValue:dict[@"userid"] forKey:@"userid"];
     NSString *pwd = passWordField.text;
-    [[NSUserDefaults standardUserDefaults] setValue:pwd forKey:@"password"];
+    [def setValue:pwd forKey:@"password"];
+    [def setValue:dict[@"operid"] forKey:@"operid"];
+    ApplicationDelegate.opeid = dict[@"operid"];
     
     //myfocusships
     [self getAttentionShip:dict[@"operid"]];

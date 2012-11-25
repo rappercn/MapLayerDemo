@@ -121,9 +121,9 @@
 #pragma mark - View Delegate
 - (void)viewDidLoad
 {
-    NSArray *myfocus = [AppDelegate getMyFocusShips];
-    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"shipname contains[cd] %@", [shipdict objectForKey:@"shipname"]];
-    NSArray *isFocusArray = [myfocus filteredArrayUsingPredicate:resultPredicate];
+//    NSArray *myfocus = ApplicationDelegate.myFocusShips;
+    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"shipid == %@", shipdict[@"shipid"]];
+    NSArray *isFocusArray = [ApplicationDelegate.myFocusShips filteredArrayUsingPredicate:resultPredicate];
     if(isFocusArray == nil || isFocusArray.count == 0){
         isFocused = false;
     }else{

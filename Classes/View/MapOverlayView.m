@@ -179,7 +179,7 @@
     
     NSString *savePath = [(id<TileOverlay>)self.overlay imageSavePathWithX:tilex andY:tiley andZoomLevel:zoomLevel];
 
-    self.netOperation = [ApplicationDelegate.imageDownloader
+    [ApplicationDelegate.imageDownloader
                          downloadMapImageFrom:url
                          toFile:savePath
                          onCompletion:^() {

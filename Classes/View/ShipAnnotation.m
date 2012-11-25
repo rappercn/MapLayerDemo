@@ -9,7 +9,7 @@
 #import "ShipAnnotation.h"
 
 @implementation ShipAnnotation
-@synthesize shipdict, retainFlag, annotationType;
+@synthesize shipdict, annotationType;
 -(id)initWithShipDictionary:(NSDictionary *)shipDictionary {
     self = [super init];
     shipdict = [shipDictionary retain];

@@ -36,7 +36,7 @@
 
 +(void)getCompanyGroups:(NSString *)userId onComp:(APIResponseBlock)compBlock;
 //+(NSDictionary*)getCompanyGroups:(NSString *)userId;
-+(void)getMobilesInfo:(NSString *)userId groupId:(NSString *) groupId onComp:(APIResponseBlock)compBlock;
++(void)getMobilesInfoWithOperId:(NSString *)operid groupId:(NSString *) groupId onComp:(APIResponseBlock)compBlock;
 //+(NSDictionary*)getMobilesInfo:(NSString *)userId groupId:(NSString *) groupId ;
 +(void)addAttentionShip:(NSString *)userId shipId:(NSString *) shipId onComp:(APIResponseBlock)compBlock;
 //+(NSDictionary*)addAttentionShip:(NSString *)userId shipId:(NSString *) shipId;

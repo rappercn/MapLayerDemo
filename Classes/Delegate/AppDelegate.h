@@ -29,25 +29,26 @@
 @property (nonatomic, assign) BOOL showShip;
 @property (nonatomic, retain) UIWindow *window;
 @property (nonatomic, retain) UITabBarController *tabBarController;
-@property (nonatomic, retain) NSMutableArray* myfav;           //local ships detail
+//@property (nonatomic, retain) NSMutableArray* myfav;           //local ships detail
 @property (nonatomic, retain) NSMutableArray* myFocusShips;    //my focus ships
 @property (nonatomic, retain) NSMutableArray* myShipsTeam;     //ship team
 @property (nonatomic, retain) ImageDownloader *imageDownloader;
 @property (nonatomic, retain) APIEngine *apiEngine;
 @property (nonatomic, retain) NSDictionary *seletedShip;
-@property (nonatomic, retain) NSMutableArray* shipMajor;       //local ships major
+//@property (nonatomic, retain) NSMutableArray* shipMajor;       //local ships major
+@property (nonatomic, retain) NSString *opeid;
 //@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 //@property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 //@property (nonatomic, retain) NSManagedObjectModel *managedObjectModel;
 
 
 
-+ (AppDelegate *)getAppDelegate;
-+ (NSMutableArray *)getMyFavArray;
-+ (NSMutableArray *)getShipMajor;
+//+ (AppDelegate *)getAppDelegate;
+//+ (NSMutableArray *)getMyFavArray;
+//+ (NSMutableArray *)getShipMajor;
 //+ (NSManagedObjectContext *)getManagedObjectContext;
-+ (NSMutableArray *)getMyFocusShips ;
-+ (NSMutableArray *)getMyShipsTeam ;
+//+ (NSMutableArray *)getMyFocusShips ;
+//+ (NSMutableArray *)getMyShipsTeam ;
 
 
 -(void) dismissHUD;

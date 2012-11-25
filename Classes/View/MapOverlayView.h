@@ -12,7 +12,7 @@
     BOOL downloaded;
 }
 
-@property (nonatomic, strong) MKNetworkOperation *netOperation;
+//@property (nonatomic, strong) MKNetworkOperation *netOperation;
 //@property (nonatomic, strong) NSDictionary *metadata;
 
 @end

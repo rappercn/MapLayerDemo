@@ -28,21 +28,22 @@
 @synthesize myFocusShips;
 @synthesize myShipsTeam;
 @synthesize imageDownloader;
-+ (AppDelegate *)getAppDelegate {
-    return (AppDelegate *) [[UIApplication sharedApplication] delegate];
-}
-+ (NSMutableArray *)getMyFavArray {
-    return ((AppDelegate *) [[UIApplication sharedApplication] delegate]).myfav;
-}
-+ (NSMutableArray *)getShipMajor {
-    return ((AppDelegate *) [[UIApplication sharedApplication] delegate]).shipMajor;
-}
-+ (NSMutableArray *)getMyFocusShips {
-    return ((AppDelegate *) [[UIApplication sharedApplication] delegate]).myFocusShips;
-}
-+ (NSMutableArray *)getMyShipsTeam {
-    return ((AppDelegate *) [[UIApplication sharedApplication] delegate]).myShipsTeam;
-}
+@synthesize opeid;
+//+ (AppDelegate *)getAppDelegate {
+//    return (AppDelegate *) [[UIApplication sharedApplication] delegate];
+//}
+//+ (NSMutableArray *)getMyFavArray {
+//    return ((AppDelegate *) [[UIApplication sharedApplication] delegate]).myfav;
+//}
+//+ (NSMutableArray *)getShipMajor {
+//    return ((AppDelegate *) [[UIApplication sharedApplication] delegate]).shipMajor;
+//}
+//+ (NSMutableArray *)getMyFocusShips {
+//    return ((AppDelegate *) [[UIApplication sharedApplication] delegate]).myFocusShips;
+//}
+//+ (NSMutableArray *)getMyShipsTeam {
+//    return ((AppDelegate *) [[UIApplication sharedApplication] delegate]).myShipsTeam;
+//}
 //+ (NSManagedObjectContext *)getManagedObjectContext {
 //    return ((AppDelegate *)[[UIApplication sharedApplication] delegate]).managedObjectContext;
 //}

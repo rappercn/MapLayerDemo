@@ -81,6 +81,7 @@
 //        [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg_on.png"]]];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.backgroundColor = [UIColor clearColor];
+        cell.textLabel.font = [UIFont systemFontOfSize:12];
     }
     
 

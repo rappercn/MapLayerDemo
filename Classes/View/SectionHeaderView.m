@@ -7,11 +7,11 @@
 //
 
 #import "SectionHeaderView.h"
-extern  NSInteger heightHeader;
+//extern  NSInteger heightHeader;
 @implementation SectionHeaderView
 
-@synthesize titleLabel, disclosureButton, delegate, section, cells, aTag, heightForHeadView, doubleType;
--(id)initWithFrame:(CGRect)frame title:(NSString*)title section:(NSInteger)sectionNumber  opened:(BOOL)isOpen delegate:(id<SectionHeaderViewDelegate>)aDelegate courseSection:(BOOL)isCourseSection
+@synthesize titleLabel;
+-(id)initWithFrame:(CGRect)frame title:(NSString *)title forSection:(NSInteger)forSection delegate:(id<SectionHeaderViewDelegate>)aDelegate openStatus:(BOOL)isOpen
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -19,7 +19,7 @@ extern  NSInteger heightHeader;
 																			action:@selector(toggleOpen:)] autorelease];
 		[self addGestureRecognizer:tapGesture];
 		self.userInteractionEnabled = YES;
-		section = sectionNumber;
+		section = forSection;
 		delegate = aDelegate;
         
 		disclosureButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
@@ -69,15 +69,15 @@ extern  NSInteger heightHeader;
 }
 -(BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {
-    for (UIView* view in self.subviews) {
-        if ([view isKindOfClass:[UIButton class]] && [view tag] > 0 && view.frame.origin.x > 0) {
-            if (CGRectContainsPoint(view.frame, point)) {
-                buttonClicked = YES;
-                btnTag = [view tag];
-                break;
-            }
-        }
-    }
+//    for (UIView* view in self.subviews) {
+//        if ([view isKindOfClass:[UIButton class]] && [view tag] > 0 && view.frame.origin.x > 0) {
+//            if (CGRectContainsPoint(view.frame, point)) {
+//                buttonClicked = YES;
+////                btnTag = [view tag];
+//                break;
+//            }
+//        }
+//    }
     return [super pointInside:point withEvent:event];
 }
 -(IBAction)toggleOpen:(id)sender {
@@ -86,42 +86,57 @@ extern  NSInteger heightHeader;
 }
 -(IBAction)toggleAction:(BOOL)userAction {
 	
-    if (buttonClicked) {
-        if ([delegate respondsToSelector:@selector(sectionHeaderView:buttonClicked:buttonTag:)]) {
-            [delegate sectionHeaderView:self buttonClicked:section buttonTag:btnTag];
-        }
-        buttonClicked = NO;
-        return;
-    }
+//    if (buttonClicked) {
+//        if ([delegate respondsToSelector:@selector(sectionHeaderView:buttonClicked:buttonTag:)]) {
+//            [delegate sectionHeaderView:self buttonClicked:section buttonTag:btnTag];
+//        }
+//        buttonClicked = NO;
+//        return;
+//    }
 	disclosureButton.tag = (disclosureButton.tag == 1 ? 0 : 1);
-
-    if (userAction) {
+    if (!disclosureButton.tag == 1) {
+        [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderClose.png"] forState:UIControlStateNormal];
+        [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderClose_on.png"] forState:UIControlStateHighlighted];
         
-        if (!disclosureButton.tag == 1) {
-            disclosureButton.frame = CGRectMake(0.0, 0.0, 320.0, 42);
-            heightForHeadView = 42;
-            self.frame =CGRectMake(0, 0, 320, 42);
-            [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderClose.png"] forState:UIControlStateNormal];
-            [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderClose_on.png"] forState:UIControlStateHighlighted];
-            
-            if ([delegate respondsToSelector:@selector(sectionHeaderView:sectionClosed:)]) {
-                [delegate sectionHeaderView:self sectionClosed:section];
-                
-            }
+        if (userAction && [delegate respondsToSelector:@selector(sectionHeaderView:sectionClosed:)]) {
+            [delegate sectionHeaderView:self sectionClosed:section];
         }
-        else {
-            heightForHeadView = 66;
-            self.frame =CGRectMake(0, 0, 320, 66);
-            disclosureButton.frame = CGRectMake(0.0, 0.0, 320.0, 42);
-            [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderOpen.png"] forState:UIControlStateNormal];
-            [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderOpen_on.png"] forState:UIControlStateHighlighted];
-            
-            if ([delegate respondsToSelector:@selector(sectionHeaderView:sectionOpened:)]) {
-                [delegate sectionHeaderView:self sectionOpened:section];
-              
-            }
+    }
+    else {
+        [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderOpen.png"] forState:UIControlStateNormal];
+        [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderOpen_on.png"] forState:UIControlStateHighlighted];
+        
+        if (userAction && [delegate respondsToSelector:@selector(sectionHeaderView:sectionOpened:)]) {
+            [delegate sectionHeaderView:self sectionOpened:section];
         }
-	}
+    }
+
+//    if (userAction) {
+//        
+//        if (!disclosureButton.tag == 1) {
+////            disclosureButton.frame = CGRectMake(0.0, 0.0, 320.0, 42);
+////            heightForHeadView = 42;
+////            self.frame =CGRectMake(0, 0, 320, 42);
+//            [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderClose.png"] forState:UIControlStateNormal];
+//            [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderClose_on.png"] forState:UIControlStateHighlighted];
+//            
+//            if ([delegate respondsToSelector:@selector(sectionHeaderView:sectionClosed:)]) {
+//                [delegate sectionHeaderView:self sectionClosed:section];
+//                
+//            }
+//        }
+//        else {
+////            heightForHeadView = 66;
+////            self.frame =CGRectMake(0, 0, 320, 66);
+////            disclosureButton.frame = CGRectMake(0.0, 0.0, 320.0, 42);
+//            [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderOpen.png"] forState:UIControlStateNormal];
+//            [disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderOpen_on.png"] forState:UIControlStateHighlighted];
+//            
+//            if ([delegate respondsToSelector:@selector(sectionHeaderView:sectionOpened:)]) {
+//                [delegate sectionHeaderView:self sectionOpened:section];
+//            }
+//        }
+//	}
 }
 
 - (void)dealloc {

@@ -8,12 +8,12 @@
 
 #import "MyTeamViewController.h"
 //#import "ShipData.h"
-//#import "ShipDetailViewController.h"
+#import "ShipDetailViewController.h"
 #import "SectionHeaderView.h"
-#import "MyFavDetailViewController.h"
+//#import "MyFavDetailViewController.h"
 
 @implementation MyTeamViewController
-@synthesize shipListTableView, openSectionIndex;
+@synthesize shipListTableView;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -22,6 +22,10 @@
     if (self) {
         self.title = @"我的船队";//NSLocalizedString(@"Second", @"Second");
         self.tabBarItem.image = [UIImage imageNamed:@"myteamLogo"];
+        
+//        UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStylePlain target:self action:@selector(reloadAll)];
+//        self.navigationItem.rightBarButtonItem = searchButton;
+//        RELEASE_SAFELY(searchButton);
     }
     return self;
 }
@@ -37,47 +41,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    AppDelegate* delegate = [AppDelegate getAppDelegate];
-//    myFav = delegate.myfav;
-    AppDelegate *delegate = [AppDelegate getAppDelegate];
-    [delegate displayHUD:self words:@"查询中"];
+    [ApplicationDelegate displayHUD:self words:@"正在读取"];
     shipListTableView.delegate = self;
     openSectionIndex = NSNotFound;
-    NSString *userId = [[NSUserDefaults standardUserDefaults] objectForKey:@"userId"];
-    favArray = [[[NSArray alloc] initWithObjects:[[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"comname%@",userId]], nil] retain];
-    teamArray = [[[NSMutableArray alloc] initWithCapacity:favArray.count] retain];
-   // NSArray* tmpArray = [[NSArray alloc] initWithObjects:@"默认船队", nil];
-     NSMutableArray* tmpArray = [[NSMutableArray alloc] init];
-    
-    [Util getCompanyGroups:userId onComp:^(NSObject *responseData) {
+    NSString *operid = ApplicationDelegate.opeid;
+    groupDetail = [[NSMutableDictionary alloc] init];
+    sectionHeaders = [[NSMutableDictionary alloc] init];
+//    prevSectionIndex = NSNotFound;
+    [Util getCompanyGroups:operid onComp:^(NSObject *responseData) {
         if (responseData != nil) {
-            
-            NSArray *myShipArray = (NSArray *)responseData;
-                for(int i=0;i<myShipArray.count;i++){
-                    NSString *groupId = [[myShipArray objectAtIndex:i] objectForKey:@"groupid"];
-                    NSString *groupName = [[myShipArray objectAtIndex:i] objectForKey:@"groupname"];
-                    NSDictionary *groupTem = [NSDictionary dictionaryWithObjectsAndKeys:groupId,@"groupId",groupName,@"groupName",nil];
-                    [tmpArray addObject:groupTem];
-                }
-               
-                [teamArray addObject:tmpArray];
-                [delegate dismissHUD];
+            NSDictionary *dic = ((NSArray*)responseData)[0];
+            groupArray = [[NSArray alloc] initWithObjects:dic,dic,dic, nil];
+        } else {
+            groupArray = [[NSArray alloc] init];
         }
-
+        [ApplicationDelegate dismissHUD];
+        [shipListTableView reloadData];
     }];
-    
-    
-//    NSDictionary *myShipGroups = [Util getCompanyGroups:userId];
-//    NSArray *myShipArray = [myShipGroups objectForKey:@"return"];
-//    for(int i=0;i<myShipArray.count;i++){
-//        NSString *groupId = [[myShipArray objectAtIndex:i] objectForKey:@"groupid"];
-//        NSString *groupName = [[myShipArray objectAtIndex:i] objectForKey:@"groupname"];
-//        NSDictionary *groupTem = [NSDictionary dictionaryWithObjectsAndKeys:groupId,@"groupId",groupName,@"groupName",nil];
-//        [tmpArray addObject:groupTem];
-//    }
-//   
-//    [teamArray addObject:tmpArray];
-
 }
 
 - (void)viewDidUnload
@@ -117,13 +97,19 @@
 
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [favArray count];
+    return [groupArray count];
 //    return [myFav count];
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (flag[section]) {
-        return [[teamArray objectAtIndex:section] count];
+        NSArray *tempArray = groupDetail[[@"section" stringByAppendingFormat:@"%d", section]];
+        if (tempArray == nil) {
+            return 0;
+        } else {
+            return [tempArray count];
+        }
+//        return [[teamArray objectAtIndex:section] count];
 //        return myFav.count;
     } else {
         return 0;
@@ -132,16 +118,26 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    ShipDetailViewController *next = [[ShipDetailViewController alloc] initWithNibName:@"ShipDetailViewController" bundle:nil];
-//    next.baseData = [myFav objectAtIndex:indexPath.row];
-    MyFavDetailViewController *next = [[MyFavDetailViewController alloc] initWithNibName:@"MyFavDetailViewController" bundle:nil];
-    next.favArray = [teamArray objectAtIndex:indexPath.section];
-    next.openSectionIndex = indexPath.row;
-    next.title = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
-    next.groupId = [[[teamArray objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"groupId"];
-    [self.navigationController pushViewController:next animated:YES];
-    
-    [next release];
+    NSDictionary *dic = groupDetail[[@"section" stringByAppendingFormat:@"%d", indexPath.section]][indexPath.row];
+    for (NSDictionary *shipdict in ApplicationDelegate.myShipsTeam) {
+        if ([shipdict[@"shipid"] isEqualToString:dic[@"shipid"]]) {
+            ShipDetailViewController *next = [[ShipDetailViewController alloc] initWithNibName:@"ShipDetailViewController" bundle:nil];
+            next.shipdict = shipdict;
+            [self.navigationController pushViewController:next animated:YES];
+            RELEASE_SAFELY(next);
+            break;
+        }
+    }
+////    ShipDetailViewController *next = [[ShipDetailViewController alloc] initWithNibName:@"ShipDetailViewController" bundle:nil];
+////    next.baseData = [myFav objectAtIndex:indexPath.row];
+//    MyFavDetailViewController *next = [[MyFavDetailViewController alloc] initWithNibName:@"MyFavDetailViewController" bundle:nil];
+//    next.favArray = [teamArray objectAtIndex:indexPath.section];
+//    next.openSectionIndex = indexPath.row;
+//    next.title = [tableView cellForRowAtIndexPath:indexPath].textLabel.text;
+//    next.groupId = [[[teamArray objectAtIndex:indexPath.section] objectAtIndex:indexPath.row] objectForKey:@"groupId"];
+//    [self.navigationController pushViewController:next animated:YES];
+//    
+//    [next release];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -155,35 +151,41 @@
         cell.textLabel.backgroundColor = [UIColor clearColor];
         cell.textLabel.font = [UIFont systemFontOfSize:12];
         [cell setBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg.png"]]];
-        [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg_on.png"]]];
+//        [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg_on.png"]]];
     }
-    NSDictionary *tem = [[teamArray objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
-    cell.textLabel.text = [@"    " stringByAppendingString:[tem objectForKey:@"groupName"]];
-//    ShipData* rowData = [myFav objectAtIndex:indexPath.row];
-//    cell.textLabel.text = rowData.shipName;
+    NSDictionary *dic = groupDetail[[@"section" stringByAppendingFormat:@"%d", indexPath.section]][indexPath.row];
+    NSString *title = dic[@"shipcnname"];
+    if (title == nil) {
+        title = dic[@"shipname"];
+    }
+    cell.textLabel.text = [@"    " stringByAppendingString: title];
 
     return cell;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (sectionArray[section] == nil) {
+//    if (sectionArray[section] == nil) {
 
-        NSString* title = [favArray objectAtIndex:section];
-        SectionHeaderView* header = [[SectionHeaderView alloc] initWithFrame:CGRectMake(0.0, 0.0, shipListTableView.bounds.size.width, 42)
-                                                                   title:title
-                                                                 section:section
-                                                                  opened:NO
-                                                                delegate:self
-                                                           courseSection:YES];
-        sectionArray[section] = header;
+    if (sectionHeaders[[@"section" stringByAppendingFormat:@"%d", section]] == nil) {
+        sectionHeaders[[@"section" stringByAppendingFormat:@"%d", section]] =
+            [[SectionHeaderView alloc] initWithFrame:CGRectMake(0.0, 0.0, shipListTableView.bounds.size.width, 42)
+                                                    title:groupArray[section][@"groupname"]
+                                                    forSection:section
+                                                    delegate:self
+                                                    openStatus:flag[section]];
     }
-    return sectionArray[section];
+    
+    return sectionHeaders[[@"section" stringByAppendingFormat:@"%d", section]];
+//        sectionArray[section] = header;
+//    }
+//    return sectionArray[section];
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
 	return 42;
 }
+#pragma mark - SectionHeaderView Delegate and methods
 -(void)sectionHeaderView:(SectionHeaderView*)sectionHeaderView sectionClosed:(NSInteger)section
 {
     flag[section] = NO;
@@ -194,44 +196,35 @@
         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:i inSection:section]];
     }
     [self.shipListTableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationTop];
-    NSLog(@"section header closed : delete %d rows from section %d", countOfRowsToDelete, section);
+//    NSLog(@"section header closed : delete %d rows from section %d", countOfRowsToDelete, section);
     openSectionIndex = NSNotFound;
 
 }
--(void)sectionHeaderView:(SectionHeaderView*)sectionHeaderView sectionOpened:(NSInteger)section
-{
-	flag[section] = YES;
-
+-(void)reloadTableViewFromSection:(NSInteger) section andHeaderView:(SectionHeaderView*)sectionHeader {
     /*
      Create an array containing the index paths of the rows to insert: These correspond to the rows for each quotation in the current section.
      */
-    NSInteger countOfRowsToInsert = [[teamArray objectAtIndex:section] count];
+    NSInteger countOfRowsToInsert = [groupDetail[[@"section" stringByAppendingFormat:@"%d", section]] count];
     NSMutableArray *indexPathsToInsert = [[NSMutableArray alloc] init];
     for (NSInteger i = 0; i < countOfRowsToInsert; i++) {
         [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:i inSection:section]];
     }
-    
-    /*
-     Create an array containing the index paths of the rows to delete: These correspond to the rows for each quotation in the previously-open section, if there was one.
-     */
+
     NSMutableArray *indexPathsToDelete = [[NSMutableArray alloc] init];
     
-    NSInteger previousOpenSectionIndex = openSectionIndex;
-    if (previousOpenSectionIndex != NSNotFound) {
-		flag[previousOpenSectionIndex] = NO;
-        [sectionArray[previousOpenSectionIndex] toggleAction:NO];
-        [sectionArray[previousOpenSectionIndex].disclosureButton setBackgroundImage:[UIImage imageNamed:@"sectionHeaderClose.png"] forState:UIControlStateNormal];
-        NSInteger countOfRowsToDelete = [[teamArray objectAtIndex:openSectionIndex] count];
+    if (openSectionIndex != NSNotFound) {
+		flag[openSectionIndex] = NO;
+        [sectionHeaders[[@"section" stringByAppendingFormat:@"%d", openSectionIndex]] toggleAction:NO];
+        NSInteger countOfRowsToDelete = [groupDetail[[@"section" stringByAppendingFormat:@"%d", openSectionIndex]] count];
         for (NSInteger i = 0; i < countOfRowsToDelete; i++) {
-            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:i inSection:previousOpenSectionIndex]];
+            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:i inSection:openSectionIndex]];
         }
-
+        
     }
     
-    // Style the animation so that there's a smooth flow in either direction.
     UITableViewRowAnimation insertAnimation;
     UITableViewRowAnimation deleteAnimation;
-    if (previousOpenSectionIndex == NSNotFound || section < previousOpenSectionIndex) {
+    if (openSectionIndex == NSNotFound || section < openSectionIndex) {
         insertAnimation = UITableViewRowAnimationTop;
         deleteAnimation = UITableViewRowAnimationBottom;
     }
@@ -239,16 +232,34 @@
         insertAnimation = UITableViewRowAnimationBottom;
         deleteAnimation = UITableViewRowAnimationTop;
     }
-    NSLog(@"section header opened : insert %d rows into section %d", countOfRowsToInsert, section);
+    //    NSLog(@"section header opened : insert %d rows into section %d", countOfRowsToInsert, section);
     // Apply the updates.
     [shipListTableView beginUpdates];
     [shipListTableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:insertAnimation];
     [shipListTableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:deleteAnimation];
     [shipListTableView endUpdates];
     openSectionIndex = section;
-    indexPathsToInsert = nil;
-    [indexPathsToInsert release];
-    indexPathsToDelete = nil;
-    [indexPathsToDelete release];
+//    prevSectionIndex = section;
+    RELEASE_SAFELY(indexPathsToInsert);
+    RELEASE_SAFELY(indexPathsToDelete);
+}
+-(void)sectionHeaderView:(SectionHeaderView*)sectionHeaderView sectionOpened:(NSInteger)section
+{
+	flag[section] = YES;
+
+    if (groupDetail[[@"section" stringByAppendingFormat:@"%d", section]] == nil) {
+        [ApplicationDelegate displayHUD:self words:@"正在读取"];
+        [Util getMobilesInfoWithOperId:ApplicationDelegate.opeid groupId:groupArray[section][@"groupid"] onComp:^(NSObject *responseData) {
+            if (responseData != nil) {
+                groupDetail[[@"section" stringByAppendingFormat:@"%d", section]] = responseData;
+            } else {
+                groupDetail[[@"section" stringByAppendingFormat:@"%d", section]] = [[NSArray alloc] init];
+            }
+            [ApplicationDelegate dismissHUD];
+            [self reloadTableViewFromSection:section andHeaderView:sectionHeaderView];
+        }];
+    } else {
+        [self reloadTableViewFromSection:section andHeaderView:sectionHeaderView];
+    }
 }
 @end

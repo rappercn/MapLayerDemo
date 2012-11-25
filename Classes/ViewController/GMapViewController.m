@@ -46,8 +46,34 @@ static const int kCRulerTag = 10;
 #define R_64KT @"64kt"
 #define SHOW_TIP_LEVEL 4
 #define MAX_SHIP_COUNT 99
-
--(void)addShipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType  {
+-(void)removeShipsFromMapByArray:(NSMutableArray*)removeArray {
+    if (removeArray == nil || [removeArray count] == 0) {
+        return;
+    }
+    for (id<MKAnnotation> anno in removeArray) {
+        if ([anno isKindOfClass:[ShipAnnotation class]]) {
+            if (((ShipAnnotation*)anno).selected) {
+                [gmapView deselectAnnotation:anno animated:YES];
+            }
+        }
+    }
+//    if (currentShipAnnotation != nil && [removeArray containsObject:currentShipAnnotation]) {
+//        [gmapView deselectAnnotation:currentShipAnnotation animated:YES];
+//        currentShipAnnotation = nil;
+//    }
+    [gmapView removeAnnotations:removeArray];
+}
+-(void)removeAllShipFromMap {
+    NSMutableArray *removeArray = [[NSMutableArray alloc] init];
+    for (id<MKAnnotation> anno in gmapView.annotations) {
+        if ([anno isKindOfClass:[ShipAnnotation class]] || [anno isKindOfClass:[ShipTipAnnotation class]]) {
+            [removeArray addObject:anno];
+        }
+    }
+    [self removeShipsFromMapByArray:removeArray];
+    RELEASE_SAFELY(removeArray);
+}
+-(id<MKAnnotation>)addShipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType  {
 //    double lat = 0.0;
 //    double lon = 0.0;
 //    if ([shipdict objectForKey:@"lat"] == nil) {
@@ -62,7 +88,8 @@ static const int kCRulerTag = 10;
     shipanno.annotationType = annoType;
     shipanno.coordinate = coord;
     [gmapView addAnnotation:shipanno];
-    RELEASE_SAFELY(shipanno);
+    return [shipanno autorelease];
+//    RELEASE_SAFELY(shipanno);
 }
 -(void)addShipTipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType {
     CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([[shipdict objectForKey:@"lat"] floatValue], [[shipdict objectForKey:@"lon"] floatValue]);
@@ -103,9 +130,8 @@ static const int kCRulerTag = 10;
             }
         }
     }
-    if ([removeArray count] > 0) {
-        [gmapView removeAnnotations:removeArray];
-    }
+
+    [self removeShipsFromMapByArray:removeArray];
     RELEASE_SAFELY(removeArray);
 
     for (NSDictionary *shipDict in shipArray) {
@@ -133,8 +159,7 @@ static const int kCRulerTag = 10;
 //        }
     }
     [gmapView removeAnnotations:removeArray];
-    [removeArray release];
-    removeArray = nil;
+    RELEASE_SAFELY(removeArray);
     
     for (id<MKOverlay> overlay in gmapView.overlays) {
         if ([overlay isKindOfClass:[MKCircle class]] || [overlay isKindOfClass:[MKPolygon class]] || [overlay isKindOfClass:[MKPolyline class]]) {
@@ -312,16 +337,6 @@ static const int kCRulerTag = 10;
 //            return;
         }
     }
-}
--(void)removeAllShipFromMap {
-    NSMutableArray *removeArray = [[NSMutableArray alloc] init];
-    for (id<MKAnnotation> anno in gmapView.annotations) {
-        if ([anno isKindOfClass:[ShipAnnotation class]] || [anno isKindOfClass:[ShipTipAnnotation class]]) {
-            [removeArray addObject:anno];
-        }
-    }
-    [gmapView removeAnnotations:removeArray];
-    RELEASE_SAFELY(removeArray);
 }
 -(void)segButtonSelected:(id)sender
 {
@@ -637,11 +652,8 @@ static const int kCRulerTag = 10;
             }
         }
     }
-    if ([removeArray count] > 0) {
-        [gmapView removeAnnotations:removeArray];
-    }
-    [removeArray release];
-    removeArray = nil;
+    [self removeShipsFromMapByArray:removeArray];
+    RELEASE_SAFELY(removeArray);
     
     for (id<TileOverlay> overlay in gmapView.overlays) {
         if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
@@ -735,8 +747,8 @@ static const int kCRulerTag = 10;
     [self reloadMapViewOverlays];
 //    AppDelegate *delegate = [AppDelegate getAppDelegate];
     NSDictionary *ship = ApplicationDelegate.seletedShip;
+    CLLocationCoordinate2D coor = CLLocationCoordinate2DMake([ship[@"lat"] doubleValue], [ship[@"lon"] doubleValue]);
     if (ship != nil) {
-        CLLocationCoordinate2D coor = CLLocationCoordinate2DMake([ship[@"lat"] doubleValue], [ship[@"lon"] doubleValue]);
         MKMapRect r = [gmapView visibleMapRect];
         MKMapPoint pt = MKMapPointForCoordinate(coor);
         r.origin.x = pt.x - r.size.width * 0.5;
@@ -748,7 +760,7 @@ static const int kCRulerTag = 10;
             id<MKAnnotation> annotation = [gmapView.annotations objectAtIndex:i];
             if ([annotation isKindOfClass:[ShipAnnotation class]]) {
                 NSDictionary *dict = [(ShipAnnotation*)annotation shipdict];
-                if (dict[@"shipid"] == ship[@"shipid"]) {
+                if ([dict[@"shipid"] isEqualToString: ship[@"shipid"]]) {
                     anno = (ShipAnnotation*)annotation;
                     break;
                 }
@@ -756,8 +768,10 @@ static const int kCRulerTag = 10;
         }
         
         if (anno == nil) {
-            anno = [[ShipAnnotation alloc] initWithShipDictionary:ship];
-            [self.gmapView addAnnotation:anno];
+            anno = [self addShipAnnotationWithData:ship andType:kCShipTypeFocus];
+//            anno = [[ShipAnnotation alloc] initWithShipDictionary:ship];
+//            anno.coordinate = coor;
+//            [self.gmapView addAnnotation:anno];
         }
         [gmapView selectAnnotation:anno animated:YES];
         ApplicationDelegate.seletedShip = nil;

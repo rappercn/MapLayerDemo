@@ -27,7 +27,7 @@
     ShipModelView *shipView = [[ShipModelView alloc] initWithShipDictionary:anno.shipdict];
     shipView.backgroundColor = [UIColor clearColor];
     [self addSubview:shipView];
-    [shipView release];
+    RELEASE_SAFELY(shipView)
 }
 
 - (id)initWithAnnotation:(id<MKAnnotation>)annotation 
@@ -70,7 +70,7 @@
 //        UIView *tmpView = [[UIView alloc] initWithFrame:self.frame];
 //        iview.backgroundColor = [UIColor redColor];
         [self.superview addSubview:iview];
-        [iview release];
+        RELEASE_SAFELY(iview);
     }
     else
     {
@@ -81,7 +81,10 @@
             }
         }
     }
+    ShipAnnotation *anno = self.annotation;
+    anno.selected = selected;
 }
+
 //-(void)drawRect:(CGRect)rect {
 //    
 ////    CATransform3D currentTransform = self.layer.transform;
@@ -129,7 +132,10 @@
 ////    self.layer.transform = rotated;
 //}
 - (void)dealloc  
-{  
-    [super dealloc];  
+{
+    for (UIView *view in self.superview.subviews) {
+        [view removeFromSuperview];
+    }
+    [super dealloc];
 }
 @end

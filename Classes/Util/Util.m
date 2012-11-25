@@ -231,8 +231,8 @@
 //}
 
 
-+(void)getMobilesInfo:(NSString *)userId groupId:(NSString *) groupId onComp:(APIResponseBlock)compBlock{
-    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getMobilesInfo&param_operid=%@&param_groupid=%@", userId,groupId];
++(void)getMobilesInfoWithOperId:(NSString *)operid groupId:(NSString *) groupId onComp:(APIResponseBlock)compBlock{
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getMobilesInfo&param_operid=%@&param_groupid=%@", operid,groupId];
     [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
         compBlock(responseData);
     } onError:^(NSError *error) {
