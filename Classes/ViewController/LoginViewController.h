@@ -31,5 +31,4 @@
 //-(IBAction) closeEditByBackground:(id)sender;
 //-(IBAction) cancelText;
 //-(IBAction) viewOfflineVideo;
-
 @end
