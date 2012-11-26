@@ -238,7 +238,6 @@
     }];
 }
 -(void) showMainViewWithDict:(NSDictionary*) dict {
-    
     NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
     [def setValue:dict[@"userid"] forKey:@"userid"];
     NSString *pwd = passWordField.text;
