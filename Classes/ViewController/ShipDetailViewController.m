@@ -78,7 +78,7 @@
 }
 
 - (IBAction)focusButtonPress:(UIButton *)sender {
-    NSDictionary *returnDic = [[[NSDictionary alloc] init ] autorelease];
+//    NSDictionary *returnDic = [[[NSDictionary alloc] init ] autorelease];
     
     
    // __block NSString  *returnData = @"";
