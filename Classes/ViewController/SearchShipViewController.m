@@ -21,7 +21,6 @@
     
     self.tableView.scrollEnabled = YES;
     currentPage = 0;
-
 //    [self.tableView reloadData];
     searchDisplayController.searchBar.placeholder = @"搜索";
     [searchDisplayController.searchBar setShowsCancelButton:NO];
