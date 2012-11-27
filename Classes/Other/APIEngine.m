@@ -10,10 +10,10 @@
 
 @implementation APIEngine
 -(MKNetworkOperation*)requestDataFrom:(NSString *)remoteURL onCompletion:(APIResponseBlock)compBlock onError:(APIErrorBlock)errorBlock {
+    
     MKNetworkOperation *op = [self operationWithURLString:remoteURL
                                                    params:nil
                                                httpMethod:@"GET"];
-    
     [op onCompletion:^(MKNetworkOperation *completedOperation) {
         
         //        NSDictionary *response = [completedOperation responseJSON];
@@ -28,14 +28,21 @@
             compBlock(nil);
         }
     } onError:^(NSError *error) {
-
+        
         NSLog(@"requestdata failed.");
         compBlock(nil);
-//        errorBlock(error);
-
+        //        errorBlock(error);
+        
     }];
-    [self enqueueOperation:op forceReload:YES];
     
-    return op;
+    @try {
+        [self enqueueOperation:op forceReload:YES];
+    }
+    @catch (NSException *exception) {
+        op = nil;
+    }
+    @finally {
+        return op;
+    }
 }
 @end

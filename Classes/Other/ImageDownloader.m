@@ -28,7 +28,17 @@
         compBlock();
     } onError:^(NSError *error) {
 //        NSLog(@"%@",error);
-        NSLog(@"error:%@",remoteURL);
+        if ([fileName hasSuffix:@".png"]) {
+            NSData *imageData = UIImagePNGRepresentation([UIImage imageNamed:@"shipng.png"]);
+            [imageData writeToFile:fileName atomically:YES];
+        } else {
+            if (error.code == 404) {
+                NSData *imageData = UIImagePNGRepresentation([UIImage imageNamed:@"null.jpg"]);
+                [imageData writeToFile:fileName atomically:YES];
+            }
+            NSLog(@"---------");
+        }
+//        NSLog(@"error:%@");
         errorBlock(error);
 //        errorBlock(error);
     }];

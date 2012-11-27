@@ -361,21 +361,21 @@ static const int kCRulerTag = 10;
     if (self.navigationItem.rightBarButtonItem.customView != nil) {
         return;
     }
-    NSLog(@"show progress bar....");
+//    NSLog(@"show progress bar....");
     UIActivityIndicatorView *actView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     self.navigationItem.rightBarButtonItem.customView = actView;
     [actView startAnimating];
     RELEASE_SAFELY(actView);
 }
 -(void)hideReloadProgress {
-    NSLog(@"hide progress bar....");
+//    NSLog(@"hide progress bar....");
     UIActivityIndicatorView *actView = (UIActivityIndicatorView*)self.navigationItem.rightBarButtonItem.customView;
     [actView stopAnimating];
     [actView removeFromSuperview];
     //        [actView release];
     self.navigationItem.rightBarButtonItem.customView = nil;
 }
--(MapRulerView*)reloadMapViewRuler
+-(void)reloadMapViewRuler
 {
     CGSize mySize = CGSizeMake(0, 0);
 //    int level = -1;
@@ -388,7 +388,7 @@ static const int kCRulerTag = 10;
         if (myRect.size.width > 50 && myRect.size.width < 90) {
             mySize = myRect.size;
 //            level = i;
-            NSLog(@"level %d, distance %d", i, distance);
+//            NSLog(@"level %d, distance %d", i, distance);
             break;
         }
     }
@@ -416,6 +416,8 @@ static const int kCRulerTag = 10;
         if (ruler == nil) {
             ruler = [[MapRulerView alloc] initWithFrame:CGRectMake(10, self.view.bounds.size.height - 30, mySize.width, 20)];
             ruler.tag = kCRulerTag;
+            [gmapView addSubview:ruler];
+            RELEASE_SAFELY(ruler);
         }
         ruler.rulerWidth = mySize.width;
         if (distance >= 1000 * NM_RATE) {
@@ -430,10 +432,7 @@ static const int kCRulerTag = 10;
             ruler.frame = frame;
         }
         [ruler setNeedsDisplay];
-//        [ruler setNeedsDisplay];
-        return ruler;
     }
-    return nil;
 }
 //-(void)reloadShipMapOverlaysWithShowShip:(BOOL)showship {
 ////    NSLog(@"--------------");
@@ -468,15 +467,14 @@ static const int kCRulerTag = 10;
     showTyphoon = [def boolForKey:@"showTyphoon"];
     
     [gmapView removeOverlays:gmapView.overlays];
+    NSLog(@"remove all overlays");
 
     MapRulerView *ruler = (MapRulerView*) [gmapView viewWithTag:kCRulerTag];
     if (ruler != nil) {
         CGRect rulerFrame = ruler.frame;
         rulerFrame.origin.x = -200;
     } else {
-        MapRulerView *ruler = [self reloadMapViewRuler];
-        [gmapView addSubview:ruler];
-        RELEASE_SAFELY(ruler);
+        [self reloadMapViewRuler];
     }
     
     if (useMap) {
@@ -488,6 +486,7 @@ static const int kCRulerTag = 10;
     ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
     [gmapView addOverlay:shipOverlay];
     RELEASE_SAFELY(shipOverlay);
+    NSLog(@"ship overlay added at reloadmapviewoverlays......");
 
     if (showTyphoon) {
         [self getTyphoonInfo];
@@ -502,83 +501,6 @@ static const int kCRulerTag = 10;
         }
     }
 }
-//-(void)shipLoaded:(NSArray*)shipArray {
-//    
-//}
-//-(void)startNewRequest {
-//    number++;
-//    NSLog(@"start new request:%d",number);
-//    requesting = YES;
-//    ASIHTTPRequest *req = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:taskUrl]];
-//    req.delegate = self;
-//    req.username=[NSString stringWithFormat:@"%d", number];
-//    [req setTimeOutSeconds:30];
-//    [req startAsynchronous];
-//}
-//-(void)doNextTaskWithPrevUrl:(NSString*)prevUrl {
-//    
-//    if (prevUrl == nil || prevUrl != taskUrl) {
-//        requesting = YES;
-//        MKNetworkOperation *op = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSObject *responseData) {
-//            if (op.readonlyRequest.URL.absoluteString != taskUrl) {
-//                requesting = NO;
-//                [self doNextTaskWithPrevUrl:op.readonlyRequest.URL.absoluteString];
-//                return;
-//            }
-////            NSLog(@"request finished, should reload overlay.%@",request.username);
-////            NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
-//            if ([(NSArray*)responseData count] > 0) {
-//                //        [self reloadShipMapOverlaysWithShowShip:NO];
-//                
-//                for (id<TileOverlay> overlay in gmapView.overlays) {
-//                    if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
-//                        [gmapView removeOverlay:overlay];
-//                        break;
-//                    }
-//                }
-//                normalShipArray = (NSArray*)responseData;
-//                [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeNormal];
-//            } else {
-//                //        [self reloadShipMapOverlaysWithShowShip:YES];
-//                BOOL exist = NO;
-//                for (id<TileOverlay> overlay in gmapView.overlays) {
-//                    if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
-//                        exist = YES;
-//                        break;
-//                    }
-//                }
-//                if (!exist) {
-//                    ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
-//                    [gmapView addOverlay:shipOverlay];
-//                    [shipOverlay release];
-//                }
-//                [ApplicationDelegate showShipCountOnTabbarWith:0];
-//            }
-//            requesting = NO;
-//            //    taskUrl = nil; 
-//            [self hideReloadProgress];
-//        } onError:^(NSError *error) {
-//            requesting = NO;
-//            taskUrl = nil;
-//            [self hideReloadProgress];
-//        }];
-//    } else {
-//        taskUrl = nil;
-//        [self hideReloadProgress];
-//    }
-//}
-//-(void)addTaskUrl:(NSString*)url {
-//    BOOL startRequest = (taskUrl == nil);
-//    taskUrl = [url retain];
-//    if (startRequest) {
-//        [self doNextTaskWithPrevUrl:nil];
-////        NSLog(@"request start..........%@", url);
-////        reloadReq = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:url]];
-////        reloadReq.delegate = self;
-////        [reloadReq startAsynchronous];
-//    }
-//}
-
 -(void)showShipInRect {
 
     [self showReloadProgress];
@@ -593,21 +515,13 @@ static const int kCRulerTag = 10;
 //        [self doNextTaskWithPrevUrl:nil];
 //    }
 
-    if (requesting) {
-        [mkNetOp cancel];
-    }
+#warning comment the op cancel action
+//    if (requesting) {
+//        [mkNetOp cancel];
+//    }
     requesting = YES;
     mkNetOp = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSObject *responseData) {
-//        requesting = NO;
-//        if (op.readonlyRequest.URL.absoluteString != taskUrl) {
-//            requesting = NO;
-//            [self doNextTaskWithPrevUrl:op.readonlyRequest.URL.absoluteString];
-//            return;
-//        }
-        //            NSLog(@"request finished, should reload overlay.%@",request.username);
-        //            NSString *json = [[NSString alloc] initWithData:[request responseData] encoding:NSUTF8StringEncoding];
         if ([(NSArray*)responseData count] > 0) {
-            //        [self reloadShipMapOverlaysWithShowShip:NO];
             
             for (id<TileOverlay> overlay in gmapView.overlays) {
                 if ([overlay isKindOfClass:[ShipTileOverlay class]]) {
@@ -663,6 +577,7 @@ static const int kCRulerTag = 10;
     ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
     [gmapView addOverlay:shipOverlay];
     [shipOverlay release];
+    NSLog(@"ship overlay added.....");
 }
 -(void)reloadAll {
 
@@ -742,7 +657,7 @@ static const int kCRulerTag = 10;
 }
 -(void)viewDidAppear:(BOOL)animated
 {
-    NSLog(@"did appear");
+//    NSLog(@"did appear");
     [super viewDidAppear:animated];
     [self reloadMapViewOverlays];
 //    AppDelegate *delegate = [AppDelegate getAppDelegate];
@@ -883,7 +798,7 @@ static const int kCRulerTag = 10;
 //        int index = shipView.arrayIndex;
         ShipDetailViewController *next = [[ShipDetailViewController alloc] initWithNibName:@"ShipDetailViewController"];
         next.shipdict = ((ShipAnnotation*)view.annotation).shipdict;
-        NSLog(@"%@",next.shipdict);
+//        NSLog(@"%@",next.shipdict);
 //        AppDelegate *delegate = [AppDelegate getAppDelegate];
 //        NSArray *array = delegate.myfav;
 //        next.baseData = [array objectAtIndex:index];

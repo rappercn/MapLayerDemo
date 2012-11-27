@@ -10,6 +10,8 @@
 
 @interface MapOverlayView : MKOverlayView {
     BOOL downloaded;
+    int counter;
+    MKMapRect prevRect;
 }
 
 //@property (nonatomic, strong) MKNetworkOperation *netOperation;
