@@ -93,10 +93,13 @@
     
 //    NSLog(@"%@", [Util getCachePath]);
     NSString *url = [(id<TileOverlay>)self.overlay urlForPointWithX:tilex andY:tiley andZoomLevel:zoomLevel];
+//    if ([url hasSuffix:@".png"]) {
+//        NSLog(@"test png tile");
+//    }
     if (![url hasPrefix:@"http"]) {
         return YES;
     }
-    NSLog(@"download:%@",url);
+//    NSLog(@"download:%@",url);
     NSString *savePath = [(id<TileOverlay>)self.overlay imageSavePathWithX:tilex andY:tiley andZoomLevel:zoomLevel];
     counter++;
     [ApplicationDelegate.imageDownloader
@@ -128,6 +131,11 @@
 
     @try {
         NSString *mapPath = [overlay urlForPointWithX:tilex andY:tiley andZoomLevel:zoomLevel];
+//        if ([mapPath hasSuffix:@".png"]) {
+//            NSLog(@"draw rect png %d,%d",tilex,tiley);
+//        } else {
+//            NSLog(@"draw map rect jpg %d,%d...",tilex,tiley);
+//        }
         UIImage *map = nil;
         if ([[NSFileManager defaultManager] fileExistsAtPath:mapPath]) {
             //        NSLog(@"map exist,draw map normal");
@@ -141,7 +149,15 @@
         }
         //    map = [UIImage imageNamed:@"null.jpg"];
         if (map != nil) {
-            [map drawInRect:[self rectForMapRect:mapRect] blendMode:kCGBlendModeNormal alpha:overlay.defaultAlpha];
+            [map drawInRect:[self rectForMapRect:mapRect] blendMode:kCGBlendModeNormal alpha:1.0];
+//            if ([mapPath hasSuffix:@".png"]) {
+//                
+//                NSLog(@"%d,%d,%@",tilex,tiley,mapPath);
+//                [[UIImage imageNamed:@"about.png"] drawInRect:[self rectForMapRect:mapRect] blendMode:kCGBlendModeNormal alpha:1.0];
+//            }
+
+//        } else {
+//            NSLog(@"%@",mapPath);
         }
     }
     @catch (NSException *exception) {

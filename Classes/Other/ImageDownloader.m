@@ -14,7 +14,7 @@
     MKNetworkOperation *op = [self operationWithURLString:remoteURL
                                                    params:nil
                                                httpMethod:@"GET"];
-    
+//    [self useCache];
 //    [op addDownloadStream:[NSOutputStream outputStreamToFileAtPath:fileName
 //                                                            append:YES]];
 //    NSLog(@"---------%@", remoteURL);

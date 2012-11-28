@@ -28,7 +28,14 @@
     return self;
 }
 - (NSString *)urlForPointWithX:(NSUInteger)x andY:(NSUInteger)y andZoomLevel:(NSUInteger)zoomLevel {
-    NSString *shipMapPath = [[Util getCachePath] stringByAppendingFormat:@"/shipmap/%d/%d-%d-%d.png",zoomLevel, zoomLevel, x, y];
+    NSString *shipMapPath;
+    BOOL useMap = [[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"];
+    if (useMap) {
+        shipMapPath = [[Util getCachePath] stringByAppendingFormat:@"/mctshipmap/%d/%d-%d-%d.png",zoomLevel, zoomLevel, x, y];
+    } else {
+        shipMapPath = [[Util getCachePath] stringByAppendingFormat:@"/shipmap/%d/%d-%d-%d.png",zoomLevel, zoomLevel, x, y];
+    }
+    
     NSString *mctShipUrl = [MAP_SERVER_URL stringByAppendingString:@"/CustomMap/mctShipGps"];
     NSString *ggShipUrl = [MAP_SERVER_URL stringByAppendingString:@"/CustomMap/ggShipGps"];
     if ([[NSFileManager defaultManager] fileExistsAtPath:shipMapPath]) {
@@ -40,13 +47,13 @@
                 int lvl = pow(2, zoomLevel - 5);
                 int row = y / lvl;
                 int col = x / lvl;
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"]) {
+                if (useMap) {
                     shipMapPath = [mctShipUrl stringByAppendingFormat:@"/%d/R%d/C%d/%d-%d-%d.png", zoomLevel, row, col, zoomLevel, x, y];
                 } else {
                     shipMapPath = [ggShipUrl stringByAppendingFormat:@"/%d/R%d/C%d/%d-%d-%d.png", zoomLevel, row, col, zoomLevel, x, y];
                 }
             } else {
-                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"]) {
+                if (useMap) {
                     shipMapPath = [mctShipUrl stringByAppendingFormat:@"/%d/%d-%d-%d.png", zoomLevel, zoomLevel, x, y];
                 } else {
                     shipMapPath = [ggShipUrl stringByAppendingFormat:@"/%d/%d-%d-%d.png", zoomLevel, zoomLevel, x, y];
@@ -58,13 +65,13 @@
             int lvl = pow(2, zoomLevel - 5);
             int row = y / lvl;
             int col = x / lvl;
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"]) {
+            if (useMap) {
                 shipMapPath = [mctShipUrl stringByAppendingFormat:@"/%d/R%d/C%d/%d-%d-%d.png", zoomLevel, row, col, zoomLevel, x, y];
             } else {
                 shipMapPath = [ggShipUrl stringByAppendingFormat:@"/%d/R%d/C%d/%d-%d-%d.png", zoomLevel, row, col, zoomLevel, x, y];
             }
         } else {
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"]) {
+            if (useMap) {
                 shipMapPath = [mctShipUrl stringByAppendingFormat:@"/%d/%d-%d-%d.png", zoomLevel, zoomLevel, x, y];
             } else {
                 shipMapPath = [ggShipUrl stringByAppendingFormat:@"/%d/%d-%d-%d.png", zoomLevel, zoomLevel, x, y];
