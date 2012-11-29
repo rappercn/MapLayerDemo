@@ -63,9 +63,10 @@
     if(returnData != nil && [returnData isEqualToString:@"1"]){
         message = @"成功";
         [self showButtonTitle];
-        [Util getAttentionShipFullInfo:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"] onComp:^(NSObject *responseData) {
+        [Util getAttentionShipFullInfo:ApplicationDelegate.opeid onComp:^(NSObject *responseData) {
             if (responseData != nil) {
                 ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
+                NSLog(@"%d",ApplicationDelegate.myFocusShips.count);
             }
         }];
         
@@ -84,12 +85,12 @@
    // __block NSString  *returnData = @"";
 
     if(isFocused){
-        [Util delAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"] onComp:^(NSObject *responseData) {
+        [Util delAttentionShip:ApplicationDelegate.opeid  shipId:[shipdict objectForKey:@"shipid"] onComp:^(NSObject *responseData) {
             
             [self alertFocusMessage:(NSString *)responseData];
         }];
     }else{
-        [Util addAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"] onComp:^(NSObject *responseData) {
+        [Util addAttentionShip:ApplicationDelegate.opeid  shipId:[shipdict objectForKey:@"shipid"] onComp:^(NSObject *responseData) {
             [self alertFocusMessage:(NSString *)responseData];
 
         }];
