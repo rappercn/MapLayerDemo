@@ -9,6 +9,7 @@
 //#import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 @class ShipAnnotation;
+@class MUtil;
 //@class LevelMapData;
 //@class ASIHTTPRequest;
 @interface GMapViewController : UIViewController<MKMapViewDelegate> {
@@ -31,6 +32,7 @@
     BOOL useMap;
     BOOL showShipName;
     BOOL showTyphoon;
+    MUtil *mapUtil;
 //    ShipAnnotation *currentShipAnnotation;
 }
 @property (nonatomic, retain) IBOutlet MKMapView *gmapView;

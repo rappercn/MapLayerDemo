@@ -31,6 +31,7 @@
 //#import "ASIHTTPRequest.h"
 //#import "JSONKit.h"
 //#import "APIEngine.h"
+#import "MUtil.h"
 
 
 @implementation GMapViewController
@@ -74,16 +75,21 @@ static const int kCRulerTag = 10;
     RELEASE_SAFELY(removeArray);
 }
 -(id<MKAnnotation>)addShipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType  {
+    CLLocationCoordinate2D coord;
 //    double lat = 0.0;
 //    double lon = 0.0;
-//    if ([shipdict objectForKey:@"lat"] == nil) {
+    if (useMap) {
+        coord = [mapUtil convertCoordinateWithLatitude:[shipdict[@"lat"] floatValue] andLontitude:[shipdict[@"lon"] floatValue]];
+//        double lat2 = [[shipdict objectForKey:@"lat"] floatValue];
+//        double lon2 = [[shipdict objectForKey:@"lon"] floatValue];
+//        MapUtil *mu = [[MapUtil alloc] init];
+//        ChartMercator2WebMercator(lat2, lon2, &lat, &lon);
+    } else {
 //        lat = [[shipdict objectForKey:@"lat"] floatValue];
 //        lon = [[shipdict objectForKey:@"lon"] floatValue];
-//        double lat2, lon2;
-//    } else {
-//        
-//    }
-    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([[shipdict objectForKey:@"lat"] floatValue], [[shipdict objectForKey:@"lon"] floatValue]);
+        coord = CLLocationCoordinate2DMake([shipdict[@"lat"] floatValue], [shipdict[@"lon"] floatValue]);
+    }
+//    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(lat, lon);
     ShipAnnotation *shipanno = [[ShipAnnotation alloc] initWithShipDictionary:shipdict];
     shipanno.annotationType = annoType;
     shipanno.coordinate = coord;
@@ -624,7 +630,7 @@ static const int kCRulerTag = 10;
     [super viewDidLoad];
     [self.navigationController setNavigationBarHidden:NO];
     [gmapView setDelegate:self];
-    
+    mapUtil = [[MUtil alloc] init];
     NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
     useMap = ![def boolForKey:@"useMap"];
     showShipName = [def boolForKey:@"showShipName"];
@@ -643,8 +649,8 @@ static const int kCRulerTag = 10;
                  @"", @"", @"", @"",
                  @"", @"", @"", @"",
                  nil];
-    [((UISegmentedControl*)self.navigationItem.titleView) setSelectedSegmentIndex:0];
-    [self segButtonSelected:((UISegmentedControl*)self.navigationItem.titleView)];
+//    [((UISegmentedControl*)self.navigationItem.titleView) setSelectedSegmentIndex:0];
+//    [self segButtonSelected:((UISegmentedControl*)self.navigationItem.titleView)];
 }
 -(void)viewWillAppear:(BOOL)animated
 {
