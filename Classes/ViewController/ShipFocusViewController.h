@@ -14,7 +14,6 @@
     NSMutableArray *searchResults;
 //    NSArray *searchType;
 }
-
 //@property (nonatomic, retain) IBOutlet UISearchDisplayController *searchDisplayController;
 //@property (nonatomic, copy) NSMutableArray *searchResults;
 //@property (nonatomic, retain) NSArray *searchType;
