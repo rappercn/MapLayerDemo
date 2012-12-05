@@ -69,7 +69,6 @@
                 NSLog(@"%d",ApplicationDelegate.myFocusShips.count);
             }
         }];
-        
     }else{
         message = @"失败";
     }
