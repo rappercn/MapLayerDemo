@@ -242,12 +242,22 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
 //    isNeedPage = YES;
     currentPage = 0;
     searchKey = [searchBar.text copy];
-    [Util getSearchRecByKeyInShipBaseInfo:searchKey
+   // NSStringEncoding gbk = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    
+   // NSData *data = [[[NSData alloc] init ] autorelease];
+   // NSMutableData *pageData  = [[[NSMutableData alloc] init ]autorelease];
+   // [pageData appendData:data];
+   // NSString *text = [[NSString alloc] init:pageData encoding:gbk];
+   // searchKey = text;
+    NSString *operid = [[NSUserDefaults standardUserDefaults ] objectForKey:@"operid"];
+    [Util getSearchRecByKeyInShipBaseInfo:operid keystr:searchKey
                                start_ship:[NSString stringWithFormat:@"%d",currentPage * ROW_PERQUERY + 1]
                                  end_ship:[NSString stringWithFormat:@"%d",(currentPage+1) * ROW_PERQUERY]
                                  shipType:[NSString stringWithFormat:@"%d",searchTypeIdx]
                                    onComp:^(NSObject *responseData) {
                                        [ApplicationDelegate dismissHUD];
+                                       
+                                       
                                        [self appendResultArrayWithArray:(NSArray *)responseData];
                                    }];
 }

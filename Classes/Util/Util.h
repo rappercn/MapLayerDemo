@@ -18,7 +18,7 @@
 + (NSString*)getDocumentPath;
 //+ (NSString *)getServiceDataByJson:(NSString *) url;
 + (void)loginWithUser:(NSString *)name passwd:(NSString*) passwd onComp:(APIResponseBlock)compBlock;
-+(void)getSearchRecByKeyInShipBaseInfo:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType onComp:(APIResponseBlock)compBlock ;
++(void)getSearchRecByKeyInShipBaseInfo:(NSString *)operid keystr:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType onComp:(APIResponseBlock)compBlock ;
 //+(NSDictionary*)getAisShipFullInfoByShipId:(NSString *)listshipid;
 +(void)getAttentionShipWithOperid:(NSString *)operid onComp:(APIResponseBlock)compBlock;
 +(void)getFleetShipWithShipIds:(NSString*)idString onComp:(APIResponseBlock)compBlock;
