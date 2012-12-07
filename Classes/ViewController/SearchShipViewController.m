@@ -135,10 +135,21 @@
             if (cell.tag != 1) {
                 currentPage++;
                 [ApplicationDelegate displayHUD:self words:@"正在检索"];
-                [Util getSearchRecByKeyInShipBaseInfo:searchKey
+                 NSString *operid = [[NSUserDefaults standardUserDefaults ] objectForKey:@"operid"];
+                NSString *type=@"";
+                if (searchTypeIdx == 0){
+                    type = @"name";
+                }else if(searchTypeIdx == 1){
+                    type = @"callsign";
+                }else if(searchTypeIdx == 2){
+                    type = @"imo";
+                }else if(searchTypeIdx == 3){
+                    type = @"mmsi";
+                }
+                [Util getSearchRecByKeyInShipBaseInfo:operid keystr:searchKey
                                            start_ship:[NSString stringWithFormat:@"%d",currentPage * ROW_PERQUERY + 1]
                                              end_ship:[NSString stringWithFormat:@"%d",(currentPage+1) * ROW_PERQUERY]
-                                             shipType:[NSString stringWithFormat:@"%d",searchTypeIdx]
+                                             shipType:type
                                                onComp:^(NSObject *responseData) {
                                                    [ApplicationDelegate dismissHUD];
                                                    [self appendResultArrayWithArray:(NSArray *)responseData];
@@ -250,10 +261,20 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
    // NSString *text = [[NSString alloc] init:pageData encoding:gbk];
    // searchKey = text;
     NSString *operid = [[NSUserDefaults standardUserDefaults ] objectForKey:@"operid"];
+    NSString *type=@"";
+    if (searchTypeIdx == 0){
+        type = @"name";
+    }else if(searchTypeIdx == 1){
+        type = @"callsign";
+    }else if(searchTypeIdx == 2){
+        type = @"imo";
+    }else if(searchTypeIdx == 3){
+        type = @"mmsi";
+    }
     [Util getSearchRecByKeyInShipBaseInfo:operid keystr:searchKey
                                start_ship:[NSString stringWithFormat:@"%d",currentPage * ROW_PERQUERY + 1]
                                  end_ship:[NSString stringWithFormat:@"%d",(currentPage+1) * ROW_PERQUERY]
-                                 shipType:[NSString stringWithFormat:@"%d",searchTypeIdx]
+                                 shipType:type
                                    onComp:^(NSObject *responseData) {
                                        [ApplicationDelegate dismissHUD];
                                        
