@@ -32,7 +32,7 @@
 
 +(void)getSearchRecByKeyInShipBaseInfo:(NSString *) operid keystr:(NSString *)keystr start_ship:(NSString *) start_ship end_ship:(NSString *) end_ship shipType:(NSString *) shipType onComp:(APIResponseBlock)compBlock {
     
-    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getSearchRecByKeyInShipBaseInfo&param_operid=%@&param_keystr=%@&param_start_ship=%@&param_end_ship=%@&param_type=%@",operid, keystr, start_ship,end_ship,shipType];
+    NSString *url = [INTERFACE_URL stringByAppendingFormat:@"getSearchRecByKeyAndTypeInShipBaseInfo&param_operid=%@&param_keystr=%@&param_start_ship=%@&param_end_ship=%@&param_type=%@",operid, keystr, start_ship,end_ship,shipType];
       NSStringEncoding gbk = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
   
    // NSString *test = @"http://www.baidu.com";
