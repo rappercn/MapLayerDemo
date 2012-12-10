@@ -50,7 +50,7 @@
     [Util getCompanyGroups:operid onComp:^(NSObject *responseData) {
         if (responseData != nil) {
             NSDictionary *dic = ((NSArray*)responseData)[0];
-            groupArray = [[NSArray alloc] initWithObjects:dic,dic,dic, nil];
+            groupArray = [[NSArray alloc] initWithObjects:dic, nil];
         } else {
             groupArray = [[NSArray alloc] init];
         }
