@@ -13,14 +13,17 @@
 -(id)initWithShipDictionary:(NSDictionary *)shipDictionary {
     self = [super init];
     shipdict = [shipDictionary retain];
-    self.subtitle = [[NSString alloc] initWithFormat:@"呼号:%@, mmsi:%@, imo:%@", 
-                     [shipdict objectForKey:@"callsign"], 
-                     [shipdict objectForKey:@"mmsi"], 
-                     [shipdict objectForKey:@"imo"]];
+ //   self.subtitle = [[NSString alloc] initWithFormat:@"呼号:%@, mmsi:%@, imo:%@",
+ //                    [shipdict objectForKey:@"callsign"],
+ //                    [shipdict objectForKey:@"mmsi"],
+ //                    [shipdict objectForKey:@"imo"]];
+    self.subtitle = [[NSString alloc] initWithFormat:@"定位时间:%@", [shipdict objectForKey:@"gpstime"]];
     if ([[shipdict objectForKey:@"shipnamecn"] length] > 0) {
         self.title = [shipdict objectForKey:@"shipnamecn"];
-    } else {
+    } else if([[shipdict objectForKey:@"shipname"] length] > 0) {
         self.title = [shipdict objectForKey:@"shipname"];
+    }else{
+        self.title = [shipdict objectForKey:@"mmsi"];
     }
     return self;
 }

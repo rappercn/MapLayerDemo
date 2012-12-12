@@ -129,7 +129,7 @@
     }else{
         isFocused = true;
     }
-    [self showButtonTitle];
+  //  [self showButtonTitle];
 
     //self.shipfocused = [AppDelegate getMyFavArray];
 //    [self saveShipDetailFocused:[shipdict objectForKey:@"shipname"]];

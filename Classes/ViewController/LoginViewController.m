@@ -188,7 +188,7 @@
     
     UITabBarController *tab = [[[UITabBarController alloc] init] autorelease];
 //    tab.tabBar.tintColor = [UIColor darkGrayColor];
-    tab.viewControllers = [NSArray arrayWithObjects:mapViewNaviController, myTeamViewNaviController, searchViewNaviController,focusViewNaviController, settingsController, nil];
+    tab.viewControllers = [NSArray arrayWithObjects:mapViewNaviController, myTeamViewNaviController, focusViewNaviController,searchViewNaviController, settingsController, nil];
     ApplicationDelegate.tabBarController = tab;
 //    NSLog(@"========%@----------", self.navigationController);
     [self.navigationController pushViewController:ApplicationDelegate.tabBarController animated:YES];

@@ -356,10 +356,13 @@ static const int kCRulerTag = 10;
 //        [actView removeFromSuperview];
 ////        [actView release];
 //        self.navigationItem.rightBarButtonItem.customView = nil;
-    } else {
+    } else if(seg.selectedSegmentIndex == 1) { 
         [self addShipIconWithArray:ApplicationDelegate.myFocusShips withAnnotationType:kCShipTypeMyTeam showBadge:NO];
 //        [self getTyphoonInfo];
 //        [self drawTyphoon];
+    }else if(seg.selectedSegmentIndex == 2) {
+      //  NSArray *allShip = [[[NSArray alloc] initWithArray:normalShipArray ] autorelease];
+        [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeMyTeam showBadge:NO];
     }
 //    NSLog(@"segButtonSelected:%d", seg.selectedSegmentIndex);
 }
@@ -537,7 +540,7 @@ static const int kCRulerTag = 10;
                 }
             }
             normalShipArray = (NSArray*)responseData;
-            [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeNormal showBadge:YES];
+            [self addShipIconWithArray:[normalShipArray copy] withAnnotationType:kCShipTypeNormal showBadge:YES];
         } else {
             //        [self reloadShipMapOverlaysWithShowShip:YES];
             BOOL exist = NO;
@@ -607,7 +610,8 @@ static const int kCRulerTag = 10;
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        UISegmentedControl *segmentedControl=[[UISegmentedControl alloc] initWithFrame:CGRectMake(100.0f, 8.0f, 120.0f, 30.0f) ]; 
+        UISegmentedControl *segmentedControl=[[UISegmentedControl alloc] initWithFrame:CGRectMake(100.0f, 8.0f, 180.0f, 30.0f) ];
+        [segmentedControl insertSegmentWithTitle:@"全部" atIndex:2 animated:YES];
         [segmentedControl insertSegmentWithTitle:@"船队" atIndex:0 animated:YES];
         [segmentedControl insertSegmentWithTitle:@"关注" atIndex:1 animated:YES]; 
         segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar; 

@@ -95,7 +95,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 	if (section == 0) {
-        return 3;
+        return 2;
     } else {
         return 1;
     }
@@ -138,7 +138,7 @@
 //				[viewToRemove removeFromSuperview];
 //		}
   //  NSString *mapId = [[NSUserDefaults standardUserDefaults] valueForKey:@"mapType"];
-    static NSString *text[] = {@"使用海图", @"显示台风", @"显示船名"};
+    static NSString *text[] = {@"使用海图", @"显示台风"};
     if (indexPath.section == 0) {
         cell.textLabel.text = text[indexPath.row];
         UISwitch *sw=[[UISwitch alloc] initWithFrame:CGRectMake(220, 6, 79, 27)];
@@ -151,9 +151,9 @@
             case 101:
                 sw.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"showTyphoon"];
                 break;
-            case 102:
-                sw.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"showShipName"];
-                break;
+          //  case 102:
+           //     sw.on = [[NSUserDefaults standardUserDefaults] boolForKey:@"showShipName"];
+           //     break;
             default:
                 break;
         }
