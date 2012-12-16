@@ -567,7 +567,7 @@ static const int kCRulerTag = 10;
     CLLocationCoordinate2D pt0 = [gmapView convertPoint:CGPointMake(0, 0) toCoordinateFromView:nil];
     CLLocationCoordinate2D pt1 = [gmapView convertPoint:CGPointMake(gmapView.bounds.size.width, gmapView.bounds.size.height) toCoordinateFromView:nil];
 
-    NSString *urlString = [INTERFACE_URL stringByAppendingFormat:@"checkVehicleDistribution&param_dleft=%f&param_dtop=%f&param_dright=%f&param_dbottom=%f&param_numlimit=499",pt0.longitude, pt0.latitude, pt1.longitude, pt1.latitude];
+    NSString *urlString = [INTERFACE_URL stringByAppendingFormat:@"checkVehicleDistributionRet&param_dleft=%f&param_dtop=%f&param_dright=%f&param_dbottom=%f&param_numlimit=499",pt0.longitude, pt0.latitude, pt1.longitude, pt1.latitude];
     
 //    BOOL startRequest = (taskUrl == nil);
     taskUrl = [urlString retain];

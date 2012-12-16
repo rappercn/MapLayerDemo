@@ -69,7 +69,7 @@
     [self.view addGestureRecognizer:tap];
     
     // Do any additional setup after loading the view from its nib.
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loginbg.png"]];
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Default.png"]];
     // reachability
 //    Reachability *r = [[Reachability alloc] init];
 //    NetworkStatus netStatus = [r currentReachabilityStatus];
@@ -127,7 +127,7 @@
 
 	// create check-box
 	checkRememberBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-	checkRememberBtn.frame = CGRectMake(48, 192, 22, 21);
+	checkRememberBtn.frame = CGRectMake(55, 196, 22, 21);
 	if(bRemeberPwd)
 	{
         NSString *passDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"password"];

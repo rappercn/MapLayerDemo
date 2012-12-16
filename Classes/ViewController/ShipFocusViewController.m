@@ -20,7 +20,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.title = @"我的关注";//NSLocalizedString(@"Second", @"Second");
-        self.tabBarItem.image = [UIImage imageNamed:@"myteamLogo"];
+        self.tabBarItem.image = [UIImage imageNamed:@"myfocus"];
     }
     return self;
     
