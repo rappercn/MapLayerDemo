@@ -267,19 +267,21 @@ static const int kCRulerTag = 10;
     }
 }
 -(void)drawTyphoon{
-    for (NSString* key in typForeDic.allKeys) {
-        NSArray* tmpAry = [typForeDic objectForKey:key];
-        if (tmpAry) {
-            [self addTyphoonPoints:tmpAry routeTitle:FORE_TITLE];
+    if (typForeDic.count == typPathDic.count) {
+        for (NSString* key in typForeDic.allKeys) {
+            NSArray* tmpAry = [typForeDic objectForKey:key];
+            if (tmpAry) {
+                [self addTyphoonPoints:tmpAry routeTitle:FORE_TITLE];
+            }
         }
-    }
-    for (NSString* key in typPathDic.allKeys) {
-        NSArray* tmpAry = [typPathDic objectForKey:key];
-        if (tmpAry) {
-            [self addTyphoonPoints:tmpAry routeTitle:PATH_TITLE];
+        for (NSString* key in typPathDic.allKeys) {
+            NSArray* tmpAry = [typPathDic objectForKey:key];
+            if (tmpAry) {
+                [self addTyphoonPoints:tmpAry routeTitle:PATH_TITLE];
+            }
         }
+        [self addTyphoonTip];
     }
-    [self addTyphoonTip];
 }
 -(void)getTyphoonInfo{
 
@@ -305,13 +307,13 @@ static const int kCRulerTag = 10;
                 [def synchronize];
                 
                 if (typForeDic) {
-                    [typForeDic release];
-                    typForeDic = [[NSMutableDictionary alloc] init];
+                    RELEASE_SAFELY(typForeDic);
                 }
+                typForeDic = [[NSMutableDictionary alloc] init];
                 if (typPathDic) {
-                    [typPathDic release];
-                    typPathDic = [[NSMutableDictionary alloc] init];
+                    RELEASE_SAFELY(typPathDic);
                 }
+                typPathDic = [[NSMutableDictionary alloc] init];
                 for (NSString *tid in idArray) {
                     [Util getTyphoonLastForecastById:tid onComp:^(NSObject *responseData) {
                         [typForeDic setValue:responseData forKey:tid];
