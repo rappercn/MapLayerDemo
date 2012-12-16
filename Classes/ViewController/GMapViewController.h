@@ -33,6 +33,8 @@
     BOOL showShipName;
     BOOL showTyphoon;
     MUtil *mapUtil;
+    BOOL doingAddTyphoonTip;
+    int showtype;
 //    ShipAnnotation *currentShipAnnotation;
 }
 @property (nonatomic, retain) IBOutlet MKMapView *gmapView;

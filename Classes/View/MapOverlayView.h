@@ -12,6 +12,7 @@
     BOOL downloaded;
     int counter;
     MKMapRect prevRect;
+    BOOL drawBg;
 }
 
 //@property (nonatomic, strong) MKNetworkOperation *netOperation;

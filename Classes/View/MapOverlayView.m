@@ -9,7 +9,7 @@
 #import "MapOverlayView.h"
 #import "TileOverlay.h"
 #import "MapTileOverlay.h"
-
+#import <QuartzCore/QuartzCore.h>
 #pragma mark Private methods
 @interface MapOverlayView()
 - (NSUInteger)zoomLevelForMapRect:(MKMapRect)mapRect;
@@ -99,7 +99,7 @@
     if (![url hasPrefix:@"http"]) {
         return YES;
     }
-//    NSLog(@"download:%@",url);
+
     NSString *savePath = [(id<TileOverlay>)self.overlay imageSavePathWithX:tilex andY:tiley andZoomLevel:zoomLevel];
     counter++;
     [ApplicationDelegate.imageDownloader
@@ -108,17 +108,24 @@
                          onCompletion:^() {
                              downloaded = YES;
                              [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
-//                             [self finishDownload];
                          } onError:^(NSError *error){
                              downloaded = YES;
                              [self setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
-//                             [self finishDownload];
                          }];
-    
-    return NO;
+    drawBg = YES;
+    return YES;
 }
 
 - (void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
+
+    if (drawBg) {
+        UIGraphicsPushContext(context);
+        [[UIColor lightGrayColor] set];
+        UIRectFill([self rectForMapRect:mapRect]);
+        drawBg = NO;
+        return;
+    }
+    
     id<TileOverlay> overlay = (id<TileOverlay>)self.overlay;
     
     NSUInteger zoomLevel = [self zoomLevelForZoomScale:zoomScale];

@@ -11,38 +11,36 @@
 @implementation APIEngine
 -(MKNetworkOperation*)requestDataFrom:(NSString *)remoteURL onCompletion:(APIResponseBlock)compBlock onError:(APIErrorBlock)errorBlock {
     
-    MKNetworkOperation *op = [self operationWithURLString:remoteURL
-                                                   params:nil
-                                               httpMethod:@"GET"];
-    [op onCompletion:^(MKNetworkOperation *completedOperation) {
-        
-        //        NSDictionary *response = [completedOperation responseJSON];
-        //        imageURLBlock(response[@"photos"][@"photo"]);
-        if (completedOperation.readonlyResponse.statusCode == 200 && completedOperation.responseString.length > 5) {
-            if (completedOperation.responseJSON[@"return"] != nil) {
-                compBlock(completedOperation.responseJSON[@"return"]);
-            } else {
-                compBlock(completedOperation.responseJSON);
-            }
-        } else {
-            compBlock(nil);
-        }
-    } onError:^(NSError *error) {
-        
-        NSLog(@"requestdata failed.");
-        compBlock(nil);
-        //        errorBlock(error);
-        
-    }];
-    
     @try {
+        MKNetworkOperation *op = [self operationWithURLString:remoteURL
+                                                       params:nil
+                                                   httpMethod:@"GET"];
+        [op onCompletion:^(MKNetworkOperation *completedOperation) {
+            
+            //        NSDictionary *response = [completedOperation responseJSON];
+            //        imageURLBlock(response[@"photos"][@"photo"]);
+            if (completedOperation.readonlyResponse.statusCode == 200 && completedOperation.responseString.length > 5) {
+                if (completedOperation.responseJSON[@"return"] != nil) {
+                    compBlock(completedOperation.responseJSON[@"return"]);
+                } else {
+                    compBlock(completedOperation.responseJSON);
+                }
+            } else {
+                compBlock(nil);
+            }
+        } onError:^(NSError *error) {
+            
+            NSLog(@"requestdata failed.");
+            compBlock(nil);
+            //        errorBlock(error);
+            
+        }];
+    
         [self enqueueOperation:op forceReload:YES];
+        return op;
     }
     @catch (NSException *exception) {
-        op = nil;
-    }
-    @finally {
-        return op;
+        return nil;
     }
 }
 @end
