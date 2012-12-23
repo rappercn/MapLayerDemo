@@ -33,6 +33,6 @@
 }
 
 -(id)init;
--(CLLocationCoordinate2D)convertCoordinateWithLatitude:(double)lat andLontitude:(double)lon;
-
+-(CLLocationCoordinate2D)getFakeCoordinateWithLatitude:(double)lat andLongitude:(double)lon;
+-(CLLocationCoordinate2D)getRealCoordinateWithLatitude:(double)lat andLongitude:(double)lon;
 @end

@@ -8,9 +8,12 @@
 
 #import "MUtil.h"
 #import <MapKit/MapKit.h>
-
+#define CLIP(A,B,C)	MIN(MAX(A,B),C)
 @implementation MUtil
-
+const double MinLatitude = -85.05112878;
+const double MaxLatitude = 85.05112878;
+const double MinLongitude = -180;
+const double MaxLongitude = 180;
 const double _PI = 3.1415926535897932;
 
 -(id) init {
@@ -36,6 +39,10 @@ const double _PI = 3.1415926535897932;
     
     return [super init];
 }
+-(double)Clip:(double)value maxValue:(double)maxValue minValue:(double)minValue {
+    
+    return MAX(MIN(value, maxValue), minValue);
+}
 //角度到弧度的转换
 -(double)DegreeToRad:(double)degree
 //double DegreeToRad(double degree)
@@ -48,35 +55,45 @@ const double _PI = 3.1415926535897932;
 {
 	return (180*rad)/_PI;
 }
--(CLLocationCoordinate2D)LatLongToChartMercator:(double) latitude longitude:(double) longitude dX:(double)dX dY:(double)dY {
+-(CLLocationCoordinate2D)LatLongToChartMercator:(double) latitude longitude:(double) longitude {
     
     double B = [self DegreeToRad:latitude];
 	double L = [self DegreeToRad:longitude];	
 	if(L<-_PI||L>_PI||B<-_PI/2||B>_PI/2)
 	{
-		return CLLocationCoordinate2DMake(dX, dY);
+		return CLLocationCoordinate2DMake(0.0, 0.0);
 	}
 	
     double x=K*(L-__L0);
 	double y=K*log(tan(_PI/4+B/2)*pow((1-e*sin(B))/(1+e*sin(B)),e/2));
     return CLLocationCoordinate2DMake(x, y);
-
-    
 }
-//void LatLongToChartMercator(double latitude, double longitude, double& dX, double& dY)
-//{
-//	double B = DegreeToRad(latitude);
-//	double L = DegreeToRad(longitude);
-//	
-//	if(L<-_PI||L>_PI||B<-_PI/2||B>_PI/2)
-//	{
-//		return;
-//	}
-//	
-//	dX=K*(L-__L0);
-//	
-//	dY=K*log(tan(_PI/4+B/2)*pow((1-e*sin(B))/(1+e*sin(B)),e/2));
-//}
+
+-(CLLocationCoordinate2D)LatLongToWebMercator:(double) latitude longitude:(double) longitude {
+    
+    double lat = CLIP(latitude, MinLatitude, MaxLatitude);
+    double lon = CLIP(longitude, MinLongitude, MaxLongitude);
+    
+    double fx = lon * MapHaltExtend;
+    double fy = log( tan( (lat + 90) * _PI / 360) )/ _PI;
+    
+    double x = fx / 180;
+    double y = fy * MapHaltExtend;
+    return CLLocationCoordinate2DMake(x, y);
+}
+
+-(CLLocationCoordinate2D) ChartMercatorToLatLong:(double)dX dY:(double)dY {
+    double L =dX/K+__L0;
+    double B =__IterativeValue;
+    for(int i=0;i<__IterativeTimes;i++)
+    {
+        B=_PI/2-2*atan(pow(E,(-dY/K))*pow(E,(e/2)*log((1-e*sin(B))/(1+e*sin(B)))));
+    }
+    
+    double x = [self RadToDegree:B];
+    double y = [self RadToDegree:L];
+    return CLLocationCoordinate2DMake(x, y);
+}
 
 //Web墨卡托（球形墨卡托）坐标转换成经纬度
 -(CLLocationCoordinate2D) WebMercatorToLatLong:(double)dX dY:(double)dY
@@ -90,17 +107,19 @@ const double _PI = 3.1415926535897932;
     return CLLocationCoordinate2DMake(lat, lon);
 }
 
--(CLLocationCoordinate2D)convertCoordinateWithLatitude:(double)lat andLontitude:(double)lon {
-//    void ChartMercator2WebMercator(double dLat1, double dLon1, double& dLat2, double& dLon2 )
-//    double dx,dy;
+-(CLLocationCoordinate2D)getFakeCoordinateWithLatitude:(double)lat andLongitude:(double)lon {
+
 	//经纬度对应的ChartMercator坐标
-    CLLocationCoordinate2D pt = [self LatLongToChartMercator:lat longitude:lon dX:0.0 dY:0.0];
-//	LatLongToChartMercator(dLat1,dLon1,dx,dy);
+    CLLocationCoordinate2D pt = [self LatLongToChartMercator:lat longitude:lon];
 	//WebMercator坐标对应的经纬度
     CLLocationCoordinate2D ret = [self WebMercatorToLatLong:pt.latitude dY:pt.longitude];
-//	WebMercatorToLatLong(dx,dy,dLat2,dLon2);
     
     return ret;
+}
+
+-(CLLocationCoordinate2D)getRealCoordinateWithLatitude:(double)lat andLongitude:(double)lon {
+    CLLocationCoordinate2D pt = [self LatLongToWebMercator:lat longitude:lon];
+    return [self ChartMercatorToLatLong:pt.latitude dY:pt.longitude];
 }
 
 @end

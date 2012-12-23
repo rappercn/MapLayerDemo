@@ -79,7 +79,7 @@ static const int kCRulerTag = 10;
 //    double lat = 0.0;
 //    double lon = 0.0;
     if (useMap) {
-        coord = [mapUtil convertCoordinateWithLatitude:[shipdict[@"lat"] floatValue] andLontitude:[shipdict[@"lon"] floatValue]];
+        coord = [mapUtil getFakeCoordinateWithLatitude:[shipdict[@"lat"] floatValue] andLongitude:[shipdict[@"lon"] floatValue]];
 //        double lat2 = [[shipdict objectForKey:@"lat"] floatValue];
 //        double lon2 = [[shipdict objectForKey:@"lon"] floatValue];
 //        MapUtil *mu = [[MapUtil alloc] init];
@@ -564,9 +564,29 @@ static const int kCRulerTag = 10;
 -(void)showShipInRect {
 
     [self showReloadProgress];
-    CLLocationCoordinate2D pt0 = [gmapView convertPoint:CGPointMake(0, 0) toCoordinateFromView:nil];
-    CLLocationCoordinate2D pt1 = [gmapView convertPoint:CGPointMake(gmapView.bounds.size.width, gmapView.bounds.size.height) toCoordinateFromView:nil];
+    CLLocationCoordinate2D pt0 = [gmapView convertPoint:CGPointMake(0, 0) toCoordinateFromView:gmapView];
+    // 按照地图实际高度计算后总有误差（多取了若干），所以此处在高度上乘以一个系数
+    #warning 确定问题后去掉高度系数
+    double w = gmapView.frame.size.width;
+    double h = gmapView.frame.size.height;
+    CLLocationCoordinate2D pt1 = [gmapView convertPoint:CGPointMake(w, h) toCoordinateFromView:gmapView];
 
+    NSLog(@"%f, %f",pt0.latitude, pt0.longitude);
+    NSLog(@"%f, %f",pt1.latitude, pt1.longitude);
+    
+    CGPoint ppp = [gmapView convertCoordinate:pt0 toPointToView:gmapView];
+    NSLog(@"%f, %f",ppp.x, ppp.y);
+    ppp = [gmapView convertCoordinate:pt1 toPointToView:gmapView];
+    NSLog(@"%f, %f",ppp.x, ppp.y);
+    
+    if (useMap) {
+        pt0 = [mapUtil getRealCoordinateWithLatitude:pt0.latitude andLongitude:pt0.longitude];
+        pt1 = [mapUtil getRealCoordinateWithLatitude:pt1.latitude andLongitude:pt1.longitude];
+    }
+//    NSLog(@"%f, %f",pt0.latitude, pt0.longitude);
+//    NSLog(@"%f, %f",pt1.latitude, pt1.longitude);
+    
+    
     NSString *urlString = [INTERFACE_URL stringByAppendingFormat:@"checkVehicleDistributionRet&param_dleft=%f&param_dtop=%f&param_dright=%f&param_dbottom=%f&param_numlimit=499",pt0.longitude, pt0.latitude, pt1.longitude, pt1.latitude];
     
 //    BOOL startRequest = (taskUrl == nil);
@@ -753,6 +773,7 @@ static const int kCRulerTag = 10;
         [gmapView selectAnnotation:anno animated:YES];
         ApplicationDelegate.seletedShip = nil;
     }
+    NSLog(@"%@", gmapView);
 }
 -(void)dealloc {
     [super dealloc];
