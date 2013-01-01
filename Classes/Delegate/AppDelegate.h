@@ -12,12 +12,12 @@
 #import "ImageDownloader.h"
 #import "APIEngine.h"
 
-//#import "MBProgressHUD.h"
+#import "MBProgressHUD.h"
 //@class MBProgressHUD;
 //@class MBProgressHUDDelegate;
 #define ApplicationDelegate ((AppDelegate *)[UIApplication sharedApplication].delegate)
 #define IMAGE_HOST @"map.ctrack.com.cn"
-@class MBProgressHUD;
+//@class MBProgressHUD;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate> {
 //    NSMutableArray* myfav;
@@ -37,6 +37,7 @@
 @property (nonatomic, retain) NSDictionary *seletedShip;
 //@property (nonatomic, retain) NSMutableArray* shipMajor;       //local ships major
 @property (nonatomic, retain) NSString *opeid;
+@property (nonatomic, retain) NSArray *codeArray;
 //@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 //@property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 //@property (nonatomic, retain) NSManagedObjectModel *managedObjectModel;
@@ -50,7 +51,7 @@
 //+ (NSMutableArray *)getMyFocusShips ;
 //+ (NSMutableArray *)getMyShipsTeam ;
 
-
+-(NSString*) makeShipNameByCnName:(NSString*)cnName engName:(NSString*)eName imo:(NSString*)imo;
 -(void) dismissHUD;
 -(void) displayHUD :(UIViewController *)controller words:(NSString *)words;
 

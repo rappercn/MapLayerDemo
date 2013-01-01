@@ -53,7 +53,8 @@
         
         UIImage *icon = [UIImage imageNamed:@"typhoon.png"];
         [icon drawAtPoint:CGPointMake(0.0, 7.0)];
-        [icon release];
+        RELEASE_SAFELY(icon);
+//        [icon release];
     } else {
         //        CGRect newRect = CGRectMake(self.frame.origin.x, self.frame.origin.y, 100, 30);
         //        self.frame = newRect;
@@ -74,6 +75,7 @@
         [line addLineToPoint:CGPointMake(27, 8)];
         line.lineWidth = 1;
         [line stroke];
+        RELEASE_SAFELY(line);
         //        NSLog(@"show tips-------");
         //    } else {
         //        NSLog(@"hide tips");

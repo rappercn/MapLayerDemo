@@ -20,7 +20,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = @"我的船队";//NSLocalizedString(@"Second", @"Second");
+        self.title = @"船队";//NSLocalizedString(@"Second", @"Second");
         self.tabBarItem.image = [UIImage imageNamed:@"myteamLogo"];
         
 //        UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"reload.png"] style:UIBarButtonItemStylePlain target:self action:@selector(reloadAll)];
@@ -153,10 +153,11 @@
 //        [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg_on.png"]]];
     }
     NSDictionary *dic = groupDetail[[@"section" stringByAppendingFormat:@"%d", indexPath.section]][indexPath.row];
-    NSString *title = dic[@"shipcnname"];
-    if (title == nil) {
-        title = dic[@"shipname"];
-    }
+//    NSString *title = dic[@"shipcnname"];
+//    if (title == nil) {
+//        title = dic[@"shipname"];
+//    }
+    NSString *title = [ApplicationDelegate makeShipNameByCnName:dic[@"shipcnname"] engName:dic[@"shipname"] imo:dic[@"imo"]];
     cell.textLabel.text = [@"    " stringByAppendingString: title];
 
     return cell;
@@ -197,7 +198,7 @@
     [self.shipListTableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationTop];
 //    NSLog(@"section header closed : delete %d rows from section %d", countOfRowsToDelete, section);
     openSectionIndex = NSNotFound;
-
+    RELEASE_SAFELY(indexPathsToDelete);
 }
 -(void)reloadTableViewFromSection:(NSInteger) section andHeaderView:(SectionHeaderView*)sectionHeader {
     /*

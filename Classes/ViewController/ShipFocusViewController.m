@@ -7,19 +7,14 @@
 //
 
 #import "ShipFocusViewController.h"
-//#import "ShipData.h"
 #import "ShipDetailViewController.h"
-//#import "JSONKit.h"
-//#import <CoreData/CoreData.h>
-//#import "ShipMajor.h"
-//#import "Util.h"
 @implementation ShipFocusViewController
 //@synthesize searchDisplayController, searchResults, searchType,myFocusArray;
 -(id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = @"我的关注";//NSLocalizedString(@"Second", @"Second");
+        self.title = @"关注";//NSLocalizedString(@"Second", @"Second");
         self.tabBarItem.image = [UIImage imageNamed:@"myfocus"];
     }
     return self;
@@ -85,22 +80,26 @@
     }
     
 
-    NSString *title = nil;
-    if ([tableView isEqual:searchController.searchResultsTableView]){
-        title = searchResults[indexPath.row][@"shipnamecn"];
-        if (title != nil && ![title isEqualToString:@""]) {
-            cell.textLabel.text = title;
-        } else {
-            cell.textLabel.text = searchResults[indexPath.row][@"shipname"];
-        }
-    }else{
-        title = ApplicationDelegate.myFocusShips[indexPath.row][@"shipnamecn"];
-        if (title != nil && ![title isEqualToString:@""]) {
-            cell.textLabel.text = title;
-        } else {
-            cell.textLabel.text = ApplicationDelegate.myFocusShips[indexPath.row][@"shipname"];
-        }
+//    NSString *title = nil;
+    NSMutableDictionary *dict = nil;
+    if ([tableView isEqual:searchController.searchResultsTableView]) {
+        dict = searchResults[indexPath.row];
+//        title = searchResults[indexPath.row][@"shipnamecn"];
+//        if (title != nil && ![title isEqualToString:@""]) {
+//            cell.textLabel.text = title;
+//        } else {
+//            cell.textLabel.text = searchResults[indexPath.row][@"shipname"];
+//        }
+    } else {
+        dict = ApplicationDelegate.myFocusShips[indexPath.row];
+//        title = ApplicationDelegate.myFocusShips[indexPath.row][@"shipnamecn"];
+//        if (title != nil && ![title isEqualToString:@""]) {
+//            cell.textLabel.text = title;
+//        } else {
+//            cell.textLabel.text = ApplicationDelegate.myFocusShips[indexPath.row][@"shipname"];
+//        }
     }
+    cell.textLabel.text = [ApplicationDelegate makeShipNameByCnName:dict[@"shipnamecn"] engName:dict[@"shipname"] imo:dict[@"imo"]];
 //    UIFont *font = [UIFont fontWithName:@"Arial" size:18];
 //    cell.textLabel.font = font;
     return cell;
@@ -125,6 +124,7 @@
                next.shipdict = [ApplicationDelegate.myFocusShips objectAtIndex:indexPath.row];
         }
         [self.navigationController pushViewController:next animated:YES];
+    RELEASE_SAFELY(next);
 }
 
 #pragma mark - UISearchDisplayController delegate methods

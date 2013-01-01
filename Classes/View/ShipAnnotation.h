@@ -16,11 +16,7 @@ enum {
     kCShipTypeFocus = 3
 };
 @property (nonatomic, retain) NSDictionary *shipdict;
-//@property (nonatomic, assign) BOOL retainFlag;
 @property (nonatomic, assign) NSInteger annotationType;
 @property (nonatomic, assign) BOOL selected;
-//@property (nonatomic, retain) NSString *title;
-//@property (nonatomic, retain) NSString *subTitle;
-//-(id) initWithTitle:(NSString*)t subTitle:(NSString*)st;
 -(id)initWithShipDictionary:(NSDictionary*)shipDictionary;
 @end

@@ -7,7 +7,6 @@
 //
 
 #import "SettingsViewController.h"
-#import "SimpleTableViewController.h"
 #import <QuartzCore/QuartzCore.h>
 @implementation SettingsViewController
 @synthesize settingSections, simpleTableView;

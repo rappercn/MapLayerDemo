@@ -25,7 +25,7 @@
     searchDisplayController.searchBar.placeholder = @"搜索";
     [searchDisplayController.searchBar setShowsCancelButton:NO];
     searchDisplayController.searchBar.scopeButtonTitles = [NSArray arrayWithObjects:@"船名", @"呼号", @"imo", @"mmsi", nil];
-    searchResults = [[NSMutableArray alloc] init];
+    searchResults = [NSMutableArray arrayWithCapacity:0];
     NSString *path = [[Util getCachePath] stringByAppendingString:@"/searchHistory.plist"];
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
         localArray = [[NSMutableArray alloc] initWithContentsOfFile:path];
@@ -40,6 +40,7 @@
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    [searchDisplayController.searchBar becomeFirstResponder];
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -108,11 +109,13 @@
             cell.accessoryType = UITableViewCellAccessoryNone;
         }else {
             // cell.textLabel.text = ((ShipData*) [searchResults objectAtIndex:indexPath.row]).shipName;
-            NSString *title = searchResults[indexPath.row][@"shipnamecn"];
-            if ([title isEqualToString:@""] || title == nil) {
-                title = searchResults[indexPath.row][@"shipname"];
-            }
-            cell.textLabel.text =  title;
+//            NSString *title = searchResults[indexPath.row][@"shipnamecn"];
+//            if ([title isEqualToString:@""] || title == nil) {
+//                title = searchResults[indexPath.row][@"shipname"];
+//            }
+//            cell.textLabel.text =  title;
+            NSMutableDictionary *dict = searchResults[indexPath.row];
+            cell.textLabel.text = [ApplicationDelegate makeShipNameByCnName:dict[@"shipnamecn"] engName:dict[@"shipname"] imo:dict[@"imo"]];
         }
     }
     else{
@@ -167,6 +170,7 @@
         next.shipdict = [localArray objectAtIndex:indexPath.row];
     }
     [self.navigationController pushViewController:next animated:YES];
+    RELEASE_SAFELY(next);
 }
 
 #pragma mark - UISearchDisplayController delegate methods
@@ -193,7 +197,7 @@
         default:
             break;
     }
-    searchResults = [[NSMutableArray alloc] initWithArray:[localArray filteredArrayUsingPredicate:resultPredicate]];
+    searchResults = [NSMutableArray arrayWithArray:[localArray filteredArrayUsingPredicate:resultPredicate]];
 }
 -(BOOL)searchDisplayController:(UISearchDisplayController *)controller
 shouldReloadTableForSearchString:(NSString *)searchString
@@ -239,8 +243,9 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     }
     [searchResults addObjectsFromArray:shipArray];
     [self.searchDisplayController.searchResultsTableView reloadData];
-    NSString *path = [[Util getCachePath] stringByAppendingString:@"searchHistory.plist"];
+    NSString *path = [[Util getCachePath] stringByAppendingString:@"/searchHistory.plist"];
     [searchResults writeToFile:path atomically:YES];
+    RELEASE_SAFELY(localArray);
     localArray = [searchResults copy];
 //    [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:insertIndexPaths withRowAnimation:UITableViewRowAnimationFade];
 }

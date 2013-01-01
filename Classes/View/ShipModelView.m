@@ -33,7 +33,7 @@
         [[UIColor grayColor] setFill];
     }
     [[UIColor blackColor] setStroke];
-    UIBezierPath *path1 = [[UIBezierPath alloc] init];
+    UIBezierPath *path1 = [UIBezierPath bezierPath];
     if ([[shipdict objectForKey:@"speed"] floatValue] <= 0) {
         [path1 moveToPoint:CGPointMake(15.0, 10.0)];
         [path1 addLineToPoint:CGPointMake(20.0, 15.0)];

@@ -62,10 +62,10 @@
 		3089F778164CE985006BE2D6 /* MapTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 3089F777164CE985006BE2D6 /* MapTileOverlay.m */; };
 		3089F77C164CEA1A006BE2D6 /* ShipTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 3089F77B164CEA19006BE2D6 /* ShipTileOverlay.m */; };
 		3089F77F164CF218006BE2D6 /* MapOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3089F77E164CF218006BE2D6 /* MapOverlayView.m */; };
-		308ACD4615B5345A00EF19DA /* MyFavDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 308ACD4415B5345A00EF19DA /* MyFavDetailViewController.m */; };
 		308ACD4915B534F700EF19DA /* MyFavDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308ACD4815B534F700EF19DA /* MyFavDetailViewController.xib */; };
 		308BAE7516656A370018333C /* shipng.png in Resources */ = {isa = PBXBuildFile; fileRef = 308BAE7416656A370018333C /* shipng.png */; };
 		308BAE811667A1590018333C /* MUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 308BAE801667A1590018333C /* MUtil.m */; };
+		308D6B881692D1CC00B992CE /* codeDict.plist in Resources */ = {isa = PBXBuildFile; fileRef = 308D6B871692D1CC00B992CE /* codeDict.plist */; };
 		308E583115804E040075A2D1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E581B15804E000075A2D1 /* AppDelegate.m */; };
 		308E583315804E040075A2D1 /* MKMapView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E582015804E010075A2D1 /* MKMapView+Additions.m */; };
 		308E583415804E040075A2D1 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E582215804E010075A2D1 /* Util.m */; };
@@ -77,8 +77,6 @@
 		308E58641580A78A0075A2D1 /* SearchShipViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E58631580A78A0075A2D1 /* SearchShipViewController.m */; };
 		308E58661580EC7B0075A2D1 /* SettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308E58651580EC7B0075A2D1 /* SettingsViewController.xib */; };
 		308E58911580F3C20075A2D1 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E58901580F3C20075A2D1 /* SettingsViewController.m */; };
-		308E58941580F46B0075A2D1 /* SimpleTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E58931580F46B0075A2D1 /* SimpleTableViewController.m */; };
-		308E58961580F48E0075A2D1 /* SimpleTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308E58951580F48E0075A2D1 /* SimpleTableViewController.xib */; };
 		308E58B81581CAFA0075A2D1 /* ShipDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308E58B71581CAFA0075A2D1 /* ShipDetailViewController.xib */; };
 		30987F1C167DF0CB00836BC5 /* about@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30987F1B167DF0CB00836BC5 /* about@2x.png */; };
 		30987F1F167DF0EA00836BC5 /* about@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30987F1E167DF0EA00836BC5 /* about@2x.png */; };
@@ -174,12 +172,11 @@
 		3089F77B164CEA19006BE2D6 /* ShipTileOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShipTileOverlay.m; sourceTree = "<group>"; };
 		3089F77D164CF218006BE2D6 /* MapOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapOverlayView.h; sourceTree = "<group>"; };
 		3089F77E164CF218006BE2D6 /* MapOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapOverlayView.m; sourceTree = "<group>"; };
-		308ACD4315B5345A00EF19DA /* MyFavDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyFavDetailViewController.h; sourceTree = "<group>"; };
-		308ACD4415B5345A00EF19DA /* MyFavDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyFavDetailViewController.m; sourceTree = "<group>"; };
 		308ACD4815B534F700EF19DA /* MyFavDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyFavDetailViewController.xib; sourceTree = "<group>"; };
 		308BAE7416656A370018333C /* shipng.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shipng.png; sourceTree = "<group>"; };
 		308BAE7F1667A1590018333C /* MUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MUtil.h; sourceTree = "<group>"; };
 		308BAE801667A1590018333C /* MUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MUtil.m; sourceTree = "<group>"; };
+		308D6B871692D1CC00B992CE /* codeDict.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = codeDict.plist; sourceTree = "<group>"; };
 		308E581A15804E000075A2D1 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		308E581B15804E000075A2D1 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		308E581F15804E010075A2D1 /* MKMapView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+Additions.h"; sourceTree = "<group>"; };
@@ -197,9 +194,6 @@
 		308E58651580EC7B0075A2D1 /* SettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsViewController.xib; sourceTree = "<group>"; };
 		308E588F1580F3C20075A2D1 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		308E58901580F3C20075A2D1 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
-		308E58921580F46B0075A2D1 /* SimpleTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleTableViewController.h; sourceTree = "<group>"; };
-		308E58931580F46B0075A2D1 /* SimpleTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleTableViewController.m; sourceTree = "<group>"; };
-		308E58951580F48E0075A2D1 /* SimpleTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SimpleTableViewController.xib; sourceTree = "<group>"; };
 		308E58B71581CAFA0075A2D1 /* ShipDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShipDetailViewController.xib; sourceTree = "<group>"; };
 		308E58E3158248230075A2D1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		30987F1B167DF0CB00836BC5 /* about@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "about@2x.png"; sourceTree = "<group>"; };
@@ -291,6 +285,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				308D6B871692D1CC00B992CE /* codeDict.plist */,
 				8D1107310486CEB800E47090 /* BaoChuanWang-Info.plist */,
 				29C488CD1637BE430099054A /* ShipMajor.h */,
 				29C488CE1637BE430099054A /* ShipMajor.m */,
@@ -412,14 +407,10 @@
 				29B71F2C164244C4005FDCAD /* ShipFocusViewController.m */,
 				308E582D15804E040075A2D1 /* MyTeamViewController.h */,
 				308E582E15804E040075A2D1 /* MyTeamViewController.m */,
-				308ACD4315B5345A00EF19DA /* MyFavDetailViewController.h */,
-				308ACD4415B5345A00EF19DA /* MyFavDetailViewController.m */,
 				308E58621580A78A0075A2D1 /* SearchShipViewController.h */,
 				308E58631580A78A0075A2D1 /* SearchShipViewController.m */,
 				308E588F1580F3C20075A2D1 /* SettingsViewController.h */,
 				308E58901580F3C20075A2D1 /* SettingsViewController.m */,
-				308E58921580F46B0075A2D1 /* SimpleTableViewController.h */,
-				308E58931580F46B0075A2D1 /* SimpleTableViewController.m */,
 				29C01BD01613FF0500E0B73E /* LoginViewController.h */,
 				29C01BD11613FF0500E0B73E /* LoginViewController.m */,
 			);
@@ -471,7 +462,6 @@
 				308E585B1580579F0075A2D1 /* GMapViewController.xib */,
 				308E58601580A7680075A2D1 /* SearchShipViewController.xib */,
 				308E58651580EC7B0075A2D1 /* SettingsViewController.xib */,
-				308E58951580F48E0075A2D1 /* SimpleTableViewController.xib */,
 				308E58B71581CAFA0075A2D1 /* ShipDetailViewController.xib */,
 				308ACD4815B534F700EF19DA /* MyFavDetailViewController.xib */,
 			);
@@ -533,7 +523,6 @@
 				308E585C1580579F0075A2D1 /* GMapViewController.xib in Resources */,
 				308E58611580A7680075A2D1 /* SearchShipViewController.xib in Resources */,
 				308E58661580EC7B0075A2D1 /* SettingsViewController.xib in Resources */,
-				308E58961580F48E0075A2D1 /* SimpleTableViewController.xib in Resources */,
 				308E58B81581CAFA0075A2D1 /* ShipDetailViewController.xib in Resources */,
 				308ACD4915B534F700EF19DA /* MyFavDetailViewController.xib in Resources */,
 				29C01BD41613FF0500E0B73E /* LoginViewController.xib in Resources */,
@@ -566,6 +555,7 @@
 				30987F22167DF43600836BC5 /* check.png in Resources */,
 				30987F23167DF43600836BC5 /* nocheck.png in Resources */,
 				30987F25167DF53200836BC5 /* myfocus.png in Resources */,
+				308D6B881692D1CC00B992CE /* codeDict.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -583,8 +573,6 @@
 				308E583915804E040075A2D1 /* MyTeamViewController.m in Sources */,
 				308E58641580A78A0075A2D1 /* SearchShipViewController.m in Sources */,
 				308E58911580F3C20075A2D1 /* SettingsViewController.m in Sources */,
-				308E58941580F46B0075A2D1 /* SimpleTableViewController.m in Sources */,
-				308ACD4615B5345A00EF19DA /* MyFavDetailViewController.m in Sources */,
 				29C01BD31613FF0500E0B73E /* LoginViewController.m in Sources */,
 				29C488CF1637BE430099054A /* ShipMajor.m in Sources */,
 				29531ABA163E246D00B5CB16 /* ShipDetailFocused.m in Sources */,

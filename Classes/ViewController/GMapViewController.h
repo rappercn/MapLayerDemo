@@ -35,6 +35,7 @@
     MUtil *mapUtil;
     BOOL doingAddTyphoonTip;
     int showtype;
+    UISegmentedControl *segmentedControl;
 //    ShipAnnotation *currentShipAnnotation;
 }
 @property (nonatomic, retain) IBOutlet MKMapView *gmapView;

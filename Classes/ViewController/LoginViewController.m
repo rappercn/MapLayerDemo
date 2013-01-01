@@ -17,14 +17,6 @@
 @implementation LoginViewController
 @synthesize nameField,passWordField;
 
-//- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-//{
-//    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-//    if (self) {
-//        // Custom initialization
-//    }
-//    return self;
-//}
 - (void) reachabilityChanged: (NSNotification* )note
 {
     if (alerting) {
@@ -62,7 +54,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    NSLog(@"%@..........",[[UIDevice currentDevice] systemVersion]);
     // hide keyboard
     UITapGestureRecognizer *tap = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTap:)] autorelease];
     tap.cancelsTouchesInView = NO;
@@ -70,51 +61,6 @@
     
     // Do any additional setup after loading the view from its nib.
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Default.png"]];
-    // reachability
-//    Reachability *r = [[Reachability alloc] init];
-//    NetworkStatus netStatus = [r currentReachabilityStatus];
-//	NetworkStatus netStatus = [r internetConnectionStatus];
-//    NetworkStatus netStatus = [Util checkNetworkReachability];
-//
-//	NSString * mes = nil;
-//////    BOOL isReach = [r isReachable];
-//////    if(isReach){
-//////        BOOL isWiFi = [r isReachableViaWiFi];
-////        if(isWiFi){
-////            mes = NSLocalizedString(@"当前使用WIFI连接网络",@"成功");
-////        }else if ([r isReachableViaWWAN]) {
-////            mes = NSLocalizedString(@"当前使用3G连接网络",@"成功");
-////        }else {
-////            mes = NSLocalizedString(@"当前无可用网络",@"失败");
-////        }
-//////    }else {
-//////        mes = NSLocalizedString(@"当前无可用网络",@"失败");
-//////    }
-//
-//	switch (netStatus) {
-//		case NotReachable:
-//			mes = NSLocalizedString(@"当前网络不可用",@"失败");
-//			break;
-//		case ReachableViaWiFi:
-//			//mes = NSLocalizedString(@"当前使用WIFI连接网络",@"成功");
-//			break;
-//		case ReachableViaWWAN:
-//			mes = NSLocalizedString(@"当前正使用移动网络",@"成功");
-//			break;
-//	}
-//
-//    if(mes != nil){
-//        NSString * tle = NSLocalizedString(@"提示",@"提示");
-//        NSString * yes = NSLocalizedString(@"确定",@"确定");
-//        
-//        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:tle 
-//                                                       message:mes 
-//                                                      delegate:nil 
-//                                             cancelButtonTitle:yes 
-//                                             otherButtonTitles:nil,nil];
-//        [alert show];
-//        RELEASE_SAFELY(alert);
-//    }
 	
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
   
@@ -216,25 +162,6 @@
             ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
         }
         [self getMyTeamShip:operid];
-//            NSString *idlist = @"";
-//            for (NSDictionary *dic in (NSArray*)responseData) {
-//                if (dic[@"id"] != nil && dic[@"id"] != @"") {
-//                    idlist = [idlist stringByAppendingFormat:@"%@,",dic[@"id"]];
-//                }
-//            }
-//            if ([idlist length] > 0) {
-//                [Util getFleetShipWithShipIds:idlist onComp:^(NSObject *responseData) {
-//                    if (responseData != nil) {
-//                        ApplicationDelegate.myFocusShips = [[NSMutableArray alloc] initWithArray:(NSArray*)responseData];
-//                    }
-//                    [self getMyTeamShip:operid];
-//                }];
-//            } else {
-//                [self getMyTeamShip:operid];
-//            }
-//        } else {
-//            [self getMyTeamShip:operid];
-//        }
     }];
 }
 -(void) showMainViewWithDict:(NSDictionary*) dict {
@@ -247,15 +174,8 @@
     
     //myfocusships
     [self getAttentionShip:dict[@"operid"]];
-    
-
-//    //多用户的公司名称应写成plist，以userid为主件 暂时先放到defalt里面 有空改
-//    [[NSUserDefaults standardUserDefaults] setValue:[loginDictionary objectForKey:@"comname"] forKey:[NSString stringWithFormat:@"comname%@",userId]];
-//    NSDictionary *myShips =  [Util getSearchRecByKeyInFleet:[loginDictionary objectForKey:@"operid"] key:@"" start:@"1" end:[NSString stringWithFormat:@"%d",NSIntegerMax]];
-//    NSMutableArray *myShipsArray = [myShips objectForKey:@"return"];
-//    delegate.myShipsTeam = myShipsArray;
-    
-    
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"codeDict" ofType:@"plist"];
+    ApplicationDelegate.codeArray = [[NSArray alloc] initWithContentsOfFile:path];
 }
 -(void)login{
 
@@ -288,35 +208,6 @@
         }
     }];
 }
-//-(void) gotoNextView:(NSDictionary *)loginDictionary{
-//
-//    AppDelegate *delegate = [AppDelegate getAppDelegate];
-//    [delegate dismissHUD];
-//    NSString *failMessage = nil;
-//    if (loginDictionary != nil) {
-//        failMessage = [loginDictionary objectForKey:@"loginfailemessage"];
-//    } else {
-//        failMessage = @"连接服务器时发生错误";
-//    }
-//    NSString *pwd = [passWordField text]; 
-//    
-//    if (failMessage !=nil && ![failMessage isEqualToString:@""]) {
-//        //NSLog(@"帐号或密码错误，请重新输入！");
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:failMessage delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//        [alert show];
-//        [alert release];
-//        return;
-//    }
-//    else
-//    {
-//        
-//    }
-//}
-
-//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-//{
-//    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-//}
 
 - (IBAction)backgroundTap:(id)sender
 {
@@ -360,9 +251,9 @@
 
 
 -(void)dealloc{
-    [nameField release];
-    [passWordField release];
     [super dealloc];
+    RELEASE_SAFELY(nameField);
+    RELEASE_SAFELY(passWordField);
 }
 
 

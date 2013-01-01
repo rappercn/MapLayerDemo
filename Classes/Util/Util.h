@@ -37,6 +37,7 @@
 + (void)getTyphoonsIdOnComp:(APIResponseBlock)compBlock;
 + (void)getTyphoonLastForecastById:(NSString*)tid onComp:(APIResponseBlock)compBlock;
 + (void)getTyphoonPathById:(NSString*)tid onComp:(APIResponseBlock)compBlock;
++ (void)getCodeEnCnInfoOnComp:(APIResponseBlock)compBlock;
 +(NSDate*)getNSDateFromDateString:(NSString*)dateString;
 +(NetworkStatus)checkNetworkReachability;
 @end

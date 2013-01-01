@@ -17,19 +17,22 @@
  //                    [shipdict objectForKey:@"callsign"],
  //                    [shipdict objectForKey:@"mmsi"],
  //                    [shipdict objectForKey:@"imo"]];
-    self.subtitle = [[NSString alloc] initWithFormat:@"定位时间:%@", [shipdict objectForKey:@"gpstime"]];
-    if ([[shipdict objectForKey:@"shipnamecn"] length] > 0) {
-        self.title = [shipdict objectForKey:@"shipnamecn"];
-    } else if([[shipdict objectForKey:@"shipname"] length] > 0) {
-        self.title = [shipdict objectForKey:@"shipname"];
-    }else{
-        self.title = [shipdict objectForKey:@"mmsi"];
-    }
+//    NSString *subtitle = @"定位时间";
+    self.subtitle = [@"定位时间:" stringByAppendingString:[shipDictionary objectForKey:@"gpstime"]];
+    self.title = [ApplicationDelegate makeShipNameByCnName:[shipDictionary objectForKey:@"shipnamecn"]
+                                                   engName:[shipDictionary objectForKey:@"shipname"]
+                                                       imo:[shipDictionary objectForKey:@"imo"]];
+//    if ([[shipdict objectForKey:@"shipnamecn"] length] > 0) {
+//        self.title = [shipdict objectForKey:@"shipnamecn"];
+//    } else if([[shipdict objectForKey:@"shipname"] length] > 0) {
+//        self.title = [shipdict objectForKey:@"shipname"];
+//    }else{
+//        self.title = [shipdict objectForKey:@"mmsi"];
+//    }
     return self;
 }
 -(void)dealloc {
     [super dealloc];
-    [shipdict release];
-    shipdict = nil;
+    RELEASE_SAFELY(shipdict);
 }
 @end

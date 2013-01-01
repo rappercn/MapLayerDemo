@@ -15,4 +15,7 @@
 //@property (nonatomic, retain) ;
 -(id)initWithShipDictionary:(NSDictionary*)shipDictionary;
 //-(void)setShipdict:(NSDictionary *)shipDictionary;
+@property (nonatomic, retain) NSString *gpstime;
+@property (nonatomic, assign) double speed;
+@property (nonatomic, assign) double direction;
 @end

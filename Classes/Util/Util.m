@@ -166,6 +166,16 @@
 //        errorBlock(error);
     }];
 }
++(void)getCodeEnCnInfoOnComp:(APIResponseBlock)compBlock
+{
+    
+//    NSString *url = [INTERFACE_URL stringByAppendingString:@"getCodeEnCnInfo"];
+//    [ApplicationDelegate.apiEngine requestDataFrom:url onCompletion:^(NSObject *responseData) {
+//        compBlock(responseData);
+//    } onError:^(NSError *error) {
+//        //        errorBlock(error);
+//    }];
+}
 +(NSDate*)getNSDateFromDateString:(NSString *)dateString {
     [NSDateFormatter setDefaultFormatterBehavior:NSDateFormatterBehavior10_4];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -175,11 +185,12 @@
     NSDate *dateFromString = [[[NSDate alloc] init] autorelease];
     dateFromString = [dateFormatter dateFromString:dateString];
     RELEASE_SAFELY(dateFormatter);
-    return dateFromString;
+    return [dateFromString autorelease];
 }
 +(NetworkStatus)checkNetworkReachability {
     Reachability *r = [[Reachability alloc] init];
     NetworkStatus netStatus = [r currentReachabilityStatus];
+    RELEASE_SAFELY(r);
     return netStatus;
 }
 @end

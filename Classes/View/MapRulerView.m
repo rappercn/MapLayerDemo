@@ -20,7 +20,7 @@
     label.textColor = [UIColor blackColor];
     label.tag = 1;
     [self addSubview:label];
-    [label release];
+    RELEASE_SAFELY(label);
     return self;
 }
 -(void)drawRect:(CGRect)rect
@@ -28,7 +28,7 @@
 //    NSLog(@"map ruler drawrect");
 //    [[UIColor blackColor] setFill];
     [[UIColor blackColor] setStroke];
-    UIBezierPath *path1 = [[UIBezierPath alloc] init];
+    UIBezierPath *path1 = [UIBezierPath bezierPath];
     [path1 moveToPoint:CGPointMake(1, 13)];
     [path1 addLineToPoint:CGPointMake(1, 17)];
     [path1 addLineToPoint:CGPointMake(rulerWidth, 17)];

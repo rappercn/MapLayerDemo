@@ -19,16 +19,8 @@
 @synthesize baseData;
 -(void)showShip
 {
-//    double lat = [[shipdict objectForKey:@"lat"] floatValue];
-//    double lon = [[shipdict objectForKey:@"lon"] floatValue];
-//    CLLocationCoordinate2D coord = 
-//        CLLocationCoordinate2DMake(lat, lon);
-//    AppDelegate *delegate = [AppDelegate getAppDelegate];
-//    delegate.coord = coord;
-//    delegate.showShip = YES;
     ApplicationDelegate.seletedShip = shipdict;
     ApplicationDelegate.tabBarController.selectedIndex = 0;
-//    delegate.tabBarController.selectedIndex = 0;
 }
 -(id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -78,10 +70,6 @@
 }
 
 - (IBAction)focusButtonPress:(UIButton *)sender {
-//    NSDictionary *returnDic = [[[NSDictionary alloc] init ] autorelease];
-    
-    
-   // __block NSString  *returnData = @"";
 
     if(isFocused){
         [Util delAttentionShip:ApplicationDelegate.opeid  shipId:[shipdict objectForKey:@"shipid"] onComp:^(NSObject *responseData) {
@@ -94,46 +82,20 @@
 
         }];
     }
- 
-    
-//    if(isFocused){
-//        returnDic = [Util delAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"]];
-//    }else{
-//        returnDic = [Util addAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]  shipId:[shipdict objectForKey:@"shipid"]];
-//    }
-//    isFocused = !isFocused;
-//
-//    NSString *message = @"";
-//    if([returnDic objectForKey:@"return"] != nil && [[returnDic objectForKey:@"return"] isEqual:@"1"]){
-//        message = @"成功";
-//        [self showButtonTitle];
-//        NSDictionary *shipsDictionary = [Util getAttentionShip:[[NSUserDefaults standardUserDefaults] objectForKey:@"userId"]];
-//        NSMutableArray *shipsArray = [shipsDictionary objectForKey:@"return"];
-//        [AppDelegate getAppDelegate].myFocusShips = shipsArray;
-//    }else {
-//        message = @"失败";
-//    }
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:@"操作%@",message]  delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//    [alert show];
-//    [alert release];
 }
 
 #pragma mark - View Delegate
 - (void)viewDidLoad
 {
 //    NSArray *myfocus = ApplicationDelegate.myFocusShips;
-    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"shipid == %@", shipdict[@"shipid"]];
-    NSArray *isFocusArray = [ApplicationDelegate.myFocusShips filteredArrayUsingPredicate:resultPredicate];
-    if(isFocusArray == nil || isFocusArray.count == 0){
-        isFocused = false;
-    }else{
-        isFocused = true;
-    }
-  //  [self showButtonTitle];
+//    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"shipid == %@", shipdict[@"shipid"]];
+//    NSArray *isFocusArray = [ApplicationDelegate.myFocusShips filteredArrayUsingPredicate:resultPredicate];
+//    if(isFocusArray == nil || isFocusArray.count == 0){
+//        isFocused = false;
+//    }else{
+//        isFocused = true;
+//    }
 
-    //self.shipfocused = [AppDelegate getMyFavArray];
-//    [self saveShipDetailFocused:[shipdict objectForKey:@"shipname"]];
-    // genarate label
     NSString *leftCaps[] = {
         @"中文船名:",
         @"英文船名:",
@@ -152,11 +114,24 @@
    // NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
    // [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
    // NSString *gpsTime;
+    
+    NSArray *codeArray = ApplicationDelegate.codeArray;
+    NSString *nation = shipdict[@"shipflag"];
+    NSString *type = shipdict[@"shiptype"];
+    for (NSDictionary *dic in codeArray) {
+        if ([dic[@"codetype"] isEqual:@"0"] && [dic[@"code"] isEqual:nation]) {
+            nation = dic[@"typecn"];
+        }
+        if ([dic[@"codetype"] isEqual:@"3"] && [dic[@"code"] isEqual:type]) {
+            type = dic[@"typecn"];
+        }
+    }
+    
     NSString *leftData[] = {
         [shipdict objectForKey:@"shipnamecn"],
         [shipdict objectForKey:@"shipname"],
-        [shipdict objectForKey:@"shiptype"],
-        @"/",
+        type,
+        nation,
         [NSString stringWithFormat:@"%d",[[shipdict objectForKey:@"shiplength"] intValue]],
         [NSString stringWithFormat:@"%d",[[shipdict objectForKey:@"shipwidth"] intValue]],
         [shipdict objectForKey:@"gpstime"],
