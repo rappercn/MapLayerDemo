@@ -588,7 +588,7 @@ static const int kCRulerTag = 10;
     NSString *urlString = [INTERFACE_URL stringByAppendingFormat:@"checkVehicleDistributionRet&param_dleft=%f&param_dtop=%f&param_dright=%f&param_dbottom=%f&param_numlimit=499",pt0.longitude, pt0.latitude, pt1.longitude, pt1.latitude];
     
 //    BOOL startRequest = (taskUrl == nil);
-    taskUrl = [urlString retain];
+//    taskUrl = [urlString retain];
 //    if (!requesting) {
 //        [self doNextTaskWithPrevUrl:nil];
 //    }
@@ -597,8 +597,8 @@ static const int kCRulerTag = 10;
 //    if (requesting) {
 //        [mkNetOp cancel];
 //    }
-    requesting = YES;
-    mkNetOp = [ApplicationDelegate.apiEngine requestDataFrom:taskUrl onCompletion:^(NSObject *responseData) {
+//    requesting = YES;
+    mkNetOp = [ApplicationDelegate.apiEngine requestDataFrom:urlString onCompletion:^(NSObject *responseData) {
         if ([(NSArray*)responseData count] > 0) {
             
             for (id<TileOverlay> overlay in gmapView.overlays) {
@@ -629,11 +629,11 @@ static const int kCRulerTag = 10;
             }
             [ApplicationDelegate showShipCountOnTabbarWith:0];
         }
-        requesting = NO;
+//        requesting = NO;
         [self hideReloadProgress];
     } onError:^(NSError *error) {
-        requesting = NO;
-        taskUrl = nil;
+//        requesting = NO;
+//        taskUrl = nil;
         [self hideReloadProgress];
     }];
 }
@@ -670,8 +670,8 @@ static const int kCRulerTag = 10;
         }
     }    
 }
-#pragma mark - View Delegate
 
+#pragma mark - View Delegate
 -(id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -720,35 +720,25 @@ static const int kCRulerTag = 10;
                  @"", @"", @"", @"",
                  nil];
     
-//    MKCoordinateRegion region = gmapView.region;
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    double clon = [ud doubleForKey:@"centerLongitude"];
-    double clat = [ud doubleForKey:@"centerLatitude"];
-    double latd = [ud doubleForKey:@"latitudeDelta"];
-    double lond = [ud doubleForKey:@"longitudeDelta"];
+    double clon = [def doubleForKey:@"centerLongitude"];
+    double clat = [def doubleForKey:@"centerLatitude"];
+    double latd = [def doubleForKey:@"latitudeDelta"];
+    double lond = [def doubleForKey:@"longitudeDelta"];
     if (latd + lond != 0) {
         CLLocationCoordinate2D center = CLLocationCoordinate2DMake(clat, clon);
         MKCoordinateSpan span = MKCoordinateSpanMake(latd, lond);
         MKCoordinateRegion region = MKCoordinateRegionMake(center, span);
         gmapView.region = region;
     }
-    segmentedControl.selectedSegmentIndex = 0;
+    segmentedControl.selectedSegmentIndex = 1;
     [self segButtonSelected:segmentedControl];
-//    [((UISegmentedControl*)self.navigationItem.titleView) setSelectedSegmentIndex:0];
-//    [self segButtonSelected:((UISegmentedControl*)self.navigationItem.titleView)];
 }
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    
-//    UIImage* image = [goo image];
-//    NSData* imagedata = UIImagePNGRepresentation(image);
-//    [imagedata writeToFile:[[Util getDocumentPath] stringByAppendingString:@"/google.png"] atomically:YES];
 }
 -(void)viewDidAppear:(BOOL)animated
 {
-//    NSLog(@"did appear");
     [super viewDidAppear:animated];
     [self reloadMapViewOverlays];
 //    AppDelegate *delegate = [AppDelegate getAppDelegate];

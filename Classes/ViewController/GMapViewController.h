@@ -6,28 +6,19 @@
 //  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
 //
 
-//#import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 @class ShipAnnotation;
 @class MUtil;
-//@class LevelMapData;
-//@class ASIHTTPRequest;
+
 @interface GMapViewController : UIViewController<MKMapViewDelegate> {
-//    IBOutlet MKMapView *gmapView;
-//    LevelMapData* levelData;
-//    int currentMap;
     NSArray *meterArray;
     NSArray *feetArray;
     int zoomLevel;
     NSMutableDictionary *typPathDic;
     NSMutableDictionary *typForeDic;
-//    ASIHTTPRequest *reloadReq;
-//    NSMutableArray *onMapShipIdArray;
-//    NSMutableArray *onMapShipDataArray;
     NSArray *normalShipArray;
-    NSString *taskUrl;
-//    int number;
-    BOOL requesting;
+//    NSString *taskUrl;
+//    BOOL requesting;
     MKNetworkOperation *mkNetOp;
     BOOL useMap;
     BOOL showShipName;
@@ -39,5 +30,4 @@
 //    ShipAnnotation *currentShipAnnotation;
 }
 @property (nonatomic, retain) IBOutlet MKMapView *gmapView;
-//@property (nonatomic, retain) LevelMapData* levelData;
 @end

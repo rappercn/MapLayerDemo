@@ -50,9 +50,9 @@
     NSString *result = nil;
     if (imo != nil && imo.length > 0) {
         if (cnName != nil && cnName.length > 0) {
-            result = [cnName stringByAppendingFormat:@"(%@)",imo];
+            result = [cnName stringByAppendingString:imo];
         } else if (eName != nil && eName.length > 0) {
-            result = [eName stringByAppendingFormat:@"(%@)",imo];
+            result = [eName stringByAppendingString:imo];
         } else {
             result = imo;
         }
@@ -65,7 +65,7 @@
             result = @"";
         }
     }
-    return [result autorelease];
+    return result;
 }
 -(void) displayHUD :(UIViewController *)controller words:(NSString *)words{
     progress_ = [[MBProgressHUD alloc] initWithView:controller.view];  

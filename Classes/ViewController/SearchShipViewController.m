@@ -25,16 +25,15 @@
     searchDisplayController.searchBar.placeholder = @"搜索";
     [searchDisplayController.searchBar setShowsCancelButton:NO];
     searchDisplayController.searchBar.scopeButtonTitles = [NSArray arrayWithObjects:@"船名", @"呼号", @"imo", @"mmsi", nil];
-    searchResults = [NSMutableArray arrayWithCapacity:0];
+    searchResults = [[NSMutableArray arrayWithCapacity:0] retain];
     NSString *path = [[Util getCachePath] stringByAppendingString:@"/searchHistory.plist"];
     if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        localArray = [[NSMutableArray alloc] initWithContentsOfFile:path];
+        localArray = [[NSMutableArray arrayWithContentsOfFile:path] retain];
     } else {
-        localArray = [[NSMutableArray alloc] init];
+        localArray = [[NSMutableArray arrayWithCapacity:0] retain];
     }
 }
 - (void)viewDidUnload {
-    RELEASE_SAFELY(searchDisplayController);
     [super viewDidUnload];
 }
 
@@ -49,25 +48,12 @@
     
     if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]){
         rows = [searchResults count] + 1;
-//        if (isNeedPage) {
-//            rows++;
-//        }
     }
     else{
         rows = [localArray count];
     }
-//    if([tableView isEqual:self.searchDisplayController.searchResultsTableView] && isNeedPage){
-//        rows++;
-//    }
     return rows;
 }
-
-//-(NSIndexPath *) tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-//    if([[tableView cellForRowAtIndexPath:indexPath].textLabel.text isEqualToString:@"找不到更多结果"]){
-//        return nil;
-//    }
-//    return indexPath;
-//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -81,11 +67,7 @@
                  initWithStyle:UITableViewCellStyleDefault
                  reuseIdentifier:CellIdentifier] autorelease];
         [cell setBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg.png"]]];
-//        [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg_on.png"]]];
-
         cell.textLabel.backgroundColor = [UIColor clearColor];
-//        UIFont *font = [UIFont fontWithName:@"Arial" size:18];
-//        cell.textLabel.font = font;
     }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     [cell.textLabel setTextAlignment:NSTextAlignmentLeft];
@@ -95,25 +77,10 @@
     if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]){
         if([indexPath row] == [searchResults count])
         {
-//            cell = [
-//            cell=[[UITableViewCell alloc] initWithFrame:CGRectZero
-//                                        reuseIdentifier:@"LoadMoreIdentifier"];
-//            cell.font = [UIFont boldSystemFontOfSize:13];
             [cell.textLabel setTextAlignment:NSTextAlignmentCenter];
-//            if(searchResults.count < ROW_PERQUERY){
-//                cell.textLabel.text = @"找不到更多结果";
-//                cell.tag = 1;
-//            }else{
-                cell.textLabel.text = @"查看更多结果";
-//            }
+            cell.textLabel.text = @"查看更多结果";
             cell.accessoryType = UITableViewCellAccessoryNone;
         }else {
-            // cell.textLabel.text = ((ShipData*) [searchResults objectAtIndex:indexPath.row]).shipName;
-//            NSString *title = searchResults[indexPath.row][@"shipnamecn"];
-//            if ([title isEqualToString:@""] || title == nil) {
-//                title = searchResults[indexPath.row][@"shipname"];
-//            }
-//            cell.textLabel.text =  title;
             NSMutableDictionary *dict = searchResults[indexPath.row];
             cell.textLabel.text = [ApplicationDelegate makeShipNameByCnName:dict[@"shipnamecn"] engName:dict[@"shipname"] imo:dict[@"imo"]];
         }
@@ -160,8 +127,6 @@
             }
             return;
         } else {
-            // next.baseData = (ShipData*)[self.searchResults objectAtIndex:indexPath.row];
-            
             next.shipdict = [searchResults objectAtIndex:indexPath.row];
         }
     }
@@ -197,7 +162,8 @@
         default:
             break;
     }
-    searchResults = [NSMutableArray arrayWithArray:[localArray filteredArrayUsingPredicate:resultPredicate]];
+    RELEASE_SAFELY(searchResults);
+    searchResults = [[NSMutableArray arrayWithArray:[localArray filteredArrayUsingPredicate:resultPredicate]] retain];
 }
 -(BOOL)searchDisplayController:(UISearchDisplayController *)controller
 shouldReloadTableForSearchString:(NSString *)searchString
@@ -257,6 +223,7 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
     searchTypeIdx = [self.searchDisplayController.searchBar selectedScopeButtonIndex];
 //    isNeedPage = YES;
     currentPage = 0;
+    RELEASE_SAFELY(searchKey);
     searchKey = [searchBar.text copy];
    // NSStringEncoding gbk = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
     
@@ -282,9 +249,11 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
                                  shipType:type
                                    onComp:^(NSObject *responseData) {
                                        [ApplicationDelegate dismissHUD];
-                                       
-                                       
-                                       [self appendResultArrayWithArray:(NSArray *)responseData];
+                                       RELEASE_SAFELY(searchResults);
+                                       searchResults = [[NSMutableArray arrayWithArray:(NSArray*)responseData] retain];
+                                       [self.searchDisplayController.searchResultsTableView reloadData];
+//                                       
+//                                       [self appendResultArrayWithArray:(NSArray *)responseData];
                                    }];
 }
 -(void) searchBarCancelButtonClicked:(UISearchBar *)searchBar {
@@ -294,11 +263,10 @@ shouldReloadTableForSearchScope:(NSInteger)searchOption
 }
 #pragma mark -
 - (void)dealloc {
-    [searchDisplayController release];
-    RELEASE_SAFELY(searchDisplayController);
-    RELEASE_SAFELY(localArray);
-    RELEASE_SAFELY(searchResults);
     [super dealloc];
+    RELEASE_SAFELY(searchDisplayController);
+//    RELEASE_SAFELY(localArray);
+//    RELEASE_SAFELY(searchResults);
 }
 
 @end

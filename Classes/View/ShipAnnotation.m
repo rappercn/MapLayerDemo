@@ -12,23 +12,13 @@
 @synthesize shipdict, annotationType;
 -(id)initWithShipDictionary:(NSDictionary *)shipDictionary {
     self = [super init];
-    shipdict = [shipDictionary retain];
- //   self.subtitle = [[NSString alloc] initWithFormat:@"呼号:%@, mmsi:%@, imo:%@",
- //                    [shipdict objectForKey:@"callsign"],
- //                    [shipdict objectForKey:@"mmsi"],
- //                    [shipdict objectForKey:@"imo"]];
-//    NSString *subtitle = @"定位时间";
-    self.subtitle = [@"定位时间:" stringByAppendingString:[shipDictionary objectForKey:@"gpstime"]];
-    self.title = [ApplicationDelegate makeShipNameByCnName:[shipDictionary objectForKey:@"shipnamecn"]
-                                                   engName:[shipDictionary objectForKey:@"shipname"]
-                                                       imo:[shipDictionary objectForKey:@"imo"]];
-//    if ([[shipdict objectForKey:@"shipnamecn"] length] > 0) {
-//        self.title = [shipdict objectForKey:@"shipnamecn"];
-//    } else if([[shipdict objectForKey:@"shipname"] length] > 0) {
-//        self.title = [shipdict objectForKey:@"shipname"];
-//    }else{
-//        self.title = [shipdict objectForKey:@"mmsi"];
-//    }
+    shipdict = [shipDictionary copy];
+    static NSString *subtitle = @"定位时间:" ;
+    self.subtitle = [subtitle stringByAppendingString:[shipdict objectForKey:@"gpstime"]];
+    NSString *title = [ApplicationDelegate makeShipNameByCnName:[shipdict objectForKey:@"shipnamecn"]
+                                                        engName:[shipdict objectForKey:@"shipname"]
+                                                            imo:[shipdict objectForKey:@"imo"]];
+    self.title = title;
     return self;
 }
 -(void)dealloc {

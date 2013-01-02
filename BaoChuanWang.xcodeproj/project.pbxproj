@@ -70,7 +70,6 @@
 		308E583315804E040075A2D1 /* MKMapView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E582015804E010075A2D1 /* MKMapView+Additions.m */; };
 		308E583415804E040075A2D1 /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E582215804E010075A2D1 /* Util.m */; };
 		308E583915804E040075A2D1 /* MyTeamViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E582E15804E040075A2D1 /* MyTeamViewController.m */; };
-		308E5859158052610075A2D1 /* MapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308E584B158052610075A2D1 /* MapViewController.xib */; };
 		308E585A158052610075A2D1 /* MyTeamViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308E584C158052610075A2D1 /* MyTeamViewController.xib */; };
 		308E585C1580579F0075A2D1 /* GMapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308E585B1580579F0075A2D1 /* GMapViewController.xib */; };
 		308E58611580A7680075A2D1 /* SearchShipViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308E58601580A7680075A2D1 /* SearchShipViewController.xib */; };
@@ -185,7 +184,6 @@
 		308E582215804E010075A2D1 /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
 		308E582D15804E040075A2D1 /* MyTeamViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyTeamViewController.h; sourceTree = "<group>"; };
 		308E582E15804E040075A2D1 /* MyTeamViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyTeamViewController.m; sourceTree = "<group>"; };
-		308E584B158052610075A2D1 /* MapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MapViewController.xib; sourceTree = "<group>"; };
 		308E584C158052610075A2D1 /* MyTeamViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyTeamViewController.xib; sourceTree = "<group>"; };
 		308E585B1580579F0075A2D1 /* GMapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GMapViewController.xib; sourceTree = "<group>"; };
 		308E58601580A7680075A2D1 /* SearchShipViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchShipViewController.xib; sourceTree = "<group>"; };
@@ -457,7 +455,6 @@
 			children = (
 				29C01BD21613FF0500E0B73E /* LoginViewController.xib */,
 				29B71F2D164244C4005FDCAD /* ShipFocusViewController.xib */,
-				308E584B158052610075A2D1 /* MapViewController.xib */,
 				308E584C158052610075A2D1 /* MyTeamViewController.xib */,
 				308E585B1580579F0075A2D1 /* GMapViewController.xib */,
 				308E58601580A7680075A2D1 /* SearchShipViewController.xib */,
@@ -518,7 +515,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				308E5859158052610075A2D1 /* MapViewController.xib in Resources */,
 				308E585A158052610075A2D1 /* MyTeamViewController.xib in Resources */,
 				308E585C1580579F0075A2D1 /* GMapViewController.xib in Resources */,
 				308E58611580A7680075A2D1 /* SearchShipViewController.xib in Resources */,
