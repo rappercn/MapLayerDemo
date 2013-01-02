@@ -149,7 +149,9 @@
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.backgroundColor = [UIColor clearColor];
         cell.textLabel.font = [UIFont systemFontOfSize:12];
-        [cell setBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg.png"]]];
+        UIImageView *iview = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg.png"]];
+        [cell setBackgroundView:iview];
+        RELEASE_SAFELY(iview);
 //        [cell setSelectedBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cellBg_on.png"]]];
     }
     NSDictionary *dic = groupDetail[[@"section" stringByAppendingFormat:@"%d", indexPath.section]][indexPath.row];
