@@ -64,35 +64,36 @@
 	
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
   
-    NSString *isChecked = [[NSUserDefaults standardUserDefaults] objectForKey:@"isChecked"];
-    if(isChecked != nil){
-        bRemeberPwd = isChecked.boolValue;
-    }else{
-        bRemeberPwd = NO;
-    }
-
-	// create check-box
-	checkRememberBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-	checkRememberBtn.frame = CGRectMake(55, 196, 22, 21);
-	if(bRemeberPwd)
-	{
-        NSString *passDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"password"];
-        if(passWordField != nil){
-            passWordField.text = passDefault;
-        }
-		[checkRememberBtn setBackgroundImage:[UIImage imageNamed:@"check.png"] 
-									forState:UIControlStateNormal];
-	}
-	else 
-	{
-		[checkRememberBtn setBackgroundImage:[UIImage imageNamed:@"nocheck.png"] 
-									forState:UIControlStateNormal];
-	}
-	[checkRememberBtn addTarget:self action:@selector(checkRemember) forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview:checkRememberBtn];
+//    NSString *isChecked = [[NSUserDefaults standardUserDefaults] objectForKey:@"isChecked"];
+//    if(isChecked != nil){
+//        bRemeberPwd = isChecked.boolValue;
+//    }else{
+//        bRemeberPwd = NO;
+//    }
+//
+//	// create check-box
+//	checkRememberBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//	checkRememberBtn.frame = CGRectMake(55, 196, 22, 21);
+//	if(bRemeberPwd)
+//	{
+//        NSString *passDefault = [[NSUserDefaults standardUserDefaults] objectForKey:@"password"];
+//        if(passWordField != nil){
+//            passWordField.text = passDefault;
+//        }
+//		[checkRememberBtn setBackgroundImage:[UIImage imageNamed:@"check.png"] 
+//									forState:UIControlStateNormal];
+//	}
+//	else 
+//	{
+//		[checkRememberBtn setBackgroundImage:[UIImage imageNamed:@"nocheck.png"] 
+//									forState:UIControlStateNormal];
+//	}
+//	[checkRememberBtn addTarget:self action:@selector(checkRemember) forControlEvents:UIControlEventTouchUpInside];
+//	[self.view addSubview:checkRememberBtn];
 	
-    [nameField setText:@"shsdadmin"];
-    [passWordField setText:@"123456"];
+    [nameField setText:[[NSUserDefaults standardUserDefaults] valueForKey:@"userid"]];
+//    [nameField setText:@"shsdadmin"];
+//    [passWordField setText:@"123456"];
 }
 
 - (void)viewDidUnload
@@ -167,8 +168,8 @@
 -(void) showMainViewWithDict:(NSDictionary*) dict {
     NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
     [def setValue:dict[@"userid"] forKey:@"userid"];
-    NSString *pwd = passWordField.text;
-    [def setValue:pwd forKey:@"password"];
+//    NSString *pwd = passWordField.text;
+//    [def setValue:pwd forKey:@"password"];
     [def setValue:dict[@"operid"] forKey:@"operid"];
     ApplicationDelegate.opeid = dict[@"operid"];
     
