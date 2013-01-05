@@ -47,7 +47,9 @@
     NSInteger rows = 0;
     
     if ([tableView isEqual:self.searchDisplayController.searchResultsTableView]){
-        rows = [searchResults count] + 1;
+        if(searchResults.count != 0){
+            rows = [searchResults count] + 1;
+        }
     }
     else{
         rows = [localArray count];
