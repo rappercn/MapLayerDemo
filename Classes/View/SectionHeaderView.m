@@ -17,7 +17,8 @@
     if (self) {
 		UITapGestureRecognizer *tapGesture = [[[UITapGestureRecognizer alloc] initWithTarget:self 
 																			action:@selector(toggleOpen:)] autorelease];
-		[self addGestureRecognizer:tapGesture];
+        tapGesture.cancelsTouchesInView = NO;
+        [self addGestureRecognizer:tapGesture];
 		self.userInteractionEnabled = YES;
 		section = forSection;
 		delegate = aDelegate;
