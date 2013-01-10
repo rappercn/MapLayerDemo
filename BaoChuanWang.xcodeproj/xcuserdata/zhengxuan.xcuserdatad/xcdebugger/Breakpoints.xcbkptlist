@@ -13,7 +13,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "189"
          endingLineNumber = "189"
-         landmarkName = "-filterContentForSearchText:typeIndex:"
+         landmarkName = "-searchDisplayController:shouldReloadTableForSearchScope:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -52,7 +52,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "75"
          endingLineNumber = "75"
-         landmarkName = "-tableView:numberOfRowsInSection:"
+         landmarkName = "-tableView:cellForRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -65,7 +65,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "72"
          endingLineNumber = "72"
-         landmarkName = "-tableView:numberOfRowsInSection:"
+         landmarkName = "-tableView:cellForRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -78,7 +78,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "69"
          endingLineNumber = "69"
-         landmarkName = "-tableView:numberOfRowsInSection:"
+         landmarkName = "-tableView:cellForRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -272,9 +272,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "283"
-         endingLineNumber = "283"
-         landmarkName = "-appendTableWith:"
-         landmarkType = "5">
+         endingLineNumber = "283">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -285,9 +283,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "286"
-         endingLineNumber = "286"
-         landmarkName = "-appendTableWith:"
-         landmarkType = "5">
+         endingLineNumber = "286">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -298,9 +294,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "296"
-         endingLineNumber = "296"
-         landmarkName = "-appendTableWith:"
-         landmarkType = "5">
+         endingLineNumber = "296">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -325,8 +319,8 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "273"
          endingLineNumber = "273"
-         landmarkName = "-loadMore"
-         landmarkType = "5">
+         landmarkName = "@implementation SearchShipViewController"
+         landmarkType = "3">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -337,9 +331,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "284"
-         endingLineNumber = "284"
-         landmarkName = "-appendTableWith:"
-         landmarkType = "5">
+         endingLineNumber = "284">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -364,7 +356,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "113"
          endingLineNumber = "113"
-         landmarkName = "-tableView:cellForRowAtIndexPath:"
+         landmarkName = "-tableView:didSelectRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -390,7 +382,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "272"
          endingLineNumber = "272"
-         landmarkName = "-loadMore"
+         landmarkName = "-dealloc"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -403,7 +395,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "153"
          endingLineNumber = "153"
-         landmarkName = "-tableView:didSelectRowAtIndexPath:"
+         landmarkName = "-filterContentForSearchText:typeIndex:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -429,7 +421,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "265"
          endingLineNumber = "265"
-         landmarkName = "-searchBarSearchButtonClicked:"
+         landmarkName = "-searchBarCancelButtonClicked:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -441,9 +433,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "385"
-         endingLineNumber = "385"
-         landmarkName = "-saveContext:"
-         landmarkType = "5">
+         endingLineNumber = "385">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -455,7 +445,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "265"
          endingLineNumber = "265"
-         landmarkName = "-searchBarSearchButtonClicked:"
+         landmarkName = "-searchBarCancelButtonClicked:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -468,7 +458,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "171"
          endingLineNumber = "171"
-         landmarkName = "-filterContentForSearchText:typeIndex:"
+         landmarkName = "-searchDisplayController:shouldReloadTableForSearchString:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -493,9 +483,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "387"
-         endingLineNumber = "387"
-         landmarkName = "-saveContext:"
-         landmarkType = "5">
+         endingLineNumber = "387">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -506,9 +494,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "336"
-         endingLineNumber = "336"
-         landmarkName = "-saveShipMajor:"
-         landmarkType = "5">
+         endingLineNumber = "336">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -520,7 +506,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "73"
          endingLineNumber = "73"
-         landmarkName = "-tableView:numberOfRowsInSection:"
+         landmarkName = "-tableView:cellForRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -533,7 +519,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "131"
          endingLineNumber = "131"
-         landmarkName = "-tableView:cellForRowAtIndexPath:"
+         landmarkName = "-tableView:didSelectRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -545,9 +531,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "362"
-         endingLineNumber = "362"
-         landmarkName = "-saveShipMajor:"
-         landmarkType = "5">
+         endingLineNumber = "362">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -571,9 +555,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "377"
-         endingLineNumber = "377"
-         landmarkName = "-saveShipMajor:"
-         landmarkType = "5">
+         endingLineNumber = "377">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -584,9 +566,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "354"
-         endingLineNumber = "354"
-         landmarkName = "-saveShipMajor:"
-         landmarkType = "5">
+         endingLineNumber = "354">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -598,7 +578,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "71"
          endingLineNumber = "71"
-         landmarkName = "-tableView:numberOfRowsInSection:"
+         landmarkName = "-tableView:cellForRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -611,7 +591,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "79"
          endingLineNumber = "79"
-         landmarkName = "-tableView:numberOfRowsInSection:"
+         landmarkName = "-tableView:cellForRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -624,7 +604,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "47"
          endingLineNumber = "47"
-         landmarkName = "-viewDidUnload"
+         landmarkName = "-tableView:numberOfRowsInSection:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -740,9 +720,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "330"
-         endingLineNumber = "330"
-         landmarkName = "-saveShipMajor:"
-         landmarkType = "5">
+         endingLineNumber = "330">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -792,7 +770,9 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "12"
-         endingLineNumber = "12">
+         endingLineNumber = "12"
+         landmarkName = "-initWithNibName:bundle:"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -803,9 +783,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "326"
-         endingLineNumber = "326"
-         landmarkName = "-GetRecord:"
-         landmarkType = "5">
+         endingLineNumber = "326">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -921,7 +899,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "20"
          endingLineNumber = "20"
-         landmarkName = "-initWithNibName:bundle:"
+         landmarkName = "-viewDidLoad"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -1116,7 +1094,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "51"
          endingLineNumber = "51"
-         landmarkName = "-viewDidAppear:"
+         landmarkName = "-tableView:numberOfRowsInSection:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -1155,7 +1133,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "48"
          endingLineNumber = "48"
-         landmarkName = "-viewDidUnload"
+         landmarkName = "-tableView:numberOfRowsInSection:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -1298,7 +1276,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "219"
          endingLineNumber = "219"
-         landmarkName = "-searchBarSearchButtonClicked:"
+         landmarkName = "-appendResultArrayWithArray:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -1440,9 +1418,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "306"
-         endingLineNumber = "306"
-         landmarkName = "-GetRecord:"
-         landmarkType = "5">
+         endingLineNumber = "306">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -1518,9 +1494,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "307"
-         endingLineNumber = "307"
-         landmarkName = "-GetRecord:"
-         landmarkType = "5">
+         endingLineNumber = "307">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -1531,9 +1505,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "327"
-         endingLineNumber = "327"
-         landmarkName = "-GetRecord:"
-         landmarkType = "5">
+         endingLineNumber = "327">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"

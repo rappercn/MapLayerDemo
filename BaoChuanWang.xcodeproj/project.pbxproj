@@ -620,6 +620,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "宝船网";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -641,6 +642,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "宝船网";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
