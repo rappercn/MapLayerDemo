@@ -32,7 +32,11 @@
     } else {
         [[UIColor grayColor] setFill];
     }
-    [[UIColor blackColor] setStroke];
+    if (ApplicationDelegate.shipRedBorder) {
+        [[UIColor redColor] setStroke];
+    } else {
+        [[UIColor blackColor] setStroke];
+    }
     UIBezierPath *path1 = [UIBezierPath bezierPath];
     if ([[shipdict objectForKey:@"speed"] floatValue] <= 0) {
         [path1 moveToPoint:CGPointMake(15.0, 10.0)];
@@ -49,7 +53,8 @@
         [path1 addLineToPoint:CGPointMake(15, 18)];
         [path1 closePath];
         [path1 moveToPoint:CGPointMake(15, 15)];
-        [path1 addLineToPoint:CGPointMake(30, 15)];
+        float speed = MIN([[shipdict objectForKey:@"speed"] floatValue], 25.0);
+        [path1 addLineToPoint:CGPointMake(20 + speed / 2.5, 15)];
     }
     path1.lineWidth = 1;
     [path1 fill];

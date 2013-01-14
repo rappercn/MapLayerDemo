@@ -351,20 +351,22 @@ static const int kCRulerTag = 10;
                 for (NSString *tid in idArray) {
                     [Util getTyphoonLastForecastById:tid onComp:^(NSObject *responseData) {
                         [typForeDic setValue:responseData forKey:tid];
+//                        NSLog(@"typhoon forecast : %@", tid);
                         if ([typForeDic count] == [idArray count]) {
                             [typForeDic writeToFile:foreFile atomically:YES];
-                            if ([typPathDic count] == [idArray count]) {
+//                            if ([typPathDic count] == [idArray count]) {
                                 [self drawTyphoon];
-                            }
+//                            }
                         }
                     }];
                     [Util getTyphoonPathById:tid onComp:^(NSObject *responseData) {
                         [typPathDic setValue:responseData forKey:tid];
+//                        NSLog(@"typhoon path : %@", tid);
                         if ([typPathDic count] == [idArray count]) {
                             [typPathDic writeToFile:pathFile atomically:YES];
-                            if ([typForeDic count] == [idArray count]) {
+//                            if ([typForeDic count] == [idArray count]) {
                                 [self drawTyphoon];
-                            }
+//                            }
                         }
                     }];
                 }
@@ -386,22 +388,15 @@ static const int kCRulerTag = 10;
     UISegmentedControl* seg = (UISegmentedControl*) sender;
     showtype = seg.selectedSegmentIndex;
     if (seg.selectedSegmentIndex == 0) {
+        ApplicationDelegate.shipRedBorder = YES;
         [self addShipIconWithArray:ApplicationDelegate.myShipsTeam withAnnotationType:kCShipTypeMyTeam showBadge:NO];
-         //[self removeTyphoon];
-//        UIActivityIndicatorView *actView = (UIActivityIndicatorView*)self.navigationItem.rightBarButtonItem.customView;
-//        [actView stopAnimating];
-//        [actView removeFromSuperview];
-////        [actView release];
-//        self.navigationItem.rightBarButtonItem.customView = nil;
-    } else if(seg.selectedSegmentIndex == 1) { 
+    } else if(seg.selectedSegmentIndex == 1) {
+        ApplicationDelegate.shipRedBorder = YES;
         [self addShipIconWithArray:ApplicationDelegate.myFocusShips withAnnotationType:kCShipTypeMyTeam showBadge:NO];
-//        [self getTyphoonInfo];
-//        [self drawTyphoon];
     }else if(seg.selectedSegmentIndex == 2) {
-      //  NSArray *allShip = [[[NSArray alloc] initWithArray:normalShipArray ] autorelease];
+        ApplicationDelegate.shipRedBorder = NO;
         [self addShipIconWithArray:normalShipArray withAnnotationType:kCShipTypeMyTeam showBadge:NO];
     }
-//    NSLog(@"segButtonSelected:%d", seg.selectedSegmentIndex);
 }
 -(void)showReloadProgress {
     if (self.navigationItem.rightBarButtonItem.customView != nil) {
@@ -526,6 +521,8 @@ static const int kCRulerTag = 10;
         ShipTileOverlay *shipOverlay = [[ShipTileOverlay alloc] init];
         [gmapView addOverlay:shipOverlay];
         RELEASE_SAFELY(shipOverlay);
+        // 重新绘制船舶
+        [self segButtonSelected:segmentedControl];
     }
 //    [gmapView removeOverlays:gmapView.overlays];
 //    NSLog(@"remove all overlays");
@@ -703,8 +700,8 @@ static const int kCRulerTag = 10;
     mapUtil = [[MUtil alloc] init];
     NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
     useMap = ![def boolForKey:@"useMap"];
+    showTyphoon = ![def boolForKey:@"showTyphoon"];
     showShipName = [def boolForKey:@"showShipName"];
-    showTyphoon = [def boolForKey:@"showTyphoon"];
     
     meterArray = [[NSArray arrayWithObjects:
                   @"5000000", @"2000000", @"1000000", @"500000",
@@ -730,7 +727,7 @@ static const int kCRulerTag = 10;
         MKCoordinateRegion region = MKCoordinateRegionMake(center, span);
         gmapView.region = region;
     }
-    segmentedControl.selectedSegmentIndex = 1;
+    segmentedControl.selectedSegmentIndex = 0;
     [self segButtonSelected:segmentedControl];
 }
 -(void)viewWillAppear:(BOOL)animated

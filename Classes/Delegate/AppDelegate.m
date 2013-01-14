@@ -21,6 +21,7 @@
 @synthesize imageDownloader;
 @synthesize opeid;
 @synthesize codeArray;
+@synthesize shipRedBorder;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
