@@ -8,6 +8,7 @@
 
 #import "SettingsViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "AboutViewController.h"
 @implementation SettingsViewController
 @synthesize settingSections, simpleTableView;
 
@@ -80,7 +81,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return 2;
+	return 3;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -95,7 +96,9 @@
 {
 	if (section == 0) {
         return 2;
-    } else {
+    }else if (section == 1){
+        return 2;
+    }else {
         return 1;
     }
 }
@@ -158,7 +161,15 @@
         }
         [cell.contentView addSubview:sw];
         [sw release];
-    } else {
+    } else if (indexPath.section == 1) {
+        if(indexPath.row == 0){
+            cell.textLabel.text = @"关于宝船";
+            
+        }else{
+            cell.textLabel.text = @"关于用户";
+        }
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }else {
         UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(110.0, 0.0, 100.0, 40.0)];
         [lbl setText:@"退出"];
         [lbl setBackgroundColor:[UIColor clearColor]];
@@ -194,8 +205,12 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 //    [self.navigationController popToRootViewControllerAnimated:YES];
-    if (indexPath.section == 1) {
+    if (indexPath.section == 2) {
         [self.parentViewController.navigationController popViewControllerAnimated:YES];
+    }else if(indexPath.section == 1){
+        AboutViewController *about = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
+        about.type =indexPath.row;
+        [self.navigationController pushViewController:about animated:YES];
     }
 
  //   SimpleTableViewController* next = [[SimpleTableViewController alloc] initWithStyle:UITableViewStyleGrouped];

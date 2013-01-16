@@ -171,6 +171,9 @@
 //    NSString *pwd = passWordField.text;
 //    [def setValue:pwd forKey:@"password"];
     [def setValue:dict[@"operid"] forKey:@"operid"];
+    [def setValue:dict[@"dispname"] forKey:@"dispname"];
+    [def setValue:dict[@"comname"] forKey:@"comname"];
+    [def setValue:dict[@"regdate"] forKey:@"regdate"];
     ApplicationDelegate.opeid = dict[@"operid"];
     
     //myfocusships
