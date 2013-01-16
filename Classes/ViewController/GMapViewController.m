@@ -455,7 +455,7 @@ static const int kCRulerTag = 10;
     if (mySize.width > 0) {
         MapRulerView *ruler = (MapRulerView*) [gmapView viewWithTag:kCRulerTag];
         if (ruler == nil) {
-            ruler = [[MapRulerView alloc] initWithFrame:CGRectMake(10, self.view.bounds.size.height - 30, mySize.width, 20)];
+            ruler = [[MapRulerView alloc] initWithFrame:CGRectMake(10, self.view.bounds.size.height - 50, mySize.width, 20)];
             ruler.tag = kCRulerTag;
             [gmapView addSubview:ruler];
             RELEASE_SAFELY(ruler);

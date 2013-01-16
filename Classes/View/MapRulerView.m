@@ -27,6 +27,7 @@
 {
 //    NSLog(@"map ruler drawrect");
 //    [[UIColor blackColor] setFill];
+    [self setBackgroundColor:[UIColor clearColor]];
     [[UIColor blackColor] setStroke];
     UIBezierPath *path1 = [UIBezierPath bezierPath];
     [path1 moveToPoint:CGPointMake(1, 13)];
