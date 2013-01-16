@@ -116,13 +116,13 @@
    // NSString *gpsTime;
     
     NSArray *codeArray = ApplicationDelegate.codeArray;
-    NSString *nation = shipdict[@"shipflag"];
-    NSString *type = shipdict[@"shiptype"];
+    NSString *nation = @"";
+    NSString *type = @"";
     for (NSDictionary *dic in codeArray) {
-        if ([dic[@"codetype"] isEqual:@"0"] && [dic[@"code"] isEqual:nation]) {
+        if ([dic[@"codetype"] isEqual:@"0"] && [dic[@"code"] isEqual:shipdict[@"shipflag"]]) {
             nation = dic[@"typecn"];
         }
-        if ([dic[@"codetype"] isEqual:@"3"] && [dic[@"code"] isEqual:type]) {
+        if ([dic[@"codetype"] isEqual:@"3"] && [dic[@"code"] isEqual:shipdict[@"shiptype"]]) {
             type = dic[@"typecn"];
         }
     }
