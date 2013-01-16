@@ -120,9 +120,12 @@
 
     if (drawBg) {
         UIGraphicsPushContext(context);
-        [[UIColor lightGrayColor] set];
-        UIRectFill([self rectForMapRect:mapRect]);
+        UIImage *bgimg = [UIImage imageNamed:@"empty.png"];
+        [bgimg drawInRect:[self rectForMapRect:mapRect] blendMode:kCGBlendModeNormal alpha:1.0];
+//        [[UIColor lightGrayColor] set];
+//        UIRectFill([self rectForMapRect:mapRect]);
         drawBg = NO;
+        UIGraphicsPopContext();
         return;
     }
     

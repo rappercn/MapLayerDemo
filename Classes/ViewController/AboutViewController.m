@@ -69,12 +69,14 @@
         label.font = [UIFont systemFontOfSize:14];
         label.textAlignment = UITextAlignmentLeft;
         label.text = leftApp[i];
+        [label sizeToFit];
         [self.view addSubview:label];
         [label release];
         
         label = [[UILabel alloc] initWithFrame:CGRectMake(116, 5+i*28 , 150, 21)];
         label.font = [UIFont systemFontOfSize:14];
         label.text = rightApp[i];
+        [label sizeToFit];
         [self.view addSubview:label];
         [label release];
     }
