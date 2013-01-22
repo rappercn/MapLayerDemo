@@ -22,6 +22,8 @@
 #import "TyphoonDetailViewController.h"
 #import "ShipTipAnnotation.h"
 #import "ShipTipAnnotationView.h"
+#import "ShipNameOverlay.h"
+#import "ShipNameOverlayView.h"
 #import "MUtil.h"
 
 
@@ -65,6 +67,111 @@ static const int kCRulerTag = 10;
     [self removeShipsFromMapByArray:removeArray];
     RELEASE_SAFELY(removeArray);
 }
+-(void)addShipNameOverlay {
+    ShipNameOverlay *nameOverlay = [[ShipNameOverlay alloc] initWithMapRect:gmapView.visibleMapRect];
+    [gmapView addOverlay:nameOverlay];
+    RELEASE_SAFELY(nameOverlay);
+}
+-(void)removeShipNameOverlay {
+    for (id<MKOverlay> overlay in gmapView.overlays) {
+        if ([overlay isKindOfClass:[ShipNameOverlay class]]) {
+            [gmapView removeOverlay:overlay];
+            return;
+        }
+    }
+}
+-(BOOL)markUsedPosition:(CGPoint)pt {
+    int x = pt.x / 10;
+    int y = pt.y / 10;
+    if (posDict[[NSString stringWithFormat:@"%d-%d", x, y]] != nil) {
+        return NO;
+    }
+    posDict[[NSString stringWithFormat:@"%d-%d", x, y]] = @"1";
+    return YES;
+}
+-(void)markUsedPositionWithArray:(NSArray*)array {
+    for (NSMutableDictionary *shipdict in array) {
+        CLLocationCoordinate2D coord;
+        if (useMap) {
+            coord = [mapUtil getFakeCoordinateWithLatitude:[shipdict[@"lat"] floatValue] andLongitude:[shipdict[@"lon"] floatValue]];
+        } else {
+            coord = CLLocationCoordinate2DMake([shipdict[@"lat"] floatValue], [shipdict[@"lon"] floatValue]);
+        }
+        CGPoint pt = [gmapView convertCoordinate:coord toPointToView:gmapView];
+        [self markUsedPosition:pt];
+    }
+}
+
+-(CGPoint)getLabelPositionByShipPoint:(CGPoint)shipPt withWidth:(CGFloat)width {
+//    static NSInteger viewWidth = gmapView.bounds.size.width;
+//    static int viewHeight = gmapView.bounds.size.height;
+    CGPoint retPt = CGPointMake(-1, -1);
+    CGPoint *points = malloc(sizeof(CGPoint) * 4);
+    int w = ((int)(width / 10) * 10);
+    points[0] = CGPointMake(shipPt.x - w - 10, shipPt.y - 20);
+    points[1] = CGPointMake(shipPt.x + 20, shipPt.y - 20);
+    points[2] = CGPointMake(shipPt.x - w - 10, shipPt.y + 10);
+    points[3] = CGPointMake(shipPt.x + 20, shipPt.y + 10);
+    for (int i = 0; i < 4; i++) {
+        if (points[i].x < 0) {
+            points[i].x = 0;
+        }
+        if (points[i].y < 0) {
+            points[i].y = 0;
+        }
+        if (points[i].x > gmapView.bounds.size.width) {
+            points[i].x = gmapView.bounds.size.width;
+        }
+        if (points[i].y > gmapView.bounds.size.height) {
+            points[i].y = gmapView.bounds.size.height;
+        }
+        BOOL useable = YES;
+        for (int start = points[i].x / 10; start < (points[i].x + width) / 10; start++) {
+//            int x = points[i].x / 10;
+            int y = points[i].y / 10;
+            if (posDict[[NSString stringWithFormat:@"%d-%d", start, y]] != nil) {
+                useable = NO;
+                break;
+            }
+        }
+        if (useable) {
+            retPt.x = (int)(points[i].x / 10);
+            retPt.x *= 10;
+            retPt.y = (int)(points[i].y / 10);
+            retPt.y *= 10;
+            for (int start = points[i].x / 10; start < (points[i].x + width) / 10; start++) {
+                int y = points[i].y / 10;
+                posDict[[NSString stringWithFormat:@"%d-%d", start, y]] = @"1";
+            }
+            break;
+        }
+    }
+    free(points);
+    return retPt;
+}
+-(void)addShipNameAtCoordinate:(CLLocationCoordinate2D) coord andText:(NSString*)shipname{
+//    CGPoint pt = [gmapView convertCoordinate:coord toPointToView:gmapView];
+//    if (!CGRectContainsPoint(gmapView.bounds, pt)) {
+//        return;
+//    }
+//    UILabel *label = [[UILabel alloc] init];
+//    label.text = shipname;
+//    label.backgroundColor = [UIColor colorWithRed:255.0 green:255.0 blue:255.0 alpha:0.7];
+//    label.font = [UIFont systemFontOfSize:9];
+//    label.layer.borderColor = [[UIColor blackColor] CGColor];
+//    label.layer.borderWidth = 1.0;
+//    label.textAlignment = UITextAlignmentCenter;
+//    [label sizeToFit];
+//    CGRect frame = label.frame;
+//    frame.size.width += 6;
+//    CGPoint pos = [self getLabelPositionByShipPoint:pt withWidth:frame.size.width];
+//    if (pos.x != -1) {
+//        frame.origin = pos;
+//        label.frame = frame;
+//        [gmapView addSubview:label];
+//    }
+//    RELEASE_SAFELY(label);
+}
 -(void)addShipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType select:(BOOL)select  {
     CLLocationCoordinate2D coord;
     if (useMap) {
@@ -81,8 +188,15 @@ static const int kCRulerTag = 10;
         [gmapView selectAnnotation:shipanno animated:YES];
     }
     RELEASE_SAFELY(shipanno);
+    // add ship name
+    if (!(annoType == kCShipTypeNormal)) {
+        [self addShipNameAtCoordinate:coord andText:
+         [ApplicationDelegate makeShipNameByCnName:[shipdict objectForKey:@"shipnamecn"]
+              engName:[shipdict objectForKey:@"shipname"]
+                  imo:[shipdict objectForKey:@"imo"]]];
+    }
 }
--(void)addShipTipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType {
+//-(void)addShipTipAnnotationWithData:(NSDictionary*)shipdict andType:(NSInteger)annoType {
 // 去掉显示船名 2012.12.16
 //    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake([[shipdict objectForKey:@"lat"] floatValue], [[shipdict objectForKey:@"lon"] floatValue]);
 //    NSString *dispName = shipdict[@"shipnamecn"];
@@ -94,7 +208,7 @@ static const int kCRulerTag = 10;
 //    tipanno.coordinate = coord;
 //    [gmapView addAnnotation:tipanno];
 //    RELEASE_SAFELY(tipanno);
-}
+//}
 -(void)addShipIconWithArray:(NSArray*)shipArray withAnnotationType:(NSInteger)annoType showBadge:(BOOL)showBadge
 {
     NSMutableArray *removeArray = [[NSMutableArray alloc] init];
@@ -127,14 +241,14 @@ static const int kCRulerTag = 10;
     [self removeShipsFromMapByArray:removeArray];
     RELEASE_SAFELY(removeArray);
 
-    for (NSDictionary *shipDict in shipArray) {
-        if ([existShipidArray containsObject:shipDict[@"shipid"]]) {
+    [self markUsedPositionWithArray:shipArray];
+    for (NSDictionary *shipdict in shipArray) {
+        if ([existShipidArray containsObject:shipdict[@"shipid"]]) {
             continue;
         }
-        [self addShipAnnotationWithData:shipDict andType:annoType select:NO];
-        if (!(annoType == kCShipTypeNormal && ![[NSUserDefaults standardUserDefaults] boolForKey:@"showShipName"])) {
-            [self addShipTipAnnotationWithData:shipDict andType:annoType];
-        }
+        [self addShipAnnotationWithData:shipdict andType:annoType select:NO];
+//        if (!(annoType == kCShipTypeNormal && ![[NSUserDefaults standardUserDefaults] boolForKey:@"showShipName"])) {
+        
     }
     RELEASE_SAFELY(existShipidArray)
     if (showBadge) {
@@ -276,6 +390,7 @@ static const int kCRulerTag = 10;
                     MKCircle *windRing = [MKCircle circleWithCenterCoordinate:coord radius:kt34 * NM_RATE * 1000];
                     windRing.title = R_34KT;
                     [gmapView addOverlay:windRing];
+#warning add release sentence
                 }
                 if (kt50 > 0) {
                     MKCircle *windRing = [MKCircle circleWithCenterCoordinate:coord radius:kt50 * NM_RATE * 1000];
@@ -729,6 +844,7 @@ static const int kCRulerTag = 10;
     }
     segmentedControl.selectedSegmentIndex = 0;
     [self segButtonSelected:segmentedControl];
+    posDict = [[NSMutableDictionary alloc] init];
 }
 -(void)viewWillAppear:(BOOL)animated
 {
@@ -769,6 +885,19 @@ static const int kCRulerTag = 10;
         
         ApplicationDelegate.seletedShip = nil;
     }
+
+//    gmapView.layer.backgroundColor =[UIColor blueColor].CGColor;
+//    gmapView.layer.cornerRadius =20.0;
+//    gmapView.layer.frame = CGRectMake(0, 0, 100, 100);// CGRectInset(gmapView.layer.frame, 20, 20);
+    
+//    CALayer *sublayer = [CALayer layer];
+//    sublayer.backgroundColor = [UIColor blueColor].CGColor;
+//    sublayer.shadowOffset = CGSizeMake(0, 3);
+//    sublayer.shadowRadius = 5.0;
+//    sublayer.shadowColor = [UIColor blackColor].CGColor;
+//    sublayer.shadowOpacity = 0.8;
+//    sublayer.frame = CGRectMake(30, 30, 128, 192);
+//    [gmapView.layer addSublayer:sublayer];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
@@ -785,6 +914,7 @@ static const int kCRulerTag = 10;
     RELEASE_SAFELY(mkNetOp);
     RELEASE_SAFELY(segmentedControl);
     RELEASE_SAFELY(normalShipArray);
+    RELEASE_SAFELY(posDict);
 }
 
 #pragma mark - MKMapView Delegate
@@ -828,7 +958,20 @@ static const int kCRulerTag = 10;
         circleView.lineWidth = 1;
 		
 		return circleView;		
-	}
+	} else if ([overlay isKindOfClass:[ShipNameOverlay class]]) {
+        MKMapPoint *points = malloc(sizeof(MKMapPoint) * gmapView.annotations.count);
+        for (int i = 0; i < gmapView.annotations.count; i++) {
+            CLLocationCoordinate2D coord = ((MKPointAnnotation*)[gmapView.annotations objectAtIndex:i]).coordinate;
+            points[i] = MKMapPointForCoordinate(coord);
+        }
+//        ShipPoint *ships = malloc(sizeof(ShipPoint) * gmapView.annotations.count);
+//        for (int i = 0; i < gmapView.annotations.count; i++) {
+//            ships[i].coordinate = ((MKPointAnnotation*)[gmapView.annotations objectAtIndex:i]).coordinate;
+////            ships[i].viewPoint = [gmapView convertCoordinate:ships[i].coordinate toPointToView:gmapView];
+//        }
+        ShipNameOverlayView *nview = [[[ShipNameOverlayView alloc] initWithAnnotations:gmapView.annotations andOverlay:overlay] autorelease];
+        return nview;
+    }
     MapOverlayView *overlayView = [[MapOverlayView alloc] initWithOverlay:overlay];
     
     return [overlayView autorelease];
@@ -884,24 +1027,27 @@ static const int kCRulerTag = 10;
 - (void)mapView:(MKMapView *)aMapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     
     if ([view isKindOfClass:[ShipAnnotationView class]]) {
-//        ShipAnnotationView *shipView = (ShipAnnotationView*)view;
-//        int index = shipView.arrayIndex;
         ShipDetailViewController *next = [[ShipDetailViewController alloc] initWithNibName:@"ShipDetailViewController"];
         next.shipdict = ((ShipAnnotation*)view.annotation).shipdict;
-//        NSLog(@"%@",next.shipdict);
-//        AppDelegate *delegate = [AppDelegate getAppDelegate];
-//        NSArray *array = delegate.myfav;
-//        next.baseData = [array objectAtIndex:index];
         [self.navigationController pushViewController:next animated:YES];
     } else if ([view isKindOfClass:[TyphoonPointAnnotationView class]]) {
         
     }
 
 }
-
+-(void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
+{
+    [self removeShipNameOverlay];
+}
 -(void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
     [self reloadMapViewRuler];
     [self reloadAll];
+    [self addShipNameOverlay];
+//    UILabel *label = [[UILabel alloc] init];
+//    label.text = @"hello";
+//    [label sizeToFit];
+//    [gmapView addSubview:label];
+//    RELEASE_SAFELY(label);
 }
 @end

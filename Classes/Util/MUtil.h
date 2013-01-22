@@ -35,4 +35,5 @@
 -(id)init;
 -(CLLocationCoordinate2D)getFakeCoordinateWithLatitude:(double)lat andLongitude:(double)lon;
 -(CLLocationCoordinate2D)getRealCoordinateWithLatitude:(double)lat andLongitude:(double)lon;
+//+(CLLocationCoordinate2D)getCoordinateByLatitude:(double)lat andLogitude:(double)lon andDoConvert:(BOOL)flag;
 @end

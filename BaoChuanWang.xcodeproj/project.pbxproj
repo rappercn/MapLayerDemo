@@ -65,6 +65,8 @@
 		308ACD4915B534F700EF19DA /* MyFavDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308ACD4815B534F700EF19DA /* MyFavDetailViewController.xib */; };
 		308BAE7516656A370018333C /* shipng.png in Resources */ = {isa = PBXBuildFile; fileRef = 308BAE7416656A370018333C /* shipng.png */; };
 		308BAE811667A1590018333C /* MUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 308BAE801667A1590018333C /* MUtil.m */; };
+		308D218016A8EAAE009544B3 /* ShipNameOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 308D217F16A8EAAE009544B3 /* ShipNameOverlayView.m */; };
+		308D218D16A942CC009544B3 /* ShipNameOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 308D218C16A942CC009544B3 /* ShipNameOverlay.m */; };
 		308D6B881692D1CC00B992CE /* codeDict.plist in Resources */ = {isa = PBXBuildFile; fileRef = 308D6B871692D1CC00B992CE /* codeDict.plist */; };
 		308E583115804E040075A2D1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E581B15804E000075A2D1 /* AppDelegate.m */; };
 		308E583315804E040075A2D1 /* MKMapView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E582015804E010075A2D1 /* MKMapView+Additions.m */; };
@@ -178,6 +180,10 @@
 		308BAE7416656A370018333C /* shipng.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shipng.png; sourceTree = "<group>"; };
 		308BAE7F1667A1590018333C /* MUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MUtil.h; sourceTree = "<group>"; };
 		308BAE801667A1590018333C /* MUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MUtil.m; sourceTree = "<group>"; };
+		308D217E16A8EAAE009544B3 /* ShipNameOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShipNameOverlayView.h; sourceTree = "<group>"; };
+		308D217F16A8EAAE009544B3 /* ShipNameOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShipNameOverlayView.m; sourceTree = "<group>"; };
+		308D218B16A942CC009544B3 /* ShipNameOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShipNameOverlay.h; sourceTree = "<group>"; };
+		308D218C16A942CC009544B3 /* ShipNameOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShipNameOverlay.m; sourceTree = "<group>"; };
 		308D6B871692D1CC00B992CE /* codeDict.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = codeDict.plist; sourceTree = "<group>"; };
 		308E581A15804E000075A2D1 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		308E581B15804E000075A2D1 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -342,6 +348,8 @@
 				3089F777164CE985006BE2D6 /* MapTileOverlay.m */,
 				3089F77A164CEA19006BE2D6 /* ShipTileOverlay.h */,
 				3089F77B164CEA19006BE2D6 /* ShipTileOverlay.m */,
+				308D218B16A942CC009544B3 /* ShipNameOverlay.h */,
+				308D218C16A942CC009544B3 /* ShipNameOverlay.m */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -373,6 +381,8 @@
 				3064B9F61658CAA10054CED1 /* ShipTipAnnotation.m */,
 				3064B9F91658CBC70054CED1 /* ShipTipAnnotationView.h */,
 				3064B9FA1658CBC70054CED1 /* ShipTipAnnotationView.m */,
+				308D217E16A8EAAE009544B3 /* ShipNameOverlayView.h */,
+				308D217F16A8EAAE009544B3 /* ShipNameOverlayView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -608,6 +618,8 @@
 				3064B9F71658CAA10054CED1 /* ShipTipAnnotation.m in Sources */,
 				3064B9FB1658CBC70054CED1 /* ShipTipAnnotationView.m in Sources */,
 				308BAE811667A1590018333C /* MUtil.m in Sources */,
+				308D218016A8EAAE009544B3 /* ShipNameOverlayView.m in Sources */,
+				308D218D16A942CC009544B3 /* ShipNameOverlay.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

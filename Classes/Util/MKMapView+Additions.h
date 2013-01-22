@@ -6,7 +6,7 @@
 //  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
 //
 
-#import <MapKit/MapKit.h>
+
 
 @interface MKMapView(Additions)
 -(UIImageView*)mapLogo;

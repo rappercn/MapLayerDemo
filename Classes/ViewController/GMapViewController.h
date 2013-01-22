@@ -6,7 +6,7 @@
 //  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
 //
 
-#import <MapKit/MapKit.h>
+
 @class ShipAnnotation;
 @class MUtil;
 
@@ -27,6 +27,8 @@
     BOOL doingAddTyphoonTip;
     int showtype;
     UISegmentedControl *segmentedControl;
+    NSMutableDictionary *posDict;
+    UIView *shipNameView;
 //    ShipAnnotation *currentShipAnnotation;
 }
 @property (nonatomic, retain) IBOutlet MKMapView *gmapView;

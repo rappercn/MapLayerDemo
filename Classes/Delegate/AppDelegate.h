@@ -19,6 +19,12 @@
 #define IMAGE_HOST @"map.ctrack.com.cn"
 //@class MBProgressHUD;
 
+
+typedef struct {
+    CLLocationCoordinate2D coordinate;
+    CGPoint viewPoint;
+} ShipPoint;
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate> {
 //    NSMutableArray* myfav;
 //    NSManagedObjectContext *managedObjectContext;

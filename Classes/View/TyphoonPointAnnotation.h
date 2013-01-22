@@ -6,7 +6,6 @@
 //  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
 //
 
-#import <MapKit/MapKit.h>
 
 @interface TyphoonPointAnnotation : MKPointAnnotation
 @property (nonatomic, assign) float typhoonSpeed;

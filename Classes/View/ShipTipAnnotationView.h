@@ -6,7 +6,6 @@
 //
 //
 
-#import <MapKit/MapKit.h>
 
 @interface ShipTipAnnotationView : MKAnnotationView
 - (id)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier;

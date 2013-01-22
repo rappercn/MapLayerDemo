@@ -7,7 +7,7 @@
 //
 
 #import "MUtil.h"
-#import <MapKit/MapKit.h>
+
 #define CLIP(A,B,C)	MIN(MAX(A,B),C)
 @implementation MUtil
 const double MinLatitude = -85.05112878;

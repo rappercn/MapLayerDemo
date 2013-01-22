@@ -7,12 +7,7 @@
 //
 
 #import "ShipDetailViewController.h"
-//#import "ShipData.h"
-//#import <MapKit/MapKit.h>
-//#import "AppDelegate.h"
-//#import "ShipDetailFocused.h"
-//#import "Util.h"
-//#import "JSONKit.h"
+
 @implementation ShipDetailViewController
 @synthesize focusButton;
 @synthesize shipdict;

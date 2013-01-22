@@ -68,6 +68,9 @@
 //    if (downloaded) {
 //        return YES;
 //    }
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"useMap"]) {
+        return NO;
+    }
     
     if (prevRect.origin.x != mapRect.origin.x || prevRect.origin.y != mapRect.origin.y) {
         prevRect = mapRect;

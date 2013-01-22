@@ -6,7 +6,6 @@
 //  Copyright (c) 2012年 __MyCompanyName__. All rights reserved.
 //
 
-#import <MapKit/MapKit.h>
 
 @interface TyphTipAnnotation : MKPointAnnotation
 @property (nonatomic, retain) NSString *timeString;
