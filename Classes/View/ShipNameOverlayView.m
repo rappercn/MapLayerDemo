@@ -79,7 +79,12 @@
     ptLength = annos.count;
     mapPoints = malloc(sizeof(MKMapPoint) * ptLength);
     nameArray = [[NSMutableArray alloc] init];
+    int realLen = 0;
     for (int i = 0; i < ptLength; i++) {
+        if (![[annos objectAtIndex:i] isKindOfClass:[ShipAnnotation class]]) {
+            continue;
+        }
+        realLen++;
         ShipAnnotation *an = [annos objectAtIndex:i];
         mapPoints[i] = MKMapPointForCoordinate(an.coordinate);
         NSString *t = an.shipdict[@"shipnamecn"];
@@ -92,6 +97,7 @@
         // 补空格
         [nameArray addObject:[@" " stringByAppendingFormat:@"%@ ", t]];
     }
+    ptLength = realLen;
     return self;
 }
 

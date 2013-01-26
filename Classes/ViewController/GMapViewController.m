@@ -416,7 +416,7 @@ static const int kCRulerTag = 10;
     }
 }
 -(void)drawTyphoon{
-    if (typForeDic.count == typPathDic.count) {
+//    if (typForeDic.count == typPathDic.count) {
         for (NSString* key in typForeDic.allKeys) {
             NSArray* tmpAry = [typForeDic objectForKey:key];
             if (tmpAry) {
@@ -430,7 +430,7 @@ static const int kCRulerTag = 10;
             }
         }
         [self addTyphoonTip];
-    }
+//    }
 }
 -(void)getTyphoonInfo{
 
@@ -444,7 +444,7 @@ static const int kCRulerTag = 10;
     NSString *pathFile = [typFolder stringByAppendingString:@"/path.plist"];
     NSString *foreFile = [typFolder stringByAppendingString:@"/fore.plist"];
     
-    if (interval > 3600) {
+    if (interval > 300) {
         [[NSFileManager defaultManager] removeItemAtPath:pathFile error:nil];
         [[NSFileManager defaultManager] removeItemAtPath:foreFile error:nil];
         [Util getTyphoonsIdOnComp:^(NSObject *responseData) {
@@ -462,26 +462,25 @@ static const int kCRulerTag = 10;
                 if (typPathDic) {
                     RELEASE_SAFELY(typPathDic);
                 }
-                typPathDic = [[NSMutableDictionary alloc] init];
+                typPathDic = [[[NSMutableDictionary alloc] init] retain];
+                NSLog(@"idarray:%d",idArray.count);
                 for (NSString *tid in idArray) {
                     [Util getTyphoonLastForecastById:tid onComp:^(NSObject *responseData) {
                         [typForeDic setValue:responseData forKey:tid];
-//                        NSLog(@"typhoon forecast : %@", tid);
+                        NSLog(@"typForeDic:%d",typForeDic.count);
+                        NSLog(@"typhoon forecast : %@", tid);
                         if ([typForeDic count] == [idArray count]) {
                             [typForeDic writeToFile:foreFile atomically:YES];
-//                            if ([typPathDic count] == [idArray count]) {
-                                [self drawTyphoon];
-//                            }
+                            [self drawTyphoon];
                         }
                     }];
                     [Util getTyphoonPathById:tid onComp:^(NSObject *responseData) {
                         [typPathDic setValue:responseData forKey:tid];
-//                        NSLog(@"typhoon path : %@", tid);
+                        NSLog(@"typForeDic:%d",typForeDic.count);
+                        NSLog(@"typhoon path : %@", tid);
                         if ([typPathDic count] == [idArray count]) {
                             [typPathDic writeToFile:pathFile atomically:YES];
-//                            if ([typForeDic count] == [idArray count]) {
-                                [self drawTyphoon];
-//                            }
+                            [self drawTyphoon];
                         }
                     }];
                 }
