@@ -81,6 +81,8 @@
 		308E58B81581CAFA0075A2D1 /* ShipDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308E58B71581CAFA0075A2D1 /* ShipDetailViewController.xib */; };
 		308E88EA16A67A010023FC21 /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 308E88E916A67A010023FC21 /* AboutViewController.xib */; };
 		308E88EB16A67B890023FC21 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 308E88E716A679F30023FC21 /* AboutViewController.m */; };
+		3092A4AE16FE9B5500D9D34C /* NameOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = 3092A4AD16FE9B5500D9D34C /* NameOverlay.m */; };
+		3092A4B116FE9FD900D9D34C /* NameOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3092A4B016FE9FD900D9D34C /* NameOverlayView.m */; };
 		3094DAF216A6A5C5001C5FBB /* empty.png in Resources */ = {isa = PBXBuildFile; fileRef = 3094DAF116A6A5C5001C5FBB /* empty.png */; };
 		30987F1C167DF0CB00836BC5 /* about@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30987F1B167DF0CB00836BC5 /* about@2x.png */; };
 		30987F1F167DF0EA00836BC5 /* about@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 30987F1E167DF0EA00836BC5 /* about@2x.png */; };
@@ -206,6 +208,10 @@
 		308E88E616A679F30023FC21 /* AboutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		308E88E716A679F30023FC21 /* AboutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		308E88E916A67A010023FC21 /* AboutViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutViewController.xib; sourceTree = "<group>"; };
+		3092A4AC16FE9B5500D9D34C /* NameOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NameOverlay.h; sourceTree = "<group>"; };
+		3092A4AD16FE9B5500D9D34C /* NameOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NameOverlay.m; sourceTree = "<group>"; };
+		3092A4AF16FE9FD900D9D34C /* NameOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NameOverlayView.h; sourceTree = "<group>"; };
+		3092A4B016FE9FD900D9D34C /* NameOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NameOverlayView.m; sourceTree = "<group>"; };
 		3094DAF116A6A5C5001C5FBB /* empty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = empty.png; sourceTree = "<group>"; };
 		30987F1B167DF0CB00836BC5 /* about@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "about@2x.png"; sourceTree = "<group>"; };
 		30987F1E167DF0EA00836BC5 /* about@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "about@2x.png"; path = "../about@2x.png"; sourceTree = "<group>"; };
@@ -350,6 +356,8 @@
 				3089F77B164CEA19006BE2D6 /* ShipTileOverlay.m */,
 				308D218B16A942CC009544B3 /* ShipNameOverlay.h */,
 				308D218C16A942CC009544B3 /* ShipNameOverlay.m */,
+				3092A4AC16FE9B5500D9D34C /* NameOverlay.h */,
+				3092A4AD16FE9B5500D9D34C /* NameOverlay.m */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -383,6 +391,8 @@
 				3064B9FA1658CBC70054CED1 /* ShipTipAnnotationView.m */,
 				308D217E16A8EAAE009544B3 /* ShipNameOverlayView.h */,
 				308D217F16A8EAAE009544B3 /* ShipNameOverlayView.m */,
+				3092A4AF16FE9FD900D9D34C /* NameOverlayView.h */,
+				3092A4B016FE9FD900D9D34C /* NameOverlayView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -620,6 +630,8 @@
 				308BAE811667A1590018333C /* MUtil.m in Sources */,
 				308D218016A8EAAE009544B3 /* ShipNameOverlayView.m in Sources */,
 				308D218D16A942CC009544B3 /* ShipNameOverlay.m in Sources */,
+				3092A4AE16FE9B5500D9D34C /* NameOverlay.m in Sources */,
+				3092A4B116FE9FD900D9D34C /* NameOverlayView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

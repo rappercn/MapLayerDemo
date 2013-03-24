@@ -87,6 +87,7 @@
         realLen++;
         ShipAnnotation *an = [annos objectAtIndex:i];
         mapPoints[i] = MKMapPointForCoordinate(an.coordinate);
+        NSLog(@"mapPoints[%d]:%f, %f",i,mapPoints[i].x, mapPoints[i].y);
         NSString *t = an.shipdict[@"shipnamecn"];
         if (t == nil || t.length == 0) {
             t = an.shipdict[@"shipname"];
@@ -109,11 +110,16 @@
 
 - (void)drawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale inContext:(CGContextRef)context {
 
-    UIGraphicsPushContext(context);
 
+    @try {
+        [ApplicationDelegate.drawLock lock];
+
+                    UIGraphicsPushContext(context);
     [[UIColor blackColor] setStroke];
     UIFont *font = [UIFont fontWithName:@"STHeitiSC-Light"
                                    size:(7.0 * MKRoadWidthAtZoomScale(zoomScale))];
+//        float s  = 7.0 * MKRoadWidthAtZoomScale(zoomScale);
+//        UIFont *font = [UIFont systemFontOfSize:s];
     for (int i = 0; i < ptLength; i++) {
         MKMapPoint pt = mapPoints[i];
         NSString *t = [nameArray objectAtIndex:i];
@@ -133,64 +139,58 @@
             lineHeight = size.height;
         }
         
-//        MKMapRect textRect = MKMapRectMake(pt.x, pt.y, size.width, size.height);
-//        if (!MKMapRectIntersectsRect(mapRect, textRect)) {
-//            continue;
-//        }
-//        MKMapPoint drawMapPoint = [self getLabelPositionByShipPoint:pt withWidth:size.width];
-//        CGPoint drawPoint = [self pointForMapPoint:drawMapPoint];
-//        CGRect rect = CGRectMake(drawPoint.x, drawPoint.y, size.width, size.height);
-//        CGContextStrokeRectWithWidth(context, rect, 1.0 * MKRoadWidthAtZoomScale(zoomScale));
-//        [[UIColor colorWithWhite:1.0 alpha:0.7] setFill];
-//        CGContextFillRect(context, rect);
-//        [[UIColor blackColor] setFill];
-//        [t drawInRect:rect withFont:font];
         
-        
-//        if (i == 0) {
-//            MKMapPoint *points = malloc(sizeof(MKMapPoint) * 4);
-//            points[0] = MKMapPointMake(pt.x - size.width - lineHeight, pt.y - lineHeight * 2);
-//            points[1] = MKMapPointMake(pt.x + lineHeight * 2, pt.y - lineHeight * 2);
-//            points[2] = MKMapPointMake(pt.x - size.width - lineHeight, pt.y + lineHeight);
-//            points[3] = MKMapPointMake(pt.x + lineHeight * 2, pt.y + lineHeight);
-//
-//            for (int j = 0; j < 4; j++) {
-//                CGPoint drawPoint = [self pointForMapPoint:points[j]];
-//                CGRect rect = CGRectMake(drawPoint.x, drawPoint.y, size.width, size.height);
-//                for (int k = 0; k < rectArray.count; k++) {
-//                    CGRect existRect = [[rectArray objectAtIndex:k] CGRectValue];
-//                    if (CGRectIntersectsRect(existRect, rect)) {
-//                        continue;
-//                    }
-//                }
-//                [rectArray addObject:[NSValue valueWithCGRect:rect]];
-        ShipNameOverlay *nameOverlay = (ShipNameOverlay *) self.overlay;
-        CGRect rect = [nameOverlay getUseableRectForOverlayView:self fromPoint:pt andSize:size];
-        if (!CGRectIsEmpty(rect)) {
-            CGContextStrokeRectWithWidth(context, rect, 1.0 * MKRoadWidthAtZoomScale(zoomScale));
-            [[UIColor colorWithWhite:1.0 alpha:0.7] setFill];
-            CGContextFillRect(context, rect);
-            [[UIColor blackColor] setFill];
-            [t drawInRect:rect withFont:font];
-            CGPoint center = [self pointForMapPoint:pt];
-            CGPoint pt2 = CGPointZero;
-            if (center.x < rect.origin.x) {
-                pt2 = CGPointMake(rect.origin.x, rect.origin.y + rect.size.height / 2);
-            } else {
-                pt2 = CGPointMake(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height / 2);
+            ShipNameOverlay *nameOverlay = (ShipNameOverlay *) self.overlay;
+            CGRect rect = [nameOverlay getUseableRectForOverlayView:self fromPoint:pt andSize:size];
+            if (!CGRectIsEmpty(rect)) {
+//                CGContextRef cc = UIGraphicsGetCurrentContext();
+//                CGContextSelectFont(cc, "Helvetica-Bold", 10000000, kCGEncodingMacRoman);
+//                CGContextSetTextDrawingMode (cc, kCGTextFill);
+//                CGContextSetRGBFillColor(cc, 100.0, 100.0, 100.0, 0.7);
+//                //CGContextSetTextMatrix (cc, CGAffineTransformRotate(CGAffineTransformScale(CGAffineTransformIdentity, 1.f, -1.f ), M_PI/2));
+//                CGContextShowTextAtPoint(cc, 0, 0, [@"1234500000" cStringUsingEncoding:NSUTF8StringEncoding], 10);
+//                CGContextRestoreGState(cc);
+                
+//                    UIGraphicsPushContext(context);
+                CGContextStrokeRectWithWidth(context, rect, 1.0 * MKRoadWidthAtZoomScale(zoomScale));
+                [[UIColor colorWithWhite:1.0 alpha:0.7] setFill];
+                CGContextFillRect(context, rect);
+                [[UIColor blackColor] setFill];
+//                [t drawInRect:rect withFont:font];
+//                t=@"123";
+//                [t drawInRect:rect withFont:font];
+                [t drawAtPoint:CGPointMake(rect.origin.x,rect.origin.y) forWidth:rect.size.width withFont:font lineBreakMode:NSLineBreakByClipping];
+                CGPoint center = [self pointForMapPoint:pt];
+                CGPoint pt2 = CGPointZero;
+                if (center.x < rect.origin.x) {
+                    pt2 = CGPointMake(rect.origin.x, rect.origin.y + rect.size.height / 2);
+                } else {
+                    pt2 = CGPointMake(rect.origin.x + rect.size.width, rect.origin.y + rect.size.height / 2);
+                }
+                CGContextMoveToPoint(context, center.x, center.y);
+                CGContextAddLineToPoint(context, pt2.x, pt2.y);
+                CGContextSetLineWidth(context, MKRoadWidthAtZoomScale(zoomScale));
+                CGContextSetStrokeColorWithColor(context, [[UIColor blackColor] CGColor]);
+                CGContextStrokePath(context);
+                NSLog(@"draw ship name-----%@,%f,%f,%f,%f", t, rect.origin.x,rect.origin.y,rect.size.width,rect.size.height);
+//                    UIGraphicsPopContext();
             }
-            CGContextMoveToPoint(context, center.x, center.y);
-            CGContextAddLineToPoint(context, pt2.x, pt2.y);
-            CGContextSetLineWidth(context, MKRoadWidthAtZoomScale(zoomScale));
-            CGContextSetStrokeColorWithColor(context, [[UIColor blackColor] CGColor]);
-            CGContextStrokePath(context);
-        }
+        
+        
 //                break;
 //            }
 //        free(points);
 //        }
     }
-    UIGraphicsPopContext();
+UIGraphicsPopContext();
+
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
+    @finally {
+        [ApplicationDelegate.drawLock unlock];        
+    }
 }
 #pragma mark -
 #pragma mark Memory management

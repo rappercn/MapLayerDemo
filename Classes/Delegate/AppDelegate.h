@@ -45,6 +45,7 @@ typedef struct {
 @property (nonatomic, retain) NSString *opeid;
 @property (nonatomic, retain) NSArray *codeArray;
 @property (nonatomic, assign) BOOL shipRedBorder;
+@property (nonatomic, retain) NSLock *drawLock;
 //@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 //@property (nonatomic, retain) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 //@property (nonatomic, retain) NSManagedObjectModel *managedObjectModel;

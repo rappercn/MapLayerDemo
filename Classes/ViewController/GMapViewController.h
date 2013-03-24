@@ -14,6 +14,7 @@
     NSArray *meterArray;
     NSArray *feetArray;
     int zoomLevel;
+    int prevZoomLevel;
     NSMutableDictionary *typPathDic;
     NSMutableDictionary *typForeDic;
     NSArray *normalShipArray;

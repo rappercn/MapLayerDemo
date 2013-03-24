@@ -22,6 +22,7 @@
 @synthesize opeid;
 @synthesize codeArray;
 @synthesize shipRedBorder;
+@synthesize drawLock;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -35,6 +36,8 @@
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
     [self.window addSubview:nav.view];
 
+    drawLock = [[NSLock alloc] init];
+    
     nav.navigationBarHidden = YES;
     [self.window makeKeyAndVisible];
 //    RELEASE_SAFELY(login);

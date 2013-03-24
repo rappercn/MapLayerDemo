@@ -22,10 +22,9 @@
 #import "TyphoonDetailViewController.h"
 #import "ShipTipAnnotation.h"
 #import "ShipTipAnnotationView.h"
-#import "ShipNameOverlay.h"
-#import "ShipNameOverlayView.h"
+#import "NameOverlay.h"
+#import "NameOverlayView.h"
 #import "MUtil.h"
-
 
 @implementation GMapViewController
 @synthesize gmapView;
@@ -68,13 +67,21 @@ static const int kCRulerTag = 10;
     RELEASE_SAFELY(removeArray);
 }
 -(void)addShipNameOverlay {
-    ShipNameOverlay *nameOverlay = [[ShipNameOverlay alloc] initWithMapRect:gmapView.visibleMapRect];
+//    if (prevZoomLevel == zoomLevel) {
+//        return;
+//    }
+    prevZoomLevel = zoomLevel;
+    NameOverlay *nameOverlay = [[NameOverlay alloc] init];
+    nameOverlay.zoomLevel = zoomLevel;
     [gmapView addOverlay:nameOverlay];
     RELEASE_SAFELY(nameOverlay);
 }
 -(void)removeShipNameOverlay {
+//    if (prevZoomLevel == zoomLevel) {
+//        return;
+//    }
     for (id<MKOverlay> overlay in gmapView.overlays) {
-        if ([overlay isKindOfClass:[ShipNameOverlay class]]) {
+        if ([overlay isKindOfClass:[NameOverlay class]]) {
             [gmapView removeOverlay:overlay];
             return;
         }
@@ -377,7 +384,7 @@ static const int kCRulerTag = 10;
             tAnno.coordinate = coord;
 //            coordintes[i] = coord;
             
-            if (i == [tArray count] - 1 && title == PATH_TITLE) {
+            if (i == [tArray count] - 1 && [title isEqualToString: PATH_TITLE]) {
                 TyphTipAnnotation *tipAnno = [[TyphTipAnnotation alloc] initWithTyphoonTime:[tpt objectForKey:@"typhoonTime"] typhoonName:[tpt objectForKey:@"enName"]];
                 tipAnno.coordinate = coord;
                 [gmapView addAnnotation:tipAnno];
@@ -444,7 +451,7 @@ static const int kCRulerTag = 10;
     NSString *pathFile = [typFolder stringByAppendingString:@"/path.plist"];
     NSString *foreFile = [typFolder stringByAppendingString:@"/fore.plist"];
     
-    if (interval > 300) {
+    if (interval > 900) {
         [[NSFileManager defaultManager] removeItemAtPath:pathFile error:nil];
         [[NSFileManager defaultManager] removeItemAtPath:foreFile error:nil];
         [Util getTyphoonsIdOnComp:^(NSObject *responseData) {
@@ -809,6 +816,7 @@ static const int kCRulerTag = 10;
 }
 -(void)viewDidLoad {
     [super viewDidLoad];
+    prevZoomLevel = -1;
     [self.navigationController setNavigationBarHidden:NO];
     [gmapView setDelegate:self];
     mapUtil = [[MUtil alloc] init];
@@ -839,6 +847,7 @@ static const int kCRulerTag = 10;
         CLLocationCoordinate2D center = CLLocationCoordinate2DMake(clat, clon);
         MKCoordinateSpan span = MKCoordinateSpanMake(latd, lond);
         MKCoordinateRegion region = MKCoordinateRegionMake(center, span);
+        prevZoomLevel = -1;
         gmapView.region = region;
     }
     segmentedControl.selectedSegmentIndex = 0;
@@ -931,7 +940,7 @@ static const int kCRulerTag = 10;
     } else if ([overlay isKindOfClass:[MKPolyline class]]) {
         MKPolyline *line = (MKPolyline*)overlay;
         MKPolylineView *polylineView = [[[MKPolylineView alloc] initWithPolyline:line] autorelease];
-        if (line.title == PATH_TITLE) {
+        if ([line.title isEqualToString: PATH_TITLE]) {
             polylineView.strokeColor = [UIColor blueColor];
         } else {
             polylineView.strokeColor = [UIColor orangeColor];
@@ -945,11 +954,11 @@ static const int kCRulerTag = 10;
         MKCircle *circle = (MKCircle*)overlay;
 		MKCircleView *circleView = [[[MKCircleView alloc] initWithOverlay:circle] autorelease];
         UIColor *color;
-        if (circle.title == R_34KT) {
+        if ([circle.title isEqualToString:R_34KT]) {
             color = [UIColor blueColor];
-        } else if (circle.title == R_50KT) {
+        } else if ([circle.title isEqualToString:R_50KT]) {
             color = [UIColor greenColor];
-        } else if (circle.title == R_64KT) {
+        } else if ([circle.title isEqualToString: R_64KT]) {
             color = [UIColor redColor];
         }
         circleView.strokeColor = color;
@@ -957,7 +966,7 @@ static const int kCRulerTag = 10;
         circleView.lineWidth = 1;
 		
 		return circleView;		
-	} else if ([overlay isKindOfClass:[ShipNameOverlay class]]) {
+	} else if ([overlay isKindOfClass:[NameOverlay class]]) {
         MKMapPoint *points = malloc(sizeof(MKMapPoint) * gmapView.annotations.count);
         for (int i = 0; i < gmapView.annotations.count; i++) {
             CLLocationCoordinate2D coord = ((MKPointAnnotation*)[gmapView.annotations objectAtIndex:i]).coordinate;
@@ -968,7 +977,7 @@ static const int kCRulerTag = 10;
 //            ships[i].coordinate = ((MKPointAnnotation*)[gmapView.annotations objectAtIndex:i]).coordinate;
 ////            ships[i].viewPoint = [gmapView convertCoordinate:ships[i].coordinate toPointToView:gmapView];
 //        }
-        ShipNameOverlayView *nview = [[[ShipNameOverlayView alloc] initWithAnnotations:gmapView.annotations andOverlay:overlay] autorelease];
+        NameOverlayView *nview = [[[NameOverlayView alloc] initWithAnnotations:gmapView.annotations andOverlay:overlay] autorelease];
         return nview;
     }
     MapOverlayView *overlayView = [[MapOverlayView alloc] initWithOverlay:overlay];

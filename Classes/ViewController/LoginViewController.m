@@ -64,8 +64,8 @@
 	
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
     [nameField setText:[[NSUserDefaults standardUserDefaults] valueForKey:@"userid"]];
-//    [nameField setText:@"shsdadmin"];
-    [passWordField setText:@"123456"];
+    [nameField setText:@"zhengjun"];
+    [passWordField setText:@"zhengjun"];
 }
 
 - (void)viewDidUnload
